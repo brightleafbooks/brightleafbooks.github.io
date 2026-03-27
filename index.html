@@ -1715,7 +1715,7 @@
     </div>
   </div>
 
-  <script type="module">
+  <script>
     // ── DATA ──────────────────────────────────────────────────────────────────────
     const SEED_BOOKS = [
       {
@@ -1791,47 +1791,22 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       }
     ];
     // Password stored in localStorage, default: brightleaf2025
-    // ── FIREBASE SETUP ────────────────────────────────────────────────────────
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyBJkxk6HLPjuGwtABFn0lfF9HrlglivXlk",
-      authDomain: "bright-leaf-e924b.firebaseapp.com",
-      projectId: "bright-leaf-e924b",
-      storageBucket: "bright-leaf-e924b.firebasestorage.app",
-      messagingSenderId: "729912501880",
-      appId: "1:729912501880:web:06698d3f5fb45073d7ef8d",
-      measurementId: "G-RRG8B5SBCX"
-    };
-
-    const firebaseApp = initializeApp(firebaseConfig);
-    const db = getFirestore(firebaseApp);
-    const DATA_DOC = doc(db, "sitedata", "main");
+    const SK = 'blb_v3';
 
     let books = [], blogs = [], unlocked = false;
 
-    async function load() {
+    function load() {
       try {
-        const snap = await getDoc(DATA_DOC);
-        if (snap.exists()) {
-          const d = snap.data();
-          if (d && d.books && d.books.length) {
-            books = d.books;
-            blogs = d.blogs || [];
-            return;
-          }
-        }
-      } catch (e) { console.error('Firebase load error:', e); }
+        const d = JSON.parse(localStorage.getItem(SK));
+        if (d && d.books && d.books.length) { books = d.books; blogs = d.blogs || []; return; }
+      } catch (e) { }
       books = SEED_BOOKS;
       blogs = SEED_BLOGS;
-      await save();
+      save();
     }
 
-    async function save() {
-      try {
-        await setDoc(DATA_DOC, { books, blogs });
-      } catch (e) { console.error('Firebase save error:', e); }
+    function save() {
+      try { localStorage.setItem(SK, JSON.stringify({ books, blogs })); } catch (e) { }
     }
 
     // ── BOOKS ─────────────────────────────────────────────────────────────────────
@@ -1984,7 +1959,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       const cover = await rf(coverF);
       const samples = (await Promise.all(sampFs.map(rf))).filter(Boolean);
       books.push({ id: 'bk' + Date.now(), title, price, age, amazon: amz, desc, features: feats, cover, samples });
-      await save(); renderBooks();
+      save(); renderBooks();
       ['abt', 'abp', 'aba', 'abz', 'abd', 'abf'].forEach(i => document.getElementById(i).value = '');
       document.getElementById('abc').value = ''; document.getElementById('abs').value = '';
       btn.disabled = false; btn.innerHTML = 'Add Book to Website';
@@ -2008,7 +1983,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       const emap = { 'bt-green': '🌿', 'bt-yellow': '✏️', 'bt-pink': '📖' };
       const date = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
       blogs.unshift({ id: 'bl' + Date.now(), title, cat, catLabel, time, summary, content, date, img, emoji: emap[cat] || '📝' });
-      await save(); renderBlogs();
+      save(); renderBlogs();
       ['blt', 'blr', 'bls', 'blb'].forEach(i => document.getElementById(i).value = '');
       document.getElementById('bli').value = '';
       btn.disabled = false; btn.innerHTML = 'Publish Blog Post';
@@ -2034,8 +2009,8 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
     </div>`).join('') || '<p style="color:var(--mu);font-size:.83rem">No blog posts yet.</p>';
     }
 
-    async function delBook(id) { if (!confirm('Delete this book?')) return; books = books.filter(b => b.id !== id); await save(); renderBooks(); renderManage(); }
-    async function delBlog(id) { if (!confirm('Delete this post?')) return; blogs = blogs.filter(b => b.id !== id); await save(); renderBlogs(); renderManage(); }
+    function delBook(id) { if (!confirm('Delete this book?')) return; books = books.filter(b => b.id !== id); save(); renderBooks(); renderManage(); }
+    function delBlog(id) { if (!confirm('Delete this post?')) return; blogs = blogs.filter(b => b.id !== id); save(); renderBlogs(); renderManage(); }
 
     // ── EDIT BOOK ──────────────────────────────────────────────────────────────
     let _editBookId = null;
@@ -2077,7 +2052,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       const newCover = coverF ? await rf(coverF) : existing.cover;
       const newSamples = sampFs.length ? (await Promise.all(sampFs.map(rf))).filter(Boolean) : existing.samples;
       books[idx] = { ...existing, title, price, age, amazon: amz, desc, features: feats, cover: newCover, samples: newSamples };
-      await save(); renderBooks(); renderManage();
+      save(); renderBooks(); renderManage();
       btn.disabled = false; btn.innerHTML = 'Save Changes';
       flash('ebok');
       setTimeout(() => closeEditBook(), 1200);
@@ -2122,7 +2097,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       const emap = { 'bt-green': '🌿', 'bt-yellow': '✏️', 'bt-pink': '📖' };
       const newImg = imgF ? await rf(imgF) : existing.img;
       blogs[idx] = { ...existing, title, cat, catLabel, time, summary, content, img: newImg, emoji: emap[cat] || '📝' };
-      await save(); renderBlogs(); renderManage();
+      save(); renderBlogs(); renderManage();
       btn.disabled = false; btn.innerHTML = 'Save Changes';
       flash('elok');
       setTimeout(() => closeEditBlog(), 1200);
@@ -2151,11 +2126,9 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       new IntersectionObserver(([e]) => { if (e.isIntersecting) { el.style.opacity = '1'; el.style.transform = 'translateY(0)'; } }, { threshold: .1 }).observe(el);
     });
 
-    (async () => {
-      await load();
-      renderBooks();
-      renderBlogs();
-    })();
+    load();
+    renderBooks();
+    renderBlogs();
 
     // Render email without @ in HTML to avoid bot-protection interference
     (function () {
