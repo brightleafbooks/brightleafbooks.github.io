@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Download Your Ebook</title>
+</head>
+
+<body style="text-align:center; font-family:Arial; background:#f9f9f9; padding:50px;">
+
+  <h1>🎉 Payment Successful!</h1>
+  <p>Your ebook is ready to download 👇</p>
+
+  <a href=https://drive.google.com/file/d/1e3d0BmxhSEQKY8a36q68FxXWK1aRJd7v/view?usp=sharing target="_blank">
+    <button style="padding:15px 30px; font-size:18px; background:#ff6600; color:white; border:none; border-radius:5px;">
+      📥 Download Ebook
+    </button>
+  </a>
+
+  <p style="margin-top:20px;">Thank you for your purchase ❤️</p>
+
+</body>
+</html>
