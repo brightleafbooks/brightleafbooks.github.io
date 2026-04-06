@@ -2326,6 +2326,24 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       console.log('Force sync result:', ok);
     }
 
+    // Remove undefined values recursively — Firestore rejects them
+    function cleanForFirestore(obj) {
+      if (Array.isArray(obj)) {
+        return obj.map(cleanForFirestore);
+      } else if (obj !== null && typeof obj === 'object') {
+        const cleaned = {};
+        for (const [k, v] of Object.entries(obj)) {
+          if (v === undefined) {
+            cleaned[k] = null; // replace undefined with null
+          } else {
+            cleaned[k] = cleanForFirestore(v);
+          }
+        }
+        return cleaned;
+      }
+      return obj;
+    }
+
     async function fbSave() {
       if (_fbFailed) return false;
       try {
@@ -2334,7 +2352,8 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
           console.error('Firebase init failed — _db:', _db, '_docRef:', _docRef, '_fbFailed:', _fbFailed);
           return false;
         }
-        await _setDoc(_docRef, { books, blogs, siteContent });
+        const payload = cleanForFirestore({ books, blogs, siteContent });
+        await _setDoc(_docRef, payload);
         console.log('Firebase save SUCCESS');
         return true;
       } catch (e) {
