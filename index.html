@@ -2270,6 +2270,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       if (_db) return true;
       if (_fbFailed) return false;
       try {
+        console.log('Initializing Firebase with project:', firebaseConfig.projectId);
         const [{ initializeApp }, { getFirestore, doc, getDoc, setDoc }] = await Promise.all([
           import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"),
           import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js")
@@ -2279,9 +2280,11 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
         _docRef = doc(_db, "sitedata", "main");
         _getDoc = getDoc;
         _setDoc = setDoc;
+        console.log('Firebase initialized OK — project:', firebaseConfig.projectId);
         return true;
       } catch (e) {
-        _fbFailed = true; // stop retrying — localStorage is the fallback
+        console.error('Firebase init error:', e.code, e.message, e);
+        _fbFailed = true;
         return false;
       }
     }
@@ -2306,7 +2309,9 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
     async function forceSyncToFirebase() {
       const btn = document.getElementById('forceSyncBtn');
       if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spin"></span> Syncing...'; }
-      _db = null; _docRef = null; _fbFailed = false; // reset Firebase connection
+      // Full reset of Firebase connection state
+      _db = null; _docRef = null; _getDoc = null; _setDoc = null; _fbFailed = false;
+      console.log('Force sync started — resetting Firebase connection...');
       const ok = await fbSave();
       if (btn) {
         btn.disabled = false;
@@ -2325,10 +2330,17 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       if (_fbFailed) return false;
       try {
         const ok = await initFirebase();
-        if (!ok || !_docRef) return false;
+        if (!ok || !_docRef) {
+          console.error('Firebase init failed — _db:', _db, '_docRef:', _docRef, '_fbFailed:', _fbFailed);
+          return false;
+        }
         await _setDoc(_docRef, { books, blogs, siteContent });
+        console.log('Firebase save SUCCESS');
         return true;
-      } catch (e) { return false; }
+      } catch (e) {
+        console.error('Firebase setDoc error:', e.code, e.message, e);
+        return false;
+      }
     }
 
     // ── Main load: Firebase first, then localStorage, then seed data ───────────
