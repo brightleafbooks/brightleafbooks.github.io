@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- BrightLeaf v3.1 - Firebase fix applied -->
 <html lang="en">
 
 <head>
@@ -7,6 +8,14 @@
   <meta name="description" content="Interactive kids books, coloring pages and fun learning content.">
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>Bright Leaf Books</title>
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+    window._fbModules = { initializeApp, getFirestore, doc, getDoc, setDoc };
+    window._fbReady = true;
+    window.dispatchEvent(new Event('fbready'));
+  </script>
   <link
     href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;1,9..144,400&family=Nunito:wght@400;600;700&display=swap"
     rel="stylesheet" />
@@ -2271,10 +2280,19 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       if (_fbFailed) return false;
       try {
         console.log('Initializing Firebase with project:', firebaseConfig.projectId);
-        const [{ initializeApp }, { getFirestore, doc, getDoc, setDoc }] = await Promise.all([
-          import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"),
-          import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js")
-        ]);
+
+        // Wait for Firebase modules loaded via <script type="module"> in <head>
+        if (!window._fbReady) {
+          await new Promise((resolve, reject) => {
+            const timeout = setTimeout(() => reject(new Error('Firebase SDK load timeout')), 10000);
+            window.addEventListener('fbready', () => { clearTimeout(timeout); resolve(); }, { once: true });
+          });
+        }
+
+        const { initializeApp, getFirestore, doc, getDoc, setDoc } = {
+          ...window._fbModules
+        };
+
         const app = initializeApp(firebaseConfig);
         _db = getFirestore(app);
         _docRef = doc(_db, "sitedata", "main");
@@ -2326,22 +2344,19 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       console.log('Force sync result:', ok);
     }
 
-    // Remove undefined values recursively — Firestore rejects them
+    // Remove undefined values — Firestore rejects them
+    // JSON round-trip is the most reliable way: undefined gets dropped,
+    // then we restore missing keys as null via a second pass
     function cleanForFirestore(obj) {
-      if (Array.isArray(obj)) {
-        return obj.map(cleanForFirestore);
-      } else if (obj !== null && typeof obj === 'object') {
-        const cleaned = {};
-        for (const [k, v] of Object.entries(obj)) {
-          if (v === undefined) {
-            cleaned[k] = null; // replace undefined with null
-          } else {
-            cleaned[k] = cleanForFirestore(v);
-          }
-        }
-        return cleaned;
+      try {
+        // Step 1: JSON stringify drops undefined values entirely
+        const jsonStr = JSON.stringify(obj, (key, val) => val === undefined ? null : val);
+        // Step 2: Parse back — now all values are JSON-safe
+        return JSON.parse(jsonStr);
+      } catch(e) {
+        console.warn('cleanForFirestore error:', e);
+        return obj;
       }
-      return obj;
     }
 
     async function fbSave() {
