@@ -3082,9 +3082,9 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
         document.getElementById('success-txn').textContent =
           'Transaction ID: ' + paymentId;
 
-        if (b && b.pdfData) {
+        if (b && b.pdfUrl) {
           const dlLink = document.getElementById('dl-link');
-          dlLink.href = b.pdfData;
+          dlLink.href = b.pdfUrl;
           dlLink.download = b.title.replace(/[^a-z0-9]/gi, '_') + '_ebook.pdf';
           dlLink.onclick = null;
           document.getElementById('success-msg').textContent =
