@@ -7,13 +7,75 @@
   <title>Bright Leaf Books - Fun Learning for Kids</title>
   <meta name="description" content="Interactive kids books, coloring pages and fun learning content.">
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍃</text></svg>">
   <title>Bright Leaf Books</title>
-  <!-- Firebase SDK -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
-    window._fbModules = { initializeApp, getFirestore, doc, getDoc, setDoc };
-    window._fbReady = true;
+  <!-- Allow Firestore REST + Cloud Functions + Instamojo from GitHub Pages -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://firestore.googleapis.com https://*.cloudfunctions.net https://www.instamojo.com https://test.instamojo.com;">
+  <!-- Firebase via REST API — no SDK, no dynamic imports, works on GitHub Pages -->
+  <script>
+    // Firestore REST API helpers (no SDK required)
+    window._fbReady = true; // always ready — no async loading needed
+
+    // Convert a plain JS object → Firestore REST "fields" format
+    function _toFS(val) {
+      if (val === null || val === undefined) return { nullValue: null };
+      if (typeof val === 'boolean')          return { booleanValue: val };
+      if (typeof val === 'number')           return Number.isInteger(val) ? { integerValue: String(val) } : { doubleValue: val };
+      if (typeof val === 'string')           return { stringValue: val };
+      if (Array.isArray(val))                return { arrayValue: { values: val.map(_toFS) } };
+      if (typeof val === 'object') {
+        const fields = {};
+        for (const k in val) fields[k] = _toFS(val[k]);
+        return { mapValue: { fields } };
+      }
+      return { stringValue: String(val) };
+    }
+
+    // Convert Firestore REST response → plain JS object
+    function _fromFS(fv) {
+      if (!fv) return null;
+      if ('nullValue'    in fv) return null;
+      if ('booleanValue' in fv) return fv.booleanValue;
+      if ('integerValue' in fv) return Number(fv.integerValue);
+      if ('doubleValue'  in fv) return fv.doubleValue;
+      if ('stringValue'  in fv) return fv.stringValue;
+      if ('arrayValue'   in fv) return (fv.arrayValue.values || []).map(_fromFS);
+      if ('mapValue'     in fv) {
+        const obj = {};
+        for (const k in (fv.mapValue.fields || {})) obj[k] = _fromFS(fv.mapValue.fields[k]);
+        return obj;
+      }
+      return null;
+    }
+
+    window._fbModules = {
+      initializeApp: function(config) { return config; }, // just return config as "app"
+      getFirestore:  function(app)    { return app; },    // "db" = config object
+      doc: function(db, col, id) {
+        // Returns a ref object with the REST URL
+        const base = 'https://firestore.googleapis.com/v1/projects/' + db.projectId + '/databases/(default)/documents';
+        return { url: base + '/' + col + '/' + id, apiKey: db.apiKey };
+      },
+      getDoc: async function(ref) {
+        const res = await fetch(ref.url + '?key=' + ref.apiKey);
+        if (res.status === 404) return { exists: () => false, data: () => null };
+        if (!res.ok) throw new Error('Firestore GET failed: ' + res.status);
+        const json = await res.json();
+        const data = {};
+        for (const k in (json.fields || {})) data[k] = _fromFS(json.fields[k]);
+        return { exists: () => true, data: () => data };
+      },
+      setDoc: async function(ref, obj) {
+        const fields = {};
+        for (const k in obj) fields[k] = _toFS(obj[k]);
+        const res = await fetch(ref.url + '?key=' + ref.apiKey, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fields })
+        });
+        if (!res.ok) throw new Error('Firestore PATCH failed: ' + res.status);
+      }
+    };
     window.dispatchEvent(new Event('fbready'));
   </script>
   <link
@@ -1686,19 +1748,19 @@
 
         <div class="fr">
           <div class="fg">
-            <label>Your name</label>
-            <input type="text" name="name" placeholder="Full Name" required />
+            <label for="contact-name">Your name</label>
+            <input id="contact-name" type="text" name="name" placeholder="Full Name" autocomplete="name" required />
           </div>
 
           <div class="fg">
-            <label>Email address</label>
-            <input type="email" name="email" placeholder="xyz@gmail.com" required />
+            <label for="contact-email">Email address</label>
+            <input id="contact-email" type="email" name="email" placeholder="xyz@gmail.com" autocomplete="email" required />
           </div>
         </div>
 
         <div class="fg">
-          <label>What can we help with?</label>
-          <select name="subject">
+          <label for="contact-subject">What can we help with?</label>
+          <select id="contact-subject" name="subject" autocomplete="off">
             <option value="">Select a reason...</option>
             <option>Book Recommendation</option>
             <option>Bulk / School Order</option>
@@ -1709,8 +1771,8 @@
         </div>
 
         <div class="fg">
-          <label>Your message</label>
-          <textarea name="message" required></textarea>
+          <label for="contact-message">Your message</label>
+          <textarea id="contact-message" name="message" autocomplete="off" required></textarea>
         </div>
 
         <button type="submit" class="csub" id="cbtn">Send message →</button>
@@ -1741,7 +1803,8 @@
         <h3>Admin Access</h3>
         <p style="color:var(--mu);font-size:.85rem;margin-bottom:1.1rem">Enter your password to manage books and blogs.
         </p>
-        <input type="password" id="pwi" placeholder="Enter password" onkeydown="if(event.key==='Enter')chkPw()" /><br />
+        <label for="pwi" style="display:none">Admin password</label>
+        <input type="password" id="pwi" placeholder="Enter password" autocomplete="current-password" onkeydown="if(event.key==='Enter')chkPw()" /><br />
         <div class="pwerr" id="pwerr">Incorrect password. Try again.</div>
         <div style="display:flex;gap:.65rem;justify-content:center;margin-top:1rem">
           <button class="afbtn" onclick="chkPw()">Unlock →</button>
@@ -1763,27 +1826,27 @@
         <div class="ac" id="tadd">
           <h3>Add a New Book</h3>
           <div class="af">
-            <div class="afg"><label>Title *</label><input id="abt" placeholder="Happy Animals Coloring Book" /></div>
+            <div class="afg"><label for="abt">Title *</label><input id="abt" placeholder="Happy Animals Coloring Book" / autocomplete="off"></div>
             <div class="afrow">
-              <div class="afg"><label>Price (USD $) *</label><input id="abp" placeholder="11" /></div>
-              <div class="afg"><label>Price (INR ₹) for Instamojo *</label><input id="abpinr" placeholder="900" /></div>
+              <div class="afg"><label for="abp">Price (USD $) *</label><input id="abp" placeholder="11" / autocomplete="off"></div>
+              <div class="afg"><label for="abpinr">Price (INR ₹) for Instamojo *</label><input id="abpinr" placeholder="900" / autocomplete="off"></div>
             </div>
             <div class="afrow">
-              <div class="afg"><label>Age Range</label><input id="aba" placeholder="Ages 3–6" /></div>
+              <div class="afg"><label for="aba">Age Range</label><input id="aba" placeholder="Ages 3–6" / autocomplete="off"></div>
               <div class="afg"><label>Amazon Link</label><input type="url" id="abz"
-                  placeholder="https://amazon.com/dp/..." /></div>
+                  placeholder="https://amazon.com/dp/..." / autocomplete="off"></div>
             </div>
-            <div class="afg"><label>Description *</label><textarea id="abd"
-                placeholder="Write a detailed description of this book..."></textarea></div>
-            <div class="afg"><label>What's Inside (one item per line)</label><textarea id="abf" style="min-height:75px"
-                placeholder="Cute animals — Rabbit, Lion&#10;Bold outlines for little hands&#10;Single-sided pages"></textarea>
+            <div class="afg"><label for="abd">Description *</label><textarea id="abd"
+                placeholder="Write a detailed description of this book..." autocomplete="off"></textarea></div>
+            <div class="afg"><label for="abf">What's Inside (one item per line)</label><textarea id="abf" style="min-height:75px"
+                placeholder="Cute animals — Rabbit, Lion&#10;Bold outlines for little hands&#10;Single-sided pages" autocomplete="off"></textarea>
             </div>
             <div class="afg"><label>Cover Image</label><input type="file" id="abc" accept="image/*"
-                style="border:none;padding:.25rem 0;background:none" /></div>
+                style="border:none;padding:.25rem 0;background:none" / autocomplete="off"></div>
             <div class="afg"><label>Sample Pages (up to 3)</label><input type="file" id="abs" accept="image/*" multiple
-                style="border:none;padding:.25rem 0;background:none" /></div>
+                style="border:none;padding:.25rem 0;background:none" / autocomplete="off"></div>
             <div class="afg"><label>📄 E-book PDF (for Download E-book button)</label><input type="file" id="abpdf" accept="application/pdf"
-                style="border:none;padding:.25rem 0;background:none" /></div>
+                style="border:none;padding:.25rem 0;background:none" / autocomplete="off"></div>
             <button class="afbtn" id="abbtn" onclick="addBook()">Add Book to Website</button>
             <div class="ok" id="abok">✅ Book added!</div>
             <div class="er" id="aber"></div>
@@ -1793,24 +1856,24 @@
         <div class="ac" id="tblg" style="display:none">
           <h3>Write a Blog Post</h3>
           <div class="af">
-            <div class="afg"><label>Title *</label><input id="blt"
-                placeholder="e.g. 5 Ways Coloring Helps Your Child" /></div>
+            <div class="afg"><label for="blt">Title *</label><input id="blt"
+                placeholder="e.g. 5 Ways Coloring Helps Your Child" / autocomplete="off"></div>
             <div class="afrow">
               <div class="afg"><label>Category</label>
-                <select id="blc">
+                <select id="blc" autocomplete="off">
                   <option value="bt-green|Tips for Parents">Tips for Parents</option>
                   <option value="bt-yellow|Creative Ideas">Creative Ideas</option>
                   <option value="bt-pink|Book Guide">Book Guide</option>
                 </select>
               </div>
-              <div class="afg"><label>Read Time</label><input id="blr" placeholder="4 min read" /></div>
+              <div class="afg"><label for="blr">Read Time</label><input id="blr" placeholder="4 min read" / autocomplete="off"></div>
             </div>
-            <div class="afg"><label>Short Summary *</label><input id="bls"
-                placeholder="One-line teaser shown on the blog card..." /></div>
-            <div class="afg"><label>Full Content *</label><textarea id="blb" style="min-height:150px"
-                placeholder="Write your full blog post here. Use blank lines between paragraphs."></textarea></div>
+            <div class="afg"><label for="bls">Short Summary *</label><input id="bls"
+                placeholder="One-line teaser shown on the blog card..." / autocomplete="off"></div>
+            <div class="afg"><label for="blb">Full Content *</label><textarea id="blb" style="min-height:150px"
+                placeholder="Write your full blog post here. Use blank lines between paragraphs." autocomplete="off"></textarea></div>
             <div class="afg"><label>Cover Image (optional)</label><input type="file" id="bli" accept="image/*"
-                style="border:none;padding:.25rem 0;background:none" /></div>
+                style="border:none;padding:.25rem 0;background:none" / autocomplete="off"></div>
             <button class="afbtn" id="blbtn" onclick="addBlog()">Publish Blog Post</button>
             <div class="ok" id="blok">✅ Blog post published!</div>
             <div class="er" id="bler"></div>
@@ -1838,12 +1901,12 @@
           <!-- Hero Section -->
           <div style="font-family:'Fraunces',serif;font-size:1rem;font-weight:700;color:var(--gd);margin:.5rem 0 .8rem;border-bottom:2px solid var(--gl);padding-bottom:.4rem">🦸 Hero Section</div>
           <div class="af">
-            <div class="afg"><label>Badge Text</label><input id="sc-hero-badge" placeholder="✨ Books that spark little imaginations" /></div>
-            <div class="afg"><label>Main Headline (HTML ok, use &lt;em&gt; for orange, &lt;span class="hl"&gt; for highlight)</label><textarea id="sc-hero-h1" style="min-height:70px" placeholder="Where every page is an&lt;br&gt;&lt;em&gt;adventure&lt;/em&gt;..."></textarea></div>
-            <div class="afg"><label>Sub-headline</label><textarea id="sc-hero-sub" style="min-height:60px"></textarea></div>
+            <div class="afg"><label for="sc-hero-badge">Badge Text</label><input id="sc-hero-badge" placeholder="✨ Books that spark little imaginations" / autocomplete="off"></div>
+            <div class="afg"><label for="sc-hero-h1">Main Headline (HTML ok, use &lt;em&gt; for orange, &lt;span class="hl"&gt; for highlight)</label><textarea id="sc-hero-h1" style="min-height:70px" placeholder="Where every page is an&lt;br&gt;&lt;em&gt;adventure&lt;/em&gt;..." autocomplete="off"></textarea></div>
+            <div class="afg"><label for="sc-hero-sub">Sub-headline</label><textarea id="sc-hero-sub" style="min-height:60px" autocomplete="off"></textarea></div>
             <div class="afrow">
-              <div class="afg"><label>Button 1 Text</label><input id="sc-hero-btn1" placeholder="Browse Our Books" /></div>
-              <div class="afg"><label>Button 2 Text</label><input id="sc-hero-btn2" placeholder="Our Story" /></div>
+              <div class="afg"><label for="sc-hero-btn1">Button 1 Text</label><input id="sc-hero-btn1" placeholder="Browse Our Books" / autocomplete="off"></div>
+              <div class="afg"><label for="sc-hero-btn2">Button 2 Text</label><input id="sc-hero-btn2" placeholder="Our Story" / autocomplete="off"></div>
             </div>
           </div>
 
@@ -1851,60 +1914,60 @@
           <div style="font-family:'Fraunces',serif;font-size:1rem;font-weight:700;color:var(--gd);margin:1.2rem 0 .8rem;border-bottom:2px solid var(--gl);padding-bottom:.4rem">📊 Stats Bar</div>
           <div class="af">
             <div class="afrow">
-              <div class="afg"><label>Stat 1 Number</label><input id="sc-s1n" placeholder="2+" /></div>
-              <div class="afg"><label>Stat 1 Label</label><input id="sc-s1l" placeholder="Book titles" /></div>
+              <div class="afg"><label for="sc-s1n">Stat 1 Number</label><input id="sc-s1n" placeholder="2+" / autocomplete="off"></div>
+              <div class="afg"><label for="sc-s1l">Stat 1 Label</label><input id="sc-s1l" placeholder="Book titles" / autocomplete="off"></div>
             </div>
             <div class="afrow">
-              <div class="afg"><label>Stat 2 Number</label><input id="sc-s2n" placeholder="Ages 3–6" /></div>
-              <div class="afg"><label>Stat 2 Label</label><input id="sc-s2l" placeholder="Designed for" /></div>
+              <div class="afg"><label for="sc-s2n">Stat 2 Number</label><input id="sc-s2n" placeholder="Ages 3–6" / autocomplete="off"></div>
+              <div class="afg"><label for="sc-s2l">Stat 2 Label</label><input id="sc-s2l" placeholder="Designed for" / autocomplete="off"></div>
             </div>
             <div class="afrow">
-              <div class="afg"><label>Stat 3 Number</label><input id="sc-s3n" placeholder="100%" /></div>
-              <div class="afg"><label>Stat 3 Label</label><input id="sc-s3l" placeholder="Kid-friendly" /></div>
+              <div class="afg"><label for="sc-s3n">Stat 3 Number</label><input id="sc-s3n" placeholder="100%" / autocomplete="off"></div>
+              <div class="afg"><label for="sc-s3l">Stat 3 Label</label><input id="sc-s3l" placeholder="Kid-friendly" / autocomplete="off"></div>
             </div>
           </div>
 
           <!-- About -->
           <div style="font-family:'Fraunces',serif;font-size:1rem;font-weight:700;color:var(--gd);margin:1.2rem 0 .8rem;border-bottom:2px solid var(--gl);padding-bottom:.4rem">📖 About Section</div>
           <div class="af">
-            <div class="afg"><label>Heading (HTML ok, use &lt;em&gt; for orange)</label><textarea id="sc-about-h2" style="min-height:60px"></textarea></div>
-            <div class="afg"><label>Paragraph 1</label><textarea id="sc-about-p1" style="min-height:80px"></textarea></div>
-            <div class="afg"><label>Paragraph 2</label><textarea id="sc-about-p2" style="min-height:60px"></textarea></div>
+            <div class="afg"><label for="sc-about-h2">Heading (HTML ok, use &lt;em&gt; for orange)</label><textarea id="sc-about-h2" style="min-height:60px" autocomplete="off"></textarea></div>
+            <div class="afg"><label for="sc-about-p1">Paragraph 1</label><textarea id="sc-about-p1" style="min-height:80px" autocomplete="off"></textarea></div>
+            <div class="afg"><label for="sc-about-p2">Paragraph 2</label><textarea id="sc-about-p2" style="min-height:60px" autocomplete="off"></textarea></div>
             <div style="font-size:.78rem;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.06em;margin-top:.2rem">Feature Cards</div>
             <div class="afrow">
-              <div class="afg"><label>Card 1 Emoji</label><input id="sc-c1ico" placeholder="🎨" /></div>
-              <div class="afg"><label>Card 1 Title</label><input id="sc-c1t" placeholder="Kids Coloring Books" /></div>
+              <div class="afg"><label for="sc-c1ico">Card 1 Emoji</label><input id="sc-c1ico" placeholder="🎨" / autocomplete="off"></div>
+              <div class="afg"><label for="sc-c1t">Card 1 Title</label><input id="sc-c1t" placeholder="Kids Coloring Books" / autocomplete="off"></div>
             </div>
-            <div class="afg"><label>Card 1 Description</label><input id="sc-c1d" /></div>
+            <div class="afg"><label for="sc-c1d">Card 1 Description</label><input id="sc-c1d" / autocomplete="off"></div>
             <div class="afrow">
-              <div class="afg"><label>Card 2 Emoji</label><input id="sc-c2ico" placeholder="📚" /></div>
-              <div class="afg"><label>Card 2 Title</label><input id="sc-c2t" placeholder="Activity & Learning" /></div>
+              <div class="afg"><label for="sc-c2ico">Card 2 Emoji</label><input id="sc-c2ico" placeholder="📚" / autocomplete="off"></div>
+              <div class="afg"><label for="sc-c2t">Card 2 Title</label><input id="sc-c2t" placeholder="Activity & Learning" / autocomplete="off"></div>
             </div>
-            <div class="afg"><label>Card 2 Description</label><input id="sc-c2d" /></div>
+            <div class="afg"><label for="sc-c2d">Card 2 Description</label><input id="sc-c2d" / autocomplete="off"></div>
             <div class="afrow">
-              <div class="afg"><label>Card 3 Emoji</label><input id="sc-c3ico" placeholder="⭐" /></div>
-              <div class="afg"><label>Card 3 Title</label><input id="sc-c3t" placeholder="Safe & Kid-Friendly" /></div>
+              <div class="afg"><label for="sc-c3ico">Card 3 Emoji</label><input id="sc-c3ico" placeholder="⭐" / autocomplete="off"></div>
+              <div class="afg"><label for="sc-c3t">Card 3 Title</label><input id="sc-c3t" placeholder="Safe & Kid-Friendly" / autocomplete="off"></div>
             </div>
-            <div class="afg"><label>Card 3 Description</label><input id="sc-c3d" /></div>
+            <div class="afg"><label for="sc-c3d">Card 3 Description</label><input id="sc-c3d" / autocomplete="off"></div>
           </div>
 
           <!-- Books & Blog Headings -->
           <div style="font-family:'Fraunces',serif;font-size:1rem;font-weight:700;color:var(--gd);margin:1.2rem 0 .8rem;border-bottom:2px solid var(--gl);padding-bottom:.4rem">🏷️ Section Headings</div>
           <div class="af">
-            <div class="afg"><label>Books Section Heading (HTML ok)</label><textarea id="sc-books-h2" style="min-height:55px"></textarea></div>
-            <div class="afg"><label>Blog Section Heading (HTML ok)</label><textarea id="sc-blog-h2" style="min-height:55px"></textarea></div>
-            <div class="afg"><label>Blog Sub-text</label><input id="sc-blog-sub" /></div>
-            <div class="afg"><label>Contact Heading (HTML ok)</label><textarea id="sc-contact-h2" style="min-height:55px"></textarea></div>
-            <div class="afg"><label>Contact Sub-text</label><textarea id="sc-contact-sub" style="min-height:60px"></textarea></div>
+            <div class="afg"><label for="sc-books-h2">Books Section Heading (HTML ok)</label><textarea id="sc-books-h2" style="min-height:55px" autocomplete="off"></textarea></div>
+            <div class="afg"><label for="sc-blog-h2">Blog Section Heading (HTML ok)</label><textarea id="sc-blog-h2" style="min-height:55px" autocomplete="off"></textarea></div>
+            <div class="afg"><label for="sc-blog-sub">Blog Sub-text</label><input id="sc-blog-sub" / autocomplete="off"></div>
+            <div class="afg"><label for="sc-contact-h2">Contact Heading (HTML ok)</label><textarea id="sc-contact-h2" style="min-height:55px" autocomplete="off"></textarea></div>
+            <div class="afg"><label for="sc-contact-sub">Contact Sub-text</label><textarea id="sc-contact-sub" style="min-height:60px" autocomplete="off"></textarea></div>
           </div>
 
           <!-- Nav & Footer -->
           <div style="font-family:'Fraunces',serif;font-size:1rem;font-weight:700;color:var(--gd);margin:1.2rem 0 .8rem;border-bottom:2px solid var(--gl);padding-bottom:.4rem">🔗 Nav & Footer</div>
           <div class="af">
-            <div class="afg"><label>Nav Logo Text (HTML ok)</label><input id="sc-nav-logo" placeholder="🍃 Bright Leaf &lt;b&gt;Books&lt;/b&gt;" /></div>
-            <div class="afg"><label>Nav CTA Button Text</label><input id="sc-nav-cta" placeholder="Shop Books →" /></div>
-            <div class="afg"><label>Footer Logo Text</label><input id="sc-footer-logo" placeholder="🍃 Bright Leaf Books" /></div>
-            <div class="afg"><label>Footer Copyright Line</label><input id="sc-footer-copy" placeholder="© 2025 Bright Leaf Books · Sparking little imaginations every day" /></div>
+            <div class="afg"><label for="sc-nav-logo">Nav Logo Text (HTML ok)</label><input id="sc-nav-logo" placeholder="🍃 Bright Leaf &lt;b&gt;Books&lt;/b&gt;" / autocomplete="off"></div>
+            <div class="afg"><label for="sc-nav-cta">Nav CTA Button Text</label><input id="sc-nav-cta" placeholder="Shop Books →" / autocomplete="off"></div>
+            <div class="afg"><label for="sc-footer-logo">Footer Logo Text</label><input id="sc-footer-logo" placeholder="🍃 Bright Leaf Books" / autocomplete="off"></div>
+            <div class="afg"><label for="sc-footer-copy">Footer Copyright Line</label><input id="sc-footer-copy" placeholder="© 2025 Bright Leaf Books · Sparking little imaginations every day" / autocomplete="off"></div>
           </div>
 
           <div style="margin-top:1.2rem;display:flex;gap:.65rem;flex-wrap:wrap">
@@ -1933,15 +1996,15 @@
           <div class="af">
             <div class="afg">
               <label>API Key *</label>
-              <input id="im-apikey" placeholder="test_xxxxxxxxxxxxxxxxxxxxxxxx" value="2b50ec04dc05174c9ac418613269f2a2" />
+              <input id="im-apikey" placeholder="test_xxxxxxxxxxxxxxxxxxxxxxxx" value="2b50ec04dc05174c9ac418613269f2a2" / autocomplete="off">
             </div>
             <div class="afg">
               <label>Auth Token *</label>
-              <input id="im-authtoken" placeholder="test_xxxxxxxxxxxxxxxxxxxxxxxx" value="e3d8c8c9c605013a061aee04c2fe4ea8" />
+              <input id="im-authtoken" placeholder="test_xxxxxxxxxxxxxxxxxxxxxxxx" value="e3d8c8c9c605013a061aee04c2fe4ea8" / autocomplete="off">
             </div>
             <div class="afg">
               <label>Mode</label>
-              <select id="im-sandbox">
+              <select id="im-sandbox" autocomplete="off">
                 <option value="true">🧪 Sandbox / Test Mode (test.instamojo.com)</option>
                 <option value="false" selected>🚀 Live / Production (instamojo.com)</option>
               </select>
@@ -1953,7 +2016,7 @@
 
             <div class="afg" style="display:none">
               <label>Proxy URL (managed automatically)</label>
-              <input id="im-proxy" value="https://us-central1-bright-leaf-9ce73.cloudfunctions.net/instamojoProxy" />
+              <input id="im-proxy" value="https://us-central1-bright-leaf-9ce73.cloudfunctions.net/instamojoProxy" / autocomplete="off">
             </div>
 
             <button class="afbtn" id="imSaveBtn" onclick="saveInstamojoSettings()">💾 Save Instamojo Settings</button>
@@ -1973,11 +2036,11 @@
           <h3>Change Password</h3>
           <div class="af">
             <div class="afg"><label>Current Password *</label><input type="password" id="pwcur"
-                placeholder="Enter current password" /></div>
+                placeholder="Enter current password" / autocomplete="off"></div>
             <div class="afg"><label>New Password *</label><input type="password" id="pwnew"
-                placeholder="Enter new password (min 6 chars)" /></div>
+                placeholder="Enter new password (min 6 chars)" / autocomplete="off"></div>
             <div class="afg"><label>Confirm New Password *</label><input type="password" id="pwcon"
-                placeholder="Re-enter new password" /></div>
+                placeholder="Re-enter new password" / autocomplete="off"></div>
             <button class="afbtn" onclick="changePw()">Update Password</button>
             <div class="ok" id="pwok">✅ Password updated successfully!</div>
             <div class="er" id="pwer"></div>
@@ -2001,25 +2064,25 @@
       <div class="ac">
         <div class="af">
           <div class="afrow">
-            <div class="afg"><label>Title *</label><input id="ebt" placeholder="Book title" /></div>
-            <div class="afg"><label>Price (USD $) *</label><input id="ebp" placeholder="11" /></div>
+            <div class="afg"><label for="ebt">Title *</label><input id="ebt" placeholder="Book title" / autocomplete="off"></div>
+            <div class="afg"><label for="ebp">Price (USD $) *</label><input id="ebp" placeholder="11" / autocomplete="off"></div>
           </div>
           <div class="afrow">
-            <div class="afg"><label>Price (INR ₹) for Instamojo *</label><input id="ebpinr" placeholder="900" /></div>
-            <div class="afg"><label>Age Range</label><input id="eba" placeholder="Ages 3–6" /></div>
+            <div class="afg"><label for="ebpinr">Price (INR ₹) for Instamojo *</label><input id="ebpinr" placeholder="900" / autocomplete="off"></div>
+            <div class="afg"><label for="eba">Age Range</label><input id="eba" placeholder="Ages 3–6" / autocomplete="off"></div>
           </div>
           <div class="afg"><label>Amazon Link</label><input type="url" id="ebz"
-              placeholder="https://amazon.com/dp/..." /></div>
-          <div class="afg"><label>Description *</label><textarea id="ebd"
-              placeholder="Write a detailed description..."></textarea></div>
-          <div class="afg"><label>What's Inside (one item per line)</label><textarea id="ebf" style="min-height:75px"
-              placeholder="Feature 1&#10;Feature 2"></textarea></div>
+              placeholder="https://amazon.com/dp/..." / autocomplete="off"></div>
+          <div class="afg"><label for="ebd">Description *</label><textarea id="ebd"
+              placeholder="Write a detailed description..." autocomplete="off"></textarea></div>
+          <div class="afg"><label for="ebf">What's Inside (one item per line)</label><textarea id="ebf" style="min-height:75px"
+              placeholder="Feature 1&#10;Feature 2" autocomplete="off"></textarea></div>
           <div class="afg"><label>Cover Image (leave blank to keep current)</label><input type="file" id="ebc"
-              accept="image/*" style="border:none;padding:.25rem 0;background:none" /></div>
+              accept="image/*" style="border:none;padding:.25rem 0;background:none" / autocomplete="off"></div>
           <div class="afg"><label>Sample Pages (leave blank to keep current, up to 3)</label><input type="file" id="ebs"
-              accept="image/*" multiple style="border:none;padding:.25rem 0;background:none" /></div>
+              accept="image/*" multiple style="border:none;padding:.25rem 0;background:none" / autocomplete="off"></div>
           <div class="afg"><label>📄 E-book PDF (leave blank to keep current)</label><input type="file" id="ebpdf" accept="application/pdf"
-              style="border:none;padding:.25rem 0;background:none" /></div>
+              style="border:none;padding:.25rem 0;background:none" / autocomplete="off"></div>
           <div style="display:flex;gap:.65rem;flex-wrap:wrap;margin-top:.25rem">
             <button class="afbtn" id="ebSaveBtn" onclick="saveEditBook()">Save Changes</button>
             <button class="afbtn" style="background:#888" onclick="closeEditBook()">Cancel</button>
@@ -2042,22 +2105,22 @@
       </div>
       <div class="ac">
         <div class="af">
-          <div class="afg"><label>Title *</label><input id="elt" placeholder="Blog post title" /></div>
+          <div class="afg"><label for="elt">Title *</label><input id="elt" placeholder="Blog post title" / autocomplete="off"></div>
           <div class="afrow">
             <div class="afg"><label>Category</label>
-              <select id="elc">
+              <select id="elc" autocomplete="off">
                 <option value="bt-green|Tips for Parents">Tips for Parents</option>
                 <option value="bt-yellow|Creative Ideas">Creative Ideas</option>
                 <option value="bt-pink|Book Guide">Book Guide</option>
               </select>
             </div>
-            <div class="afg"><label>Read Time</label><input id="elr" placeholder="4 min read" /></div>
+            <div class="afg"><label for="elr">Read Time</label><input id="elr" placeholder="4 min read" / autocomplete="off"></div>
           </div>
-          <div class="afg"><label>Short Summary *</label><input id="els" placeholder="One-line teaser..." /></div>
-          <div class="afg"><label>Full Content *</label><textarea id="elb" style="min-height:150px"
-              placeholder="Write your full blog post here..."></textarea></div>
+          <div class="afg"><label for="els">Short Summary *</label><input id="els" placeholder="One-line teaser..." / autocomplete="off"></div>
+          <div class="afg"><label for="elb">Full Content *</label><textarea id="elb" style="min-height:150px"
+              placeholder="Write your full blog post here..." autocomplete="off"></textarea></div>
           <div class="afg"><label>Cover Image (leave blank to keep current)</label><input type="file" id="eli"
-              accept="image/*" style="border:none;padding:.25rem 0;background:none" /></div>
+              accept="image/*" style="border:none;padding:.25rem 0;background:none" / autocomplete="off"></div>
           <div style="display:flex;gap:.65rem;flex-wrap:wrap;margin-top:.25rem">
             <button class="afbtn" id="elSaveBtn" onclick="saveEditBlog()">Save Changes</button>
             <button class="afbtn" style="background:#888" onclick="closeEditBlog()">Cancel</button>
@@ -2085,16 +2148,16 @@
         </div>
         <div class="pay-err" id="pay-err" style="display:none"></div>
         <div class="pay-field">
-          <label>Your Name *</label>
-          <input id="pay-name" placeholder="Full Name" maxlength="60"/>
+          <label for="pay-name">Your Name *</label>
+          <input id="pay-name" autocomplete="name" placeholder="Full Name" maxlength="60"/>
         </div>
         <div class="pay-field">
-          <label>Email Address *</label>
-          <input id="pay-email" type="email" placeholder="you@email.com"/>
+          <label for="pay-email">Email Address *</label>
+          <input id="pay-email" autocomplete="email" type="email" placeholder="you@email.com"/>
         </div>
         <div class="pay-field">
-          <label>Phone Number *</label>
-          <input id="pay-phone" type="tel" placeholder="9876543210" maxlength="10" oninput="this.value=this.value.replace(/\D/g,'')"/>
+          <label for="pay-phone">Phone Number *</label>
+          <input id="pay-phone" autocomplete="tel" type="tel" placeholder="9876543210" maxlength="10" oninput="this.value=this.value.replace(/\D/g,'')"/>
         </div>
         <button class="pay-submit" id="pay-btn" onclick="initiateInstamojo()">🔐 Pay Securely via Instamojo →</button>
         <p class="pay-secure">🔒 You will be redirected to Instamojo's secure checkout · UPI · Cards · Net Banking</p>
@@ -2281,17 +2344,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       try {
         console.log('Initializing Firebase with project:', firebaseConfig.projectId);
 
-        // Wait for Firebase modules loaded via <script type="module"> in <head>
-        if (!window._fbReady) {
-          await new Promise((resolve, reject) => {
-            const timeout = setTimeout(() => reject(new Error('Firebase SDK load timeout')), 10000);
-            window.addEventListener('fbready', () => { clearTimeout(timeout); resolve(); }, { once: true });
-          });
-        }
-
-        const { initializeApp, getFirestore, doc, getDoc, setDoc } = {
-          ...window._fbModules
-        };
+        const { initializeApp, getFirestore, doc, getDoc, setDoc } = window._fbModules;
 
         const app = initializeApp(firebaseConfig);
         _db = getFirestore(app);
@@ -3082,9 +3135,9 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
         document.getElementById('success-txn').textContent =
           'Transaction ID: ' + paymentId;
 
-        if (b && b.pdfUrl) {
+        if (b && b.pdfData) {
           const dlLink = document.getElementById('dl-link');
-          dlLink.href = b.pdfUrl;
+          dlLink.href = b.pdfData;
           dlLink.download = b.title.replace(/[^a-z0-9]/gi, '_') + '_ebook.pdf';
           dlLink.onclick = null;
           document.getElementById('success-msg').textContent =
