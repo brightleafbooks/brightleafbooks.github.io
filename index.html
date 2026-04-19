@@ -12,7 +12,7 @@
   <title>Bright Leaf Books</title>
   <!-- Allow Firestore REST + Cloud Functions + Instamojo from GitHub Pages -->
   <meta http-equiv="Content-Security-Policy"
-    content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://firestore.googleapis.com https://*.cloudfunctions.net https://www.instamojo.com https://test.instamojo.com;">
+    content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https: http:; connect-src 'self' https://firestore.googleapis.com https://*.cloudfunctions.net https://www.instamojo.com https://test.instamojo.com;">
   <!-- Firebase via REST API — no SDK, no dynamic imports, works on GitHub Pages -->
   <script>
     // Firestore REST API helpers (no SDK required)
@@ -1894,10 +1894,8 @@
                 placeholder="Cute animals — Rabbit, Lion&#10;Bold outlines for little hands&#10;Single-sided pages"
                 autocomplete="off"></textarea>
             </div>
-            <div class="afg"><label>Cover Image</label><input type="file" id="abc" accept="image/*"
-                style="border:none;padding:.25rem 0;background:none" / autocomplete="off"></div>
-            <div class="afg"><label>Sample Pages (up to 3)</label><input type="file" id="abs" accept="image/*" multiple
-                style="border:none;padding:.25rem 0;background:none" / autocomplete="off"></div>
+            <div class="afg"><label>🖼️ Cover Image URL (upload to Cloudinary/Google Drive, paste link)</label><input type="url" id="abc" placeholder="https://res.cloudinary.com/..." autocomplete="off"></div>
+            <div class="afg"><label>🖼️ Sample Page URLs (up to 3, one per line)</label><textarea id="abs" style="min-height:72px" placeholder="https://res.cloudinary.com/sample1.jpg&#10;https://res.cloudinary.com/sample2.jpg" autocomplete="off"></textarea></div>
             <div class="afg"><label>📄 E-book PDF URL (paste a hosted link, e.g. Google Drive, Dropbox)</label><input type="url" id="abpdf" placeholder="https://drive.google.com/uc?export=download&id=..." autocomplete="off"></div>
             <button class="afbtn" id="abbtn" onclick="addBook()">Add Book to Website</button>
             <div class="ok" id="abok">✅ Book added!</div>
@@ -2199,10 +2197,8 @@
               placeholder="Write a detailed description..." autocomplete="off"></textarea></div>
           <div class="afg"><label for="ebf">What's Inside (one item per line)</label><textarea id="ebf"
               style="min-height:75px" placeholder="Feature 1&#10;Feature 2" autocomplete="off"></textarea></div>
-          <div class="afg"><label>Cover Image (leave blank to keep current)</label><input type="file" id="ebc"
-              accept="image/*" style="border:none;padding:.25rem 0;background:none" / autocomplete="off"></div>
-          <div class="afg"><label>Sample Pages (leave blank to keep current, up to 3)</label><input type="file" id="ebs"
-              accept="image/*" multiple style="border:none;padding:.25rem 0;background:none" / autocomplete="off"></div>
+          <div class="afg"><label>🖼️ Cover Image URL (leave blank to keep current)</label><input type="url" id="ebc" placeholder="https://res.cloudinary.com/..." autocomplete="off"></div>
+          <div class="afg"><label>🖼️ Sample Page URLs (up to 3, one per line — leave blank to keep current)</label><textarea id="ebs" style="min-height:72px" placeholder="https://res.cloudinary.com/sample1.jpg&#10;https://res.cloudinary.com/sample2.jpg" autocomplete="off"></textarea></div>
           <div class="afg"><label>📄 E-book PDF URL (leave blank to keep current)</label><input type="url" id="ebpdf" placeholder="https://drive.google.com/uc?export=download&id=..." autocomplete="off"></div>
           <div style="display:flex;gap:.65rem;flex-wrap:wrap;margin-top:.25rem">
             <button class="afbtn" id="ebSaveBtn" onclick="saveEditBook()">Save Changes</button>
@@ -2964,20 +2960,18 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       const amz = document.getElementById('abz').value.trim();
       const desc = document.getElementById('abd').value.trim();
       const feats = document.getElementById('abf').value.trim().split('\n').map(s => s.trim()).filter(Boolean);
-      const coverF = document.getElementById('abc').files[0];
-      const sampFs = Array.from(document.getElementById('abs').files).slice(0, 3);
+      const cover = document.getElementById('abc').value.trim() || null;
+      const samples = document.getElementById('abs').value.trim().split('\n').map(s => s.trim()).filter(s => s.startsWith('http')).slice(0, 3);
       const pdfUrl = document.getElementById('abpdf').value.trim();
       const er = document.getElementById('aber');
       er.style.display = 'none';
       if (!title || !price || !desc) { er.textContent = 'Please fill in Title, Price and Description.'; er.style.display = 'block'; return; }
       const btn = document.getElementById('abbtn');
       btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Saving...';
-      const cover = await compressImg(coverF, 800, 0.75);
-      const samples = (await Promise.all(sampFs.map(f => compressImg(f, 600, 0.7)))).filter(Boolean);
       books.push({ id: 'bk' + Date.now(), title, price, priceInr, age, amazon: amz, desc, features: feats, cover, samples, pdfData: pdfUrl || null });
       await save(); renderBooks();
-      ['abt', 'abp', 'abpinr', 'aba', 'abz', 'abd', 'abf'].forEach(i => document.getElementById(i).value = '');
-      document.getElementById('abc').value = ''; document.getElementById('abs').value = ''; document.getElementById('abpdf').value = '';
+      ['abt', 'abp', 'abpinr', 'aba', 'abz', 'abd', 'abf', 'abc', 'abpdf'].forEach(i => document.getElementById(i).value = '');
+      document.getElementById('abs').value = '';
       btn.disabled = false; btn.innerHTML = 'Add Book to Website';
       flash('abok');
     }
@@ -3049,9 +3043,9 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       document.getElementById('ebz').value = b.amazon || '';
       document.getElementById('ebd').value = b.desc || '';
       document.getElementById('ebf').value = (b.features || []).join('\n');
-      document.getElementById('ebc').value = '';
-      document.getElementById('ebs').value = '';
-      document.getElementById('ebpdf').value = b.pdfData && b.pdfData.startsWith('http') ? b.pdfData : '';
+      document.getElementById('ebc').value = (b.cover && b.cover.startsWith('http')) ? b.cover : '';
+      document.getElementById('ebs').value = (b.samples || []).filter(s => s && s.startsWith('http')).join('\n');
+      document.getElementById('ebpdf').value = (b.pdfData && b.pdfData.startsWith('http')) ? b.pdfData : '';
       document.getElementById('eber').style.display = 'none';
       show('editBookOv');
     }
@@ -3065,8 +3059,8 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       const amz = document.getElementById('ebz').value.trim();
       const desc = document.getElementById('ebd').value.trim();
       const feats = document.getElementById('ebf').value.trim().split('\n').map(s => s.trim()).filter(Boolean);
-      const coverF = document.getElementById('ebc').files[0];
-      const sampFs = Array.from(document.getElementById('ebs').files).slice(0, 3);
+      const coverUrl = document.getElementById('ebc').value.trim();
+      const samplesRaw = document.getElementById('ebs').value.trim();
       const pdfUrl = document.getElementById('ebpdf').value.trim();
       const er = document.getElementById('eber');
       er.style.display = 'none';
@@ -3076,8 +3070,10 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       const idx = books.findIndex(x => x.id === _editBookId);
       if (idx === -1) { btn.disabled = false; btn.innerHTML = 'Save Changes'; return; }
       const existing = books[idx];
-      const newCover = coverF ? await compressImg(coverF, 800, 0.75) : existing.cover;
-      const newSamples = sampFs.length ? (await Promise.all(sampFs.map(f => compressImg(f, 600, 0.7)))).filter(Boolean) : existing.samples;
+      const newCover = coverUrl || existing.cover || null;
+      const newSamples = samplesRaw
+        ? samplesRaw.split('\n').map(s => s.trim()).filter(s => s.startsWith('http')).slice(0, 3)
+        : (existing.samples || []);
       const newPdf = pdfUrl || existing.pdfData || null;
       books[idx] = { ...existing, title, price, priceInr, age, amazon: amz, desc, features: feats, cover: newCover, samples: newSamples, pdfData: newPdf };
       await save(); renderBooks(); renderManage();
