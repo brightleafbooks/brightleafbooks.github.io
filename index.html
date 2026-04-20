@@ -2543,19 +2543,18 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
         const ref = doc(_db, 'sitedata', 'main');
 
         // Strip binary image/pdf data before saving to Firestore (stays in localStorage only)
-        // This keeps each doc well under the 1MB limit
+        // URL-based values (http...) are kept — only base64 blobs are stripped
         const slimBooks = books.map(b => {
-          const { cover, samples, ...rest } = b;
-          // pdfData is now a URL string (not base64), safe to keep
+          const isUrl = v => v && typeof v === 'string' && v.startsWith('http');
           return {
-            ...rest,
-            cover: (cover && cover.startsWith('http')) ? cover : null,
-            samples: []
+            ...b,
+            cover: isUrl(b.cover) ? b.cover : null,
+            samples: (b.samples || []).filter(isUrl)
           };
         });
         const slimBlogs = blogs.map(b => {
-          const { img, ...rest } = b;
-          return { ...rest, img: (img && img.startsWith('http')) ? img : null };
+          const isUrl = v => v && typeof v === 'string' && v.startsWith('http');
+          return { ...b, img: isUrl(b.img) ? b.img : null };
         });
 
         const payload = cleanForFirestore({ books: slimBooks, blogs: slimBlogs, siteContent });
