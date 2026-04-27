@@ -181,6 +181,127 @@
       background: var(--o)
     }
 
+    /* BOOKS NAV DROPDOWN */
+    .nav-books-btn {
+      background: none;
+      border: none;
+      font-family: 'Nunito', sans-serif;
+      font-size: .9rem;
+      font-weight: 700;
+      color: var(--mu);
+      cursor: pointer;
+      padding: 0;
+      transition: color .2s;
+      display: flex;
+      align-items: center;
+      gap: 4px
+    }
+    .nav-books-btn:hover { color: var(--g) }
+    .nav-books-btn::after { content: '▾'; font-size: .75rem; opacity: .7 }
+
+    /* BOOKS CATEGORY DIALOG */
+    .books-dialog-ov {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 600;
+      background: rgba(10,20,15,.65);
+      backdrop-filter: blur(6px);
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem
+    }
+    .books-dialog-ov.open { display: flex }
+    .books-dialog {
+      background: #fff;
+      border-radius: 28px;
+      max-width: 680px;
+      width: 100%;
+      padding: 2.5rem 2rem 2rem;
+      box-shadow: 0 28px 70px rgba(0,0,0,.35);
+      animation: mIn .25s ease;
+      position: relative
+    }
+    .books-dialog-close {
+      position: absolute;
+      top: 1.1rem;
+      right: 1.2rem;
+      background: none;
+      border: none;
+      font-size: 1.4rem;
+      cursor: pointer;
+      color: var(--mu);
+      line-height: 1
+    }
+    .books-dialog-close:hover { color: var(--tx) }
+    .books-dialog h2 {
+      font-family: 'Fraunces', serif;
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: var(--gd);
+      margin-bottom: .35rem;
+      text-align: center
+    }
+    .books-dialog-sub {
+      text-align: center;
+      color: var(--mu);
+      font-size: .88rem;
+      margin-bottom: 1.8rem
+    }
+    .books-cat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: .9rem
+    }
+    .books-cat-btn {
+      background: var(--gl);
+      border: 2px solid rgba(61,170,92,.15);
+      border-radius: 18px;
+      padding: 1.3rem .9rem;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .5rem;
+      transition: transform .2s, box-shadow .2s, background .2s;
+      font-family: 'Nunito', sans-serif
+    }
+    .books-cat-btn:hover {
+      background: var(--g);
+      color: #fff;
+      transform: translateY(-4px);
+      box-shadow: 0 10px 28px rgba(61,170,92,.25)
+    }
+    .books-cat-btn:hover .bcat-icon { filter: brightness(10) }
+    .bcat-icon { font-size: 2.1rem; line-height: 1 }
+    .bcat-lbl {
+      font-size: .82rem;
+      font-weight: 700;
+      color: var(--tx);
+      text-align: center;
+      line-height: 1.3
+    }
+    .books-cat-btn:hover .bcat-lbl { color: #fff }
+    .books-all-btn {
+      display: block;
+      width: 100%;
+      margin-top: 1.1rem;
+      background: var(--gd);
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      padding: .8rem;
+      font-family: 'Nunito', sans-serif;
+      font-size: .92rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .2s
+    }
+    .books-all-btn:hover { background: var(--o) }
+    @media(max-width:600px) {
+      .books-cat-grid { grid-template-columns: repeat(2,1fr) }
+    }
+
     /* HERO */
     .hero {
       min-height: 100vh;
@@ -1224,23 +1345,26 @@
 
     /* ADMIN */
     .atog {
-      display: block;
-      width: 100%;
-      background: rgba(255, 255, 255, .08);
-      color: var(--y);
-      border: none;
-      border-top: 1px solid rgba(255, 255, 255, .1);
-      padding: .85rem 1rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(255,255,255,.08);
+      color: rgba(255,255,255,.35);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 999px;
+      padding: .3rem .85rem;
       font-family: 'Nunito', sans-serif;
-      font-size: .82rem;
-      font-weight: 700;
+      font-size: .72rem;
+      font-weight: 600;
       cursor: pointer;
-      transition: opacity .2s;
-      margin-top: .75rem
+      transition: all .2s;
+      margin-top: 1.5rem;
+      letter-spacing: .03em
     }
 
     .atog:hover {
-      opacity: .75
+      background: rgba(255,255,255,.14);
+      color: rgba(255,255,255,.65)
     }
 
     .abox {
@@ -1528,15 +1652,73 @@
     /* FOOTER */
     footer {
       background: var(--gd);
-      color: rgba(255, 255, 255, .5);
-      text-align: center;
-      padding: 2rem;
+      color: rgba(255,255,255,.55);
       font-size: .83rem
     }
 
-    footer a {
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 3.5rem 2rem 2.5rem;
+      display: grid;
+      grid-template-columns: 1.4fr 2fr;
+      gap: 3rem
+    }
+
+    .footer-brand .flogo {
+      font-family: 'Fraunces', serif;
+      font-size: 1.2rem;
+      color: #fff;
+      margin-bottom: .6rem
+    }
+
+    .footer-tagline {
+      color: rgba(255,255,255,.5);
+      font-size: .83rem;
+      line-height: 1.6;
+      max-width: 220px
+    }
+
+    .footer-links {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem
+    }
+
+    .footer-col {
+      display: flex;
+      flex-direction: column;
+      gap: .55rem
+    }
+
+    .footer-col-title {
+      font-family: 'Fraunces', serif;
+      font-size: .82rem;
+      font-weight: 700;
       color: var(--y);
-      text-decoration: none
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: .3rem
+    }
+
+    footer a {
+      color: rgba(255,255,255,.55);
+      text-decoration: none;
+      font-size: .82rem;
+      transition: color .2s
+    }
+
+    footer a:hover { color: var(--y) }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,.1);
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 1.2rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem
     }
 
     .flogo {
@@ -1544,6 +1726,12 @@
       font-size: 1.15rem;
       color: #fff;
       margin-bottom: .4rem
+    }
+
+    @media(max-width:700px) {
+      .footer-inner { grid-template-columns: 1fr; gap: 2rem }
+      .footer-links { grid-template-columns: 1fr 1fr }
+      .footer-bottom { flex-direction: column; text-align: center }
     }
 
     /* ANIMATIONS */
@@ -1567,6 +1755,80 @@
       to {
         transform: translateX(-50%)
       }
+    }
+
+    .bcat-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .6rem;
+      justify-content: center;
+      margin-bottom: 2.8rem
+    }
+
+    .bcat-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      padding: .45rem 1.1rem;
+      border-radius: 999px;
+      font-family: 'Nunito', sans-serif;
+      font-size: .82rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: 2px solid rgba(255,255,255,.25);
+      background: rgba(255,255,255,.1);
+      color: rgba(255,255,255,.8);
+      transition: all .2s;
+      text-decoration: none
+    }
+
+    .bcat-pill:hover, .bcat-pill.active {
+      background: var(--y);
+      border-color: var(--y);
+      color: var(--tx);
+      transform: translateY(-2px)
+    }
+
+    .bcat-pill.all-pill {
+      background: rgba(255,255,255,.18);
+      border-color: rgba(255,255,255,.35);
+      color: #fff
+    }
+
+    .bcat-pill.all-pill:hover, .bcat-pill.all-pill.active {
+      background: var(--y);
+      border-color: var(--y);
+      color: var(--tx)
+    }
+
+    .bcat-section { margin-bottom: 2.8rem }
+    .bcat-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1.1rem; gap: 1rem
+    }
+    .bcat-title {
+      font-family: 'Fraunces', serif; font-size: 1.18rem; font-weight: 700;
+      color: var(--tx); display: flex; align-items: center; gap: .5rem
+    }
+    .bcat-title span.bcat-count {
+      font-family: 'Nunito', sans-serif; font-size: .75rem; font-weight: 700;
+      background: var(--gl); color: var(--gd); border-radius: 999px;
+      padding: .15rem .6rem
+    }
+    .bcat-line {
+      flex: 1; height: 2px; background: linear-gradient(to right, var(--gl), transparent);
+      border-radius: 2px
+    }
+    .seemore-btn {
+      background: none; border: 2px solid var(--g); color: var(--g);
+      border-radius: 999px; padding: .42rem 1.1rem; font-family: 'Nunito', sans-serif;
+      font-size: .82rem; font-weight: 700; cursor: pointer; transition: all .2s;
+      white-space: nowrap; flex-shrink: 0
+    }
+    .seemore-btn:hover { background: var(--g); color: #fff }
+    .nc-section {
+      text-align: center; padding: 2.5rem 1rem; color: var(--mu);
+      font-size: .95rem
     }
 
     @keyframes flt {
@@ -1661,7 +1923,7 @@
   <nav>
     <a href="#" class="logo" id="nav-logo">🍃 Bright Leaf <b>Books</b></a>
     <ul class="nl">
-      <li><a href="#books">Books</a></li>
+      <li><button class="nav-books-btn" onclick="openBooksDialog()">Books</button></li>
       <li><a href="#about">About</a></li>
       <li><a href="#blog">Blog</a></li>
       <li><a href="#contact">Contact</a></li>
@@ -1721,7 +1983,8 @@
       <div class="stag">Our books</div>
       <h2 id="books-h2">Find your little one's next <em>favourite</em></h2>
     </div>
-    <div class="bgrid" id="bgrid"></div>
+    <div class="bcat-filters" id="bcatFilters"></div>
+    <div id="bcat-sections"></div>
   </section>
 
   <section class="about" id="about">
@@ -1759,6 +2022,50 @@
       </div>
     </div>
   </section>
+
+  <!-- Books Category Dialog -->
+  <div class="books-dialog-ov" id="booksCatOv" onclick="if(event.target===this)closeBooksDialog()">
+    <div class="books-dialog">
+      <button class="books-dialog-close" onclick="closeBooksDialog()">✕</button>
+      <h2>📚 Browse by Category</h2>
+      <p class="books-dialog-sub">What kind of book are you looking for?</p>
+      <div class="books-cat-grid">
+        <button class="books-cat-btn" onclick="chooseBooksCategory('coloring')">
+          <span class="bcat-icon">🎨</span>
+          <span class="bcat-lbl">Coloring Books</span>
+        </button>
+        <button class="books-cat-btn" onclick="chooseBooksCategory('activity')">
+          <span class="bcat-icon">✏️</span>
+          <span class="bcat-lbl">Activity Books</span>
+        </button>
+        <button class="books-cat-btn" onclick="chooseBooksCategory('sticker')">
+          <span class="bcat-icon">⭐</span>
+          <span class="bcat-lbl">Sticker Books</span>
+        </button>
+        <button class="books-cat-btn" onclick="chooseBooksCategory('story')">
+          <span class="bcat-icon">📖</span>
+          <span class="bcat-lbl">Story Books</span>
+        </button>
+        <button class="books-cat-btn" onclick="chooseBooksCategory('learning')">
+          <span class="bcat-icon">🔢</span>
+          <span class="bcat-lbl">Learning Books</span>
+        </button>
+        <button class="books-cat-btn" onclick="chooseBooksCategory('puzzle')">
+          <span class="bcat-icon">🧩</span>
+          <span class="bcat-lbl">Puzzle Books</span>
+        </button>
+        <button class="books-cat-btn" onclick="chooseBooksCategory('comics')">
+          <span class="bcat-icon">🦸</span>
+          <span class="bcat-lbl">Comics</span>
+        </button>
+        <button class="books-cat-btn" onclick="chooseBooksCategory('other')">
+          <span class="bcat-icon">📚</span>
+          <span class="bcat-lbl">Other Books</span>
+        </button>
+      </div>
+      <button class="books-all-btn" onclick="chooseBooksCategory('all')">✨ See All Books</button>
+    </div>
+  </div>
 
   <!-- Book modal -->
   <div class="ov" id="bmov" onclick="if(event.target===this)closeBM()">
@@ -1833,10 +2140,41 @@
   </section>
 
   <footer>
-    <div class="flogo" id="footer-logo">🍃 Bright Leaf Books</div>
-    <p id="footer-copy">© 2025 Bright Leaf Books · Sparking little imaginations every day</p>
-    <p style="margin-top:.4rem" id="femail"></p>
-    <button class="atog" onclick="openAdmin()">🔐 Admin Panel</button>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="flogo" id="footer-logo">🍃 Bright Leaf Books</div>
+        <p class="footer-tagline">Sparking little imaginations, one page at a time.</p>
+        <p id="femail" style="margin-top:.4rem;font-size:.8rem"></p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <div class="footer-col-title">Explore</div>
+          <a href="#books">Our Books</a>
+          <a href="#blog">Blog</a>
+          <a href="#about">Our Story</a>
+          <a href="#contact">Contact Us</a>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Categories</div>
+          <a href="#books" onclick="document.getElementById('bcat-coloring')?.scrollIntoView({behavior:'smooth'})">Coloring Books</a>
+          <a href="#books" onclick="document.getElementById('bcat-activity')?.scrollIntoView({behavior:'smooth'})">Activity Books</a>
+          <a href="#books" onclick="document.getElementById('bcat-story')?.scrollIntoView({behavior:'smooth'})">Story Books</a>
+          <a href="#books" onclick="document.getElementById('bcat-puzzle')?.scrollIntoView({behavior:'smooth'})">Puzzle Books</a>
+          <a href="#books" onclick="document.getElementById('bcat-comics')?.scrollIntoView({behavior:'smooth'})">Comics</a>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Help</div>
+          <a href="#contact">Book Recommendation</a>
+          <a href="#contact">Bulk / School Orders</a>
+          <a href="#contact">Shipping & Delivery</a>
+          <a href="#contact">Partnership Enquiry</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p id="footer-copy">© 2025 Bright Leaf Books · All rights reserved</p>
+      <button class="atog" onclick="openAdmin()">🔐 Admin</button>
+    </div>
   </footer>
 
 
@@ -1873,8 +2211,20 @@
         <div class="ac" id="tadd">
           <h3>Add a New Book</h3>
           <div class="af">
-            <div class="afg"><label for="abt">Title *</label><input id="abt" placeholder="Happy Animals Coloring Book" /
-                autocomplete="off"></div>
+            <div class="afg"><label for="abcat">📂 Category *</label>
+              <select id="abcat">
+                <option value="">— Select a category —</option>
+                <option value="coloring">🎨 Coloring Books</option>
+                <option value="activity">✏️ Activity Books</option>
+                <option value="sticker">⭐ Sticker Books</option>
+                <option value="story">📖 Story Books</option>
+                <option value="learning">🔢 Learning Books</option>
+                <option value="puzzle">🧩 Puzzle Books</option>
+                <option value="comics">🦸 Comics</option>
+                <option value="other">📚 Other</option>
+              </select>
+            </div>
+            <div class="afg"><label for="abt">Title *</label><input id="abt" placeholder="Happy Animals Coloring Book" / autocomplete="off"></div>
             <div class="afrow">
               <div class="afg"><label for="abp">Price (USD $) *</label><input id="abp" placeholder="11" /
                   autocomplete="off"></div>
@@ -1924,8 +2274,9 @@
             <div class="afg"><label for="blb">Full Content *</label><textarea id="blb" style="min-height:150px"
                 placeholder="Write your full blog post here. Use blank lines between paragraphs."
                 autocomplete="off"></textarea></div>
-            <div class="afg"><label>Cover Image (optional)</label><input type="file" id="bli" accept="image/*"
+            <div class="afg"><label>Cover Image — Upload File</label><input type="file" id="bli" accept="image/*"
                 style="border:none;padding:.25rem 0;background:none" / autocomplete="off"></div>
+            <div class="afg"><label>🖼️ Or paste Cover Image URL (Google Drive, Cloudinary, etc.)</label><input type="url" id="blurl" placeholder="https://drive.google.com/uc?export=view&id=..." autocomplete="off"></div>
             <button class="afbtn" id="blbtn" onclick="addBlog()">Publish Blog Post</button>
             <div class="ok" id="blok">✅ Blog post published!</div>
             <div class="er" id="bler"></div>
@@ -2179,11 +2530,22 @@
       </div>
       <div class="ac">
         <div class="af">
+          <div class="afg"><label for="ebcat">📂 Category *</label>
+            <select id="ebcat">
+              <option value="">— Select a category —</option>
+              <option value="coloring">🎨 Coloring Books</option>
+              <option value="activity">✏️ Activity Books</option>
+              <option value="sticker">⭐ Sticker Books</option>
+              <option value="story">📖 Story Books</option>
+              <option value="learning">🔢 Learning Books</option>
+              <option value="puzzle">🧩 Puzzle Books</option>
+              <option value="comics">🦸 Comics</option>
+              <option value="other">📚 Other</option>
+            </select>
+          </div>
           <div class="afrow">
-            <div class="afg"><label for="ebt">Title *</label><input id="ebt" placeholder="Book title" /
-                autocomplete="off"></div>
-            <div class="afg"><label for="ebp">Price (USD $) *</label><input id="ebp" placeholder="11" /
-                autocomplete="off"></div>
+            <div class="afg"><label for="ebt">Title *</label><input id="ebt" placeholder="Book title" / autocomplete="off"></div>
+            <div class="afg"><label for="ebp">Price (USD $) *</label><input id="ebp" placeholder="11" / autocomplete="off"></div>
           </div>
           <div class="afrow">
             <div class="afg"><label for="ebpinr">Price (INR ₹) for Instamojo *</label><input id="ebpinr"
@@ -2239,8 +2601,9 @@
               autocomplete="off"></div>
           <div class="afg"><label for="elb">Full Content *</label><textarea id="elb" style="min-height:150px"
               placeholder="Write your full blog post here..." autocomplete="off"></textarea></div>
-          <div class="afg"><label>Cover Image (leave blank to keep current)</label><input type="file" id="eli"
+          <div class="afg"><label>Cover Image — Upload File (leave blank to keep current)</label><input type="file" id="eli"
               accept="image/*" style="border:none;padding:.25rem 0;background:none" / autocomplete="off"></div>
+          <div class="afg"><label>🖼️ Or paste Cover Image URL (leave blank to keep current)</label><input type="url" id="elurl" placeholder="https://drive.google.com/uc?export=view&id=..." autocomplete="off"></div>
           <div style="display:flex;gap:.65rem;flex-wrap:wrap;margin-top:.25rem">
             <button class="afbtn" id="elSaveBtn" onclick="saveEditBlog()">Save Changes</button>
             <button class="afbtn" style="background:#888" onclick="closeEditBlog()">Cancel</button>
@@ -2786,19 +3149,136 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       }
     }
 
+    // ── BOOKS CATEGORY DIALOG ────────────────────────────────────────────────────
+    function openBooksDialog() {
+      document.getElementById('booksCatOv').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeBooksDialog() {
+      document.getElementById('booksCatOv').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    function chooseBooksCategory(cat) {
+      closeBooksDialog();
+      const booksSection = document.getElementById('books');
+      if (booksSection) booksSection.scrollIntoView({ behavior: 'smooth' });
+      if (cat === 'all') {
+        setTimeout(() => filterCat('all'), 400);
+      } else {
+        setTimeout(() => filterCat(cat), 400);
+      }
+    }
+
     // ── BOOKS ─────────────────────────────────────────────────────────────────────
+    const CATS = [
+      { key: 'coloring',  label: '🎨 Coloring Books' },
+      { key: 'activity',  label: '✏️ Activity Books' },
+      { key: 'sticker',   label: '⭐ Sticker Books' },
+      { key: 'story',     label: '📖 Story Books' },
+      { key: 'learning',  label: '🔢 Learning Books' },
+      { key: 'puzzle',    label: '🧩 Puzzle Books' },
+      { key: 'comics',    label: '🦸 Comics' },
+      { key: 'other',     label: '📚 Other' },
+    ];
+    const BOOKS_PER_ROW = 3;
+    const _expanded = {};
+    let _activeCat = 'all'; // tracks selected filter
+
+    function bookCard(b) {
+      return `<div class="bcard" onclick="openBM('${b.id}')">
+        ${b.cover ? `<img class="bcov" src="${b.cover}" alt="${b.title}"/>` : `<div class="bcov-ph">📚<span>${b.title}</span></div>`}
+        <div class="bfoot">
+          <div class="bname">${b.title}</div>
+          <div class="bprice">$${b.price}</div>
+          <button class="bbtn">See Details</button>
+        </div>
+      </div>`;
+    }
+
+    function renderCatPills() {
+      const wrap = document.getElementById('bcatFilters');
+      if (!wrap) return;
+
+      // Only show pills for categories that have books
+      const groups = {};
+      books.forEach(b => {
+        const cat = (b.category && b.category.trim()) ? b.category.trim() : 'other';
+        groups[cat] = (groups[cat] || 0) + 1;
+      });
+
+      const presentCats = CATS.filter(c => groups[c.key]);
+      if (presentCats.length <= 1) { wrap.innerHTML = ''; return; }
+
+      const allActive = _activeCat === 'all' ? 'active' : '';
+      const pills = `<button class="bcat-pill all-pill ${allActive}" onclick="filterCat('all')">✨ All Books <span style="opacity:.7;font-size:.75rem">${books.length}</span></button>` +
+        presentCats.map(c => {
+          const active = _activeCat === c.key ? 'active' : '';
+          return `<button class="bcat-pill ${active}" onclick="filterCat('${c.key}')">${c.label} <span style="opacity:.7;font-size:.75rem">${groups[c.key]}</span></button>`;
+        }).join('');
+      wrap.innerHTML = pills;
+    }
+
+    function filterCat(key) {
+      _activeCat = key;
+      renderCatPills();
+      if (key === 'all') {
+        renderBooks();
+      } else {
+        // Scroll to that section
+        renderBooks();
+        setTimeout(() => {
+          const el = document.getElementById('bcat-' + key);
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 80);
+      }
+    }
+
     function renderBooks() {
-      const g = document.getElementById('bgrid');
-      if (!books.length) { g.innerHTML = '<p class="nc">No books yet.</p>'; return; }
-      g.innerHTML = books.map(b => `
-    <div class="bcard" onclick="openBM('${b.id}')">
-      ${b.cover ? `<img class="bcov" src="${b.cover}" alt="${b.title}"/>` : `<div class="bcov-ph">📚<span>${b.title}</span></div>`}
-      <div class="bfoot">
-        <div class="bname">${b.title}</div>
-        <div class="bprice">$${b.price}</div>
-        <button class="bbtn">See Details</button>
-      </div>
-    </div>`).join('');
+      const wrap = document.getElementById('bcat-sections');
+      if (!books.length) { wrap.innerHTML = '<p class="nc-section">No books yet. Check back soon!</p>'; renderCatPills(); return; }
+
+      // Group books by category
+      const groups = {};
+      books.forEach(b => {
+        const cat = (b.category && b.category.trim()) ? b.category.trim() : 'other';
+        if (!groups[cat]) groups[cat] = [];
+        groups[cat].push(b);
+      });
+
+      // If a category filter is active, only show that section
+      const catsToShow = _activeCat === 'all'
+        ? CATS.filter(c => groups[c.key])
+        : CATS.filter(c => c.key === _activeCat && groups[c.key]);
+
+      const html = catsToShow.map(c => {
+        const list = groups[c.key];
+        if (!list || !list.length) return '';
+        const total = list.length;
+        const expanded = !!_expanded[c.key];
+        const visible = expanded ? list : list.slice(0, BOOKS_PER_ROW);
+        const needsMore = total > BOOKS_PER_ROW;
+        return `
+          <div class="bcat-section" id="bcat-${c.key}">
+            <div class="bcat-header">
+              <div class="bcat-title">${c.label} <span class="bcat-count">${total}</span></div>
+              <div class="bcat-line"></div>
+              ${needsMore ? `<button class="seemore-btn" onclick="toggleCat('${c.key}')">${expanded ? 'Show Less ↑' : 'See More ↓'}</button>` : ''}
+            </div>
+            <div class="bgrid" id="bgrid-${c.key}">${visible.map(bookCard).join('')}</div>
+          </div>`;
+      }).join('');
+
+      wrap.innerHTML = html || '<p class="nc-section">No books in this category yet.</p>';
+      renderCatPills();
+    }
+
+    function toggleCat(key) {
+      _expanded[key] = !_expanded[key];
+      renderBooks();
+      if (!_expanded[key]) {
+        const el = document.getElementById('bcat-' + key);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     }
 
     function openBM(id) {
@@ -2959,6 +3439,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       const amz = document.getElementById('abz').value.trim();
       const desc = document.getElementById('abd').value.trim();
       const feats = document.getElementById('abf').value.trim().split('\n').map(s => s.trim()).filter(Boolean);
+      const category = document.getElementById('abcat').value;
       const cover = document.getElementById('abc').value.trim() || null;
       const samples = document.getElementById('abs').value.trim().split('\n').map(s => s.trim()).filter(s => s.startsWith('http')).slice(0, 3);
       const pdfUrl = document.getElementById('abpdf').value.trim();
@@ -2967,10 +3448,11 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       if (!title || !price || !desc) { er.textContent = 'Please fill in Title, Price and Description.'; er.style.display = 'block'; return; }
       const btn = document.getElementById('abbtn');
       btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Saving...';
-      books.push({ id: 'bk' + Date.now(), title, price, priceInr, age, amazon: amz, desc, features: feats, cover, samples, pdfData: pdfUrl || null });
+      books.push({ id: 'bk' + Date.now(), title, price, priceInr, age, amazon: amz, desc, features: feats, category, cover, samples, pdfData: pdfUrl || null });
       await save(); renderBooks();
       ['abt', 'abp', 'abpinr', 'aba', 'abz', 'abd', 'abf', 'abc', 'abpdf'].forEach(i => document.getElementById(i).value = '');
       document.getElementById('abs').value = '';
+      document.getElementById('abcat').value = '';
       btn.disabled = false; btn.innerHTML = 'Add Book to Website';
       flash('abok');
     }
@@ -2983,17 +3465,20 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       const summary = document.getElementById('bls').value.trim();
       const content = document.getElementById('blb').value.trim();
       const imgF = document.getElementById('bli').files[0];
+      const imgUrl = document.getElementById('blurl').value.trim();
       const er = document.getElementById('bler');
       er.style.display = 'none';
       if (!title || !summary || !content) { er.textContent = 'Please fill in Title, Summary and Content.'; er.style.display = 'block'; return; }
       const btn = document.getElementById('blbtn');
       btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Publishing...';
-      const img = await rf(imgF);
+      let img = null;
+      if (imgUrl) { img = imgUrl; }
+      else if (imgF) { img = await rf(imgF); }
       const emap = { 'bt-green': '🌿', 'bt-yellow': '✏️', 'bt-pink': '📖' };
       const date = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
       blogs.unshift({ id: 'bl' + Date.now(), title, cat, catLabel, time, summary, content, date, img, emoji: emap[cat] || '📝' });
       await save(); renderBlogs();
-      ['blt', 'blr', 'bls', 'blb'].forEach(i => document.getElementById(i).value = '');
+      ['blt', 'blr', 'bls', 'blb', 'blurl'].forEach(i => document.getElementById(i).value = '');
       document.getElementById('bli').value = '';
       btn.disabled = false; btn.innerHTML = 'Publish Blog Post';
       flash('blok');
@@ -3042,6 +3527,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       document.getElementById('ebz').value = b.amazon || '';
       document.getElementById('ebd').value = b.desc || '';
       document.getElementById('ebf').value = (b.features || []).join('\n');
+      document.getElementById('ebcat').value = b.category || '';
       document.getElementById('ebc').value = (b.cover && b.cover.startsWith('http')) ? b.cover : '';
       document.getElementById('ebs').value = (b.samples || []).filter(s => s && s.startsWith('http')).join('\n');
       document.getElementById('ebpdf').value = (b.pdfData && b.pdfData.startsWith('http')) ? b.pdfData : '';
@@ -3058,6 +3544,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       const amz = document.getElementById('ebz').value.trim();
       const desc = document.getElementById('ebd').value.trim();
       const feats = document.getElementById('ebf').value.trim().split('\n').map(s => s.trim()).filter(Boolean);
+      const category = document.getElementById('ebcat').value;
       const coverUrl = document.getElementById('ebc').value.trim();
       const samplesRaw = document.getElementById('ebs').value.trim();
       const pdfUrl = document.getElementById('ebpdf').value.trim();
@@ -3074,7 +3561,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
         ? samplesRaw.split('\n').map(s => s.trim()).filter(s => s.startsWith('http')).slice(0, 3)
         : (existing.samples || []);
       const newPdf = pdfUrl || existing.pdfData || null;
-      books[idx] = { ...existing, title, price, priceInr, age, amazon: amz, desc, features: feats, cover: newCover, samples: newSamples, pdfData: newPdf };
+      books[idx] = { ...existing, title, price, priceInr, age, amazon: amz, desc, features: feats, category, cover: newCover, samples: newSamples, pdfData: newPdf };
       await save(); renderBooks(); renderManage();
       btn.disabled = false; btn.innerHTML = 'Save Changes';
       flash('ebok');
@@ -3109,6 +3596,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       const summary = document.getElementById('els').value.trim();
       const content = document.getElementById('elb').value.trim();
       const imgF = document.getElementById('eli').files[0];
+      const imgUrl = (document.getElementById('elurl') || {}).value ? document.getElementById('elurl').value.trim() : '';
       const er = document.getElementById('eler');
       er.style.display = 'none';
       if (!title || !summary || !content) { er.textContent = 'Please fill in Title, Summary and Content.'; er.style.display = 'block'; return; }
@@ -3118,7 +3606,9 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       if (idx === -1) { btn.disabled = false; btn.innerHTML = 'Save Changes'; return; }
       const existing = blogs[idx];
       const emap = { 'bt-green': '🌿', 'bt-yellow': '✏️', 'bt-pink': '📖' };
-      const newImg = imgF ? await rf(imgF) : existing.img;
+      let newImg = existing.img;
+      if (imgUrl) { newImg = imgUrl; }
+      else if (imgF) { newImg = await rf(imgF); }
       blogs[idx] = { ...existing, title, cat, catLabel, time, summary, content, img: newImg, emoji: emap[cat] || '📝' };
       await save(); renderBlogs(); renderManage();
       btn.disabled = false; btn.innerHTML = 'Save Changes';
@@ -3361,7 +3851,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
     }
 
     document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') { closeBM(); closeBlog(); closeAdmin(); closeEditBook(); closeEditBlog(); closePay(); closeSuccess(); hide('failedov'); }
+      if (e.key === 'Escape') { closeBM(); closeBlog(); closeAdmin(); closeEditBook(); closeEditBlog(); closePay(); closeSuccess(); hide('failedov'); closeBooksDialog(); }
     });
 
     document.querySelectorAll('.acard').forEach(el => {
