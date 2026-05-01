@@ -102,8 +102,79 @@
       --cr: #FFFBF2;
       --tx: #1A2B1F;
       --mu: #5A7060;
-      --r: 999px
+      --r: 999px;
+      /* Teen theme vars */
+      --tg: #6C3FC5;
+      --tgl: #EDE5FF;
+      --tgd: #3D1F8A;
+      --ty: #FF5E7D;
+      --to: #FF8C00;
+      --tcr: #F8F5FF;
+      --ttx: #1A1035;
+      --tmu: #6B5F8A
     }
+
+    /* TEEN THEME — applied when body has class "theme-teen" */
+    body.theme-teen {
+      background: var(--tcr);
+      color: var(--ttx)
+    }
+    body.theme-teen nav { background: rgba(248,245,255,.94); border-bottom-color: rgba(108,63,197,.15) }
+    body.theme-teen .logo { color: var(--tgd) }
+    body.theme-teen .nl a { color: var(--tmu) }
+    body.theme-teen .nl a:hover { color: var(--tg) }
+    body.theme-teen .ncta { background: var(--tg) }
+    body.theme-teen .ncta:hover { background: var(--to) }
+    body.theme-teen .nav-aud-btn.active { background: var(--tg); box-shadow: 0 2px 8px rgba(108,63,197,.35) }
+    body.theme-teen .nav-audience-toggle { background: var(--tgl) }
+    body.theme-teen .hbadge { background: var(--ty); color: #fff }
+    body.theme-teen h1 em { color: var(--ty) }
+    body.theme-teen .hl { background: var(--tgl); color: var(--ttx) }
+    body.theme-teen .bp { background: var(--tg) }
+    body.theme-teen .bp:hover { box-shadow: 0 8px 20px rgba(108,63,197,.35) }
+    body.theme-teen .bo { border-color: var(--tg); color: var(--tg) }
+    body.theme-teen .bo:hover { background: var(--tg); color: #fff }
+    body.theme-teen .sn { color: var(--tgd) }
+    body.theme-teen .ticker { background: var(--tgd) }
+    body.theme-teen .b1 { background: #D5C5FF }
+    body.theme-teen .b2 { background: var(--ty) }
+    body.theme-teen .b3 { background: #FFD6E0 }
+    body.theme-teen .stag { background: var(--tgl); color: var(--tgd) }
+    body.theme-teen h2 em { color: var(--ty) }
+    body.theme-teen .bsec { background: linear-gradient(135deg, var(--tgd) 0%, #3A1A7A 100%) }
+    body.theme-teen .bsec .stag { background: rgba(255,255,255,.15); color: rgba(255,255,255,.9) }
+    body.theme-teen .bsec h2 { color: #fff }
+    body.theme-teen .bsec h2 em { color: var(--ty) }
+    body.theme-teen .bcat-pill { border-color: rgba(255,255,255,.3) }
+    body.theme-teen .bcat-pill:hover, body.theme-teen .bcat-pill.active { background: var(--ty); border-color: var(--ty); color: #fff }
+    body.theme-teen .bcat-pill.all-pill:hover, body.theme-teen .bcat-pill.all-pill.active { background: var(--ty); border-color: var(--ty); color: #fff }
+    body.theme-teen .bcat-title { color: var(--ttx) }
+    body.theme-teen .bcat-count { background: var(--tgl); color: var(--tgd) }
+    body.theme-teen .bcat-line { background: linear-gradient(to right, var(--tgl), transparent) }
+    body.theme-teen .seemore-btn { border-color: var(--tg); color: var(--tg) }
+    body.theme-teen .seemore-btn:hover { background: var(--tg); color: #fff }
+    body.theme-teen .bbtn { background: var(--tg) }
+    body.theme-teen .bbtn:hover { background: var(--tgd) }
+    body.theme-teen .bprice { color: var(--ty) }
+    body.theme-teen .about { background: var(--tcr) }
+    body.theme-teen .aico { border-color: rgba(108,63,197,.15) !important }
+    body.theme-teen .acard:hover { border-color: var(--tg) }
+    body.theme-teen .blsec { background: var(--tgl) }
+    body.theme-teen .bt-green { background: var(--tgl); color: var(--tgd) }
+    body.theme-teen footer { background: var(--tgd) }
+    body.theme-teen .books-aud-banner { background: var(--tgl); color: var(--tgd) }
+    body.theme-teen .aud-div-btn:hover, body.theme-teen .aud-div-btn.active { border-color: var(--tg); background: var(--tgl) }
+    body.theme-teen .aud-div-btn.active { background: var(--tg) }
+    body.theme-teen .nsearch-input:focus { border-color: var(--tg); box-shadow: 0 0 0 3px rgba(108,63,197,.13) }
+    body.theme-teen .nsearch-input { border-color: var(--tgl) }
+    body.theme-teen .nsearch-results { border-color: rgba(108,63,197,.15) }
+    body.theme-teen .nsr-item:hover { background: var(--tgl) }
+    body.theme-teen .nsr-badge { background: var(--tgl); color: var(--tgd) }
+    body.theme-teen .books-dialog { background: var(--tcr) }
+    body.theme-teen .books-cat-btn { background: var(--tgl); border-color: rgba(108,63,197,.15) }
+    body.theme-teen .books-cat-btn:hover { background: var(--tg); box-shadow: 0 10px 28px rgba(108,63,197,.25) }
+    body.theme-teen .books-all-btn { background: var(--tgd) }
+    body.theme-teen .books-all-btn:hover { background: var(--to) }
 
     html {
       scroll-behavior: smooth
@@ -113,7 +184,8 @@
       font-family: 'Nunito', sans-serif;
       background: var(--cr);
       color: var(--tx);
-      overflow-x: hidden
+      overflow-x: hidden;
+      transition: background .5s ease, color .5s ease
     }
 
     /* NAV */
@@ -180,6 +252,171 @@
       transform: scale(1.04);
       background: var(--o)
     }
+
+    /* AUDIENCE TOGGLE IN NAV */
+    .nav-audience-toggle {
+      display: flex;
+      align-items: center;
+      background: var(--gl);
+      border-radius: 999px;
+      padding: 3px;
+      gap: 2px
+    }
+
+    .nav-aud-btn {
+      border: none;
+      background: transparent;
+      border-radius: 999px;
+      padding: .38rem .9rem;
+      font-family: 'Nunito', sans-serif;
+      font-size: .78rem;
+      font-weight: 700;
+      color: var(--mu);
+      cursor: pointer;
+      transition: all .25s;
+      white-space: nowrap
+    }
+
+    .nav-aud-btn.active {
+      background: var(--g);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(61,170,92,.35)
+    }
+
+    /* ANIMATED AUDIENCE DIVIDER */
+    .aud-divider {
+      background: var(--cr);
+      padding: 2.5rem 2rem;
+      text-align: center;
+      border-top: 2px solid var(--gl);
+      border-bottom: 2px solid var(--gl)
+    }
+
+    .aud-div-inner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      max-width: 560px;
+      margin: 0 auto 1rem
+    }
+
+    .aud-div-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .35rem;
+      background: #fff;
+      border: 2.5px solid var(--gl);
+      border-radius: 20px;
+      padding: 1.2rem 1.8rem;
+      cursor: pointer;
+      transition: all .25s;
+      flex: 1;
+      max-width: 180px
+    }
+
+    .aud-div-btn:hover, .aud-div-btn.active {
+      border-color: var(--g);
+      background: var(--gl);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(61,170,92,.2)
+    }
+
+    .aud-div-btn.active {
+      background: var(--g);
+      border-color: var(--g)
+    }
+
+    .aud-div-btn.active .aud-div-label { color: #fff }
+    .aud-div-btn.active .aud-div-sub { color: rgba(255,255,255,.75) }
+
+    .aud-div-icon { font-size: 2rem }
+
+    .aud-div-label {
+      font-family: 'Fraunces', serif;
+      font-size: .98rem;
+      font-weight: 700;
+      color: var(--tx)
+    }
+
+    .aud-div-sub {
+      font-size: .74rem;
+      color: var(--mu);
+      font-weight: 600
+    }
+
+    .aud-div-sep {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .4rem
+    }
+
+    .aud-div-line {
+      width: 2px;
+      height: 28px;
+      background: var(--gl);
+      border-radius: 2px
+    }
+
+    .aud-div-or {
+      font-size: .75rem;
+      font-weight: 700;
+      color: var(--mu);
+      text-transform: uppercase;
+      letter-spacing: .06em
+    }
+
+    .aud-div-hint {
+      font-size: .8rem;
+      color: var(--mu);
+      font-weight: 600
+    }
+
+    /* HERO CONTENT TRANSITION */
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      transition: opacity .4s ease, transform .4s ease
+    }
+
+    .hero-content.switching {
+      opacity: 0;
+      transform: translateY(12px)
+    }
+
+    /* HERO AUDIENCE BADGE */
+    .hero-aud-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      font-size: .78rem;
+      font-weight: 700;
+      border-radius: 999px;
+      padding: .3rem .85rem;
+      margin-bottom: .6rem;
+      background: rgba(255,255,255,.25);
+      color: var(--gd);
+      border: 1.5px solid rgba(255,255,255,.4)
+    }
+
+    /* BOOKS SECTION AUDIENCE BANNER */
+    .books-aud-banner {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding: .75rem 1.2rem;
+      border-radius: 14px;
+      background: var(--gl);
+      font-family: 'Nunito', sans-serif;
+      font-size: .88rem;
+      font-weight: 700;
+      color: var(--gd)
+    }
+
+    .books-aud-banner span { font-size: 1.3rem }
 
     /* SEARCH BAR */
     .nsearch {
@@ -606,7 +843,9 @@
       display: flex;
       gap: 3rem;
       margin-top: 3.5rem;
-      animation: fu .6s .4s ease both
+      animation: fu .6s .4s ease both;
+      justify-content: center;
+      text-align: center
     }
 
     .sn {
@@ -1988,6 +2227,53 @@
       font-size: .95rem
     }
 
+    /* MULTI-CATEGORY CHECKBOX GRID */
+    .cat-check-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: .5rem;
+      margin-top: .4rem
+    }
+
+    .cat-check-item {
+      display: flex;
+      align-items: center;
+      gap: .45rem;
+      background: var(--gl);
+      border: 2px solid transparent;
+      border-radius: 10px;
+      padding: .5rem .7rem;
+      cursor: pointer;
+      transition: all .15s;
+      font-family: 'Nunito', sans-serif;
+      font-size: .78rem;
+      font-weight: 700;
+      color: var(--tx);
+      user-select: none
+    }
+
+    .cat-check-item:hover { border-color: var(--g); background: #c8f0d4 }
+
+    .cat-check-item.checked {
+      background: var(--g);
+      color: #fff;
+      border-color: var(--gd)
+    }
+
+    .cat-check-item input[type=checkbox] { display: none }
+
+    .cat-check-tick {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,.6);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .65rem;
+      flex-shrink: 0
+    }
+
     @keyframes flt {
 
       0%,
@@ -2085,6 +2371,10 @@
       <li><a href="#blog">Blog</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
+    <div class="nav-audience-toggle">
+      <button class="nav-aud-btn active" id="navBtnKids" onclick="setAudience('kids')">🧒 Little Readers</button>
+      <button class="nav-aud-btn" id="navBtnTeen" onclick="setAudience('teen')">🎒 Young Explorers</button>
+    </div>
     <a href="#books" class="ncta" id="nav-cta">Shop Books →</a>
     <div class="nsearch" id="nsearch">
       <span class="nsearch-icon">🔍</span>
@@ -2096,39 +2386,51 @@
     </div>
   </nav>
 
-  <section class="hero">
+  <section class="hero" id="heroSection">
     <div class="blob b1"></div>
     <div class="blob b2"></div>
     <div class="blob b3"></div>
-    <div class="dd" style="top:12%;left:8%">🌈</div>
-    <div class="dd" style="top:20%;right:10%;animation-delay:.8s">⭐</div>
-    <div class="dd" style="bottom:25%;left:5%;animation-delay:1.5s">🦋</div>
-    <div class="dd" style="bottom:20%;right:8%;animation-delay:.4s">🌸</div>
-    <div class="hbadge" id="hero-badge">✨ Books that spark little imaginations</div>
-    <h1 id="hero-h1">Where every page is an<br><em>adventure</em> waiting to be<br><span class="hl">colored in.</span>
-    </h1>
-    <p class="hsub" id="hero-sub">Bright Leaf Books creates magical coloring books for kids aged 3–6. Fun, educational,
-      and bursting
-      with creativity!</p>
-    <div class="hbtns">
-      <a href="#books" class="bp" id="hero-btn1">Browse Our Books</a>
-      <a href="#about" class="bo" id="hero-btn2">Our Story</a>
-    </div>
-    <div class="hstats">
-      <div>
-        <div class="sn" id="stat1-num">2+</div>
-        <div class="sl" id="stat1-lbl">Book titles</div>
+    <div class="dd" id="dd1" style="top:12%;left:8%">🌈</div>
+    <div class="dd" id="dd2" style="top:20%;right:10%;animation-delay:.8s">⭐</div>
+    <div class="dd" id="dd3" style="bottom:25%;left:5%;animation-delay:1.5s">🦋</div>
+    <div class="dd" id="dd4" style="bottom:20%;right:8%;animation-delay:.4s">🌸</div>
+    <div class="hero-content" id="heroContent">
+      <div class="hbadge" id="hero-badge">✨ Books that spark little imaginations</div>
+      <h1 id="hero-h1">Where every page is an<br><em>adventure</em> waiting to be<br><span class="hl">colored in.</span></h1>
+      <p class="hsub" id="hero-sub">Bright Leaf Books creates magical coloring books for kids aged 3–6. Fun, educational, and bursting with creativity!</p>
+      <div class="hbtns">
+        <a href="#books" class="bp" id="hero-btn1">Browse Our Books</a>
+        <a href="#about" class="bo" id="hero-btn2">Our Story</a>
       </div>
-      <div>
-        <div class="sn" id="stat2-num">Ages 3–6</div>
-        <div class="sl" id="stat2-lbl">Designed for</div>
-      </div>
-      <div>
-        <div class="sn" id="stat3-num">100%</div>
-        <div class="sl" id="stat3-lbl">Kid-friendly</div>
+      <div class="hstats">
+        <div><div class="sn" id="stat1-num">2+</div><div class="sl" id="stat1-lbl">Book titles</div></div>
+        <div><div class="sn" id="stat2-num">Ages 3–6</div><div class="sl" id="stat2-lbl">Designed for</div></div>
+        <div><div class="sn" id="stat3-num">100%</div><div class="sl" id="stat3-lbl">Kid-friendly</div></div>
       </div>
     </div>
   </section>
+
+  <!-- Animated Audience Divider -->
+  <div class="aud-divider" id="audDivider">
+    <div class="aud-div-inner">
+      <button class="aud-div-btn" id="divBtnKids" onclick="setAudience('kids')">
+        <span class="aud-div-icon">🧒</span>
+        <span class="aud-div-label">Little Readers</span>
+        <span class="aud-div-sub">Ages 3–10</span>
+      </button>
+      <div class="aud-div-sep">
+        <div class="aud-div-line"></div>
+        <span class="aud-div-or">or</span>
+        <div class="aud-div-line"></div>
+      </div>
+      <button class="aud-div-btn" id="divBtnTeen" onclick="setAudience('teen')">
+        <span class="aud-div-icon">🎒</span>
+        <span class="aud-div-label">Young Explorers</span>
+        <span class="aud-div-sub">Ages 11+</span>
+      </button>
+    </div>
+    <p class="aud-div-hint">Choose your reader — we'll show the right books</p>
+  </div>
 
   <div class="ticker" aria-hidden="true">
     <div class="ti">
@@ -2192,42 +2494,9 @@
   <div class="books-dialog-ov" id="booksCatOv" onclick="if(event.target===this)closeBooksDialog()">
     <div class="books-dialog">
       <button class="books-dialog-close" onclick="closeBooksDialog()">✕</button>
-      <h2>📚 Browse by Category</h2>
+      <h2 id="booksDlgTitle">📚 Browse by Category</h2>
       <p class="books-dialog-sub">What kind of book are you looking for?</p>
-      <div class="books-cat-grid">
-        <button class="books-cat-btn" onclick="chooseBooksCategory('coloring')">
-          <span class="bcat-icon">🎨</span>
-          <span class="bcat-lbl">Coloring Books</span>
-        </button>
-        <button class="books-cat-btn" onclick="chooseBooksCategory('activity')">
-          <span class="bcat-icon">✏️</span>
-          <span class="bcat-lbl">Activity Books</span>
-        </button>
-        <button class="books-cat-btn" onclick="chooseBooksCategory('sticker')">
-          <span class="bcat-icon">⭐</span>
-          <span class="bcat-lbl">Sticker Books</span>
-        </button>
-        <button class="books-cat-btn" onclick="chooseBooksCategory('story')">
-          <span class="bcat-icon">📖</span>
-          <span class="bcat-lbl">Story Books</span>
-        </button>
-        <button class="books-cat-btn" onclick="chooseBooksCategory('learning')">
-          <span class="bcat-icon">🔢</span>
-          <span class="bcat-lbl">Learning Books</span>
-        </button>
-        <button class="books-cat-btn" onclick="chooseBooksCategory('puzzle')">
-          <span class="bcat-icon">🧩</span>
-          <span class="bcat-lbl">Puzzle Books</span>
-        </button>
-        <button class="books-cat-btn" onclick="chooseBooksCategory('comics')">
-          <span class="bcat-icon">🦸</span>
-          <span class="bcat-lbl">Comics</span>
-        </button>
-        <button class="books-cat-btn" onclick="chooseBooksCategory('other')">
-          <span class="bcat-icon">📚</span>
-          <span class="bcat-lbl">Other Books</span>
-        </button>
-      </div>
+      <div class="books-cat-grid" id="booksCatGrid"></div>
       <button class="books-all-btn" onclick="chooseBooksCategory('all')">✨ See All Books</button>
     </div>
   </div>
@@ -2376,17 +2645,15 @@
         <div class="ac" id="tadd">
           <h3>Add a New Book</h3>
           <div class="af">
-            <div class="afg"><label for="abcat">📂 Category *</label>
-              <select id="abcat">
-                <option value="">— Select a category —</option>
-                <option value="coloring">🎨 Coloring Books</option>
-                <option value="activity">✏️ Activity Books</option>
-                <option value="sticker">⭐ Sticker Books</option>
-                <option value="story">📖 Story Books</option>
-                <option value="learning">🔢 Learning Books</option>
-                <option value="puzzle">🧩 Puzzle Books</option>
-                <option value="comics">🦸 Comics</option>
-                <option value="other">📚 Other</option>
+            <div class="afg"><label>📂 Categories * <span style="font-weight:400;font-size:.76rem;color:var(--mu)">(select one or more)</span></label>
+              <div class="cat-check-grid" id="abcatGrid">
+                <!-- populated by renderAdminCatGrid('abcatGrid') -->
+              </div>
+            </div>
+            <div class="afg"><label for="abaud">👥 Audience *</label>
+              <select id="abaud">
+                <option value="kids">🧒 Little Readers (Kids, Ages 3–10)</option>
+                <option value="teen">🎒 Young Explorers (Teens & Young Adults, Ages 11+)</option>
               </select>
             </div>
             <div class="afg"><label for="abt">Title *</label><input id="abt" placeholder="Happy Animals Coloring Book" / autocomplete="off"></div>
@@ -2695,17 +2962,15 @@
       </div>
       <div class="ac">
         <div class="af">
-          <div class="afg"><label for="ebcat">📂 Category *</label>
-            <select id="ebcat">
-              <option value="">— Select a category —</option>
-              <option value="coloring">🎨 Coloring Books</option>
-              <option value="activity">✏️ Activity Books</option>
-              <option value="sticker">⭐ Sticker Books</option>
-              <option value="story">📖 Story Books</option>
-              <option value="learning">🔢 Learning Books</option>
-              <option value="puzzle">🧩 Puzzle Books</option>
-              <option value="comics">🦸 Comics</option>
-              <option value="other">📚 Other</option>
+          <div class="afg"><label>📂 Categories * <span style="font-weight:400;font-size:.76rem;color:var(--mu)">(select one or more)</span></label>
+            <div class="cat-check-grid" id="ebcatGrid">
+              <!-- populated by renderAdminCatGrid('ebcatGrid') -->
+            </div>
+          </div>
+          <div class="afg"><label for="ebaud">👥 Audience *</label>
+            <select id="ebaud">
+              <option value="kids">🧒 Little Readers (Kids, Ages 3–10)</option>
+              <option value="teen">🎒 Young Explorers (Teens & Young Adults, Ages 11+)</option>
             </select>
           </div>
           <div class="afrow">
@@ -3314,8 +3579,91 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       }
     }
 
-    // ── BOOKS CATEGORY DIALOG ────────────────────────────────────────────────────
+    // ── AUDIENCE SYSTEM ───────────────────────────────────────────────────────────
+    let _audience = 'all'; // 'all' | 'kids' | 'teen'
+
+    const AUDIENCE_CONTENT = {
+      kids: {
+        badge: '🧒 For Little Readers · Ages 3–10',
+        h1: 'Where every page is an<br><em>adventure</em> waiting to be<br><span class="hl">colored in.</span>',
+        sub: 'Bright Leaf Books creates magical coloring books, activity books and sticker books for curious little minds aged 3–10. Fun, educational, and bursting with creativity!',
+        btn1: '🎨 Browse Kids Books',
+        dd: ['🌈','⭐','🦋','🌸'],
+        booksH2: 'Find your little one\'s next <em>favourite</em>',
+        audioBanner: '🧒 Showing books for Little Readers (Ages 3–10)'
+      },
+      teen: {
+        badge: '🎒 For Young Explorers · Ages 11+',
+        h1: 'Stories, comics & worlds<br>waiting to be<br><span class="hl">explored.</span>',
+        sub: 'Bright Leaf Books has a growing collection of story books, comics and adventure titles crafted for teens and young adults who love to read, imagine and explore.',
+        btn1: '📖 Browse Teen Books',
+        dd: ['🚀','💥','🔥','⚡'],
+        booksH2: 'Pick your next <em>obsession</em>',
+        audioBanner: '🎒 Showing books for Young Explorers (Ages 11+)'
+      }
+    };
+
+    function setAudience(aud) {
+      _audience = aud;
+
+      // Toggle body theme class
+      document.body.classList.toggle('theme-teen', aud === 'teen');
+      document.body.classList.toggle('theme-kids', aud === 'kids');
+
+      // Update nav buttons
+      document.getElementById('navBtnKids').classList.toggle('active', aud === 'kids');
+      document.getElementById('navBtnTeen').classList.toggle('active', aud === 'teen');
+
+      // Update divider buttons
+      document.getElementById('divBtnKids').classList.toggle('active', aud === 'kids');
+      document.getElementById('divBtnTeen').classList.toggle('active', aud === 'teen');
+
+      // Animate hero content out → update → in
+      const content = document.getElementById('heroContent');
+      content.classList.add('switching');
+
+      setTimeout(() => {
+        const c = AUDIENCE_CONTENT[aud];
+        if (c) {
+          document.getElementById('hero-badge').textContent = c.badge;
+          document.getElementById('hero-h1').innerHTML = c.h1;
+          document.getElementById('hero-sub').textContent = c.sub;
+          document.getElementById('hero-btn1').textContent = c.btn1;
+          // Update books section heading
+          const bh2 = document.getElementById('books-h2');
+          if (bh2) bh2.innerHTML = c.booksH2;
+          // Update floating decorations
+          const dds = ['dd1','dd2','dd3','dd4'];
+          c.dd.forEach((emoji, i) => {
+            const el = document.getElementById(dds[i]);
+            if (el) el.textContent = emoji;
+          });
+        }
+        content.classList.remove('switching');
+      }, 380);
+
+      // Re-render books filtered by audience
+      _activeCat = 'all';
+      renderBooks();
+      renderCatPills();
+
+      // Scroll to books section smoothly
+      const bsec = document.getElementById('books');
+      if (bsec) bsec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
     function openBooksDialog() {
+      // Render category buttons based on current audience
+      const CATS = activeCats();
+      const grid = document.getElementById('booksCatGrid');
+      if (grid) {
+        grid.innerHTML = CATS.map(c => `
+          <button class="books-cat-btn" onclick="chooseBooksCategory('${c.key}')">
+            <span class="bcat-icon">${c.label.split(' ')[0]}</span>
+            <span class="bcat-lbl">${c.label.replace(/^\S+\s/, '')}</span>
+          </button>`).join('');
+      }
+      const title = document.getElementById('booksDlgTitle');
+      if (title) title.textContent = _audience === 'teen' ? '🎒 Browse Teen Books' : '🧒 Browse Kids Books';
       document.getElementById('booksCatOv').classList.add('open');
       document.body.style.overflow = 'hidden';
     }
@@ -3335,19 +3683,88 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
     }
 
     // ── BOOKS ─────────────────────────────────────────────────────────────────────
-    const CATS = [
+    const KIDS_CATS = [
       { key: 'coloring',  label: '🎨 Coloring Books' },
       { key: 'activity',  label: '✏️ Activity Books' },
       { key: 'sticker',   label: '⭐ Sticker Books' },
       { key: 'story',     label: '📖 Story Books' },
       { key: 'learning',  label: '🔢 Learning Books' },
       { key: 'puzzle',    label: '🧩 Puzzle Books' },
+      { key: 'facts',     label: '🔭 Facts Books' },
       { key: 'comics',    label: '🦸 Comics' },
       { key: 'other',     label: '📚 Other' },
     ];
+
+    const TEEN_CATS = [
+      { key: 'selfimprovement', label: '🌱 Self Improvement' },
+      { key: 'story',           label: '📖 Story Books' },
+      { key: 'facts',           label: '🔭 Facts Books' },
+      { key: 'activity',        label: '✏️ Activity Books' },
+      { key: 'sticker',         label: '⭐ Sticker Books' },
+      { key: 'comics',          label: '🦸 Comics' },
+      { key: 'horror',          label: '👻 Horror Stories' },
+      { key: 'lovestory',       label: '💕 Love Stories' },
+      { key: 'other',           label: '📚 Others' },
+    ];
+
+    // ALL categories combined (for admin dropdowns and search)
+    const ALL_CATS = [
+      { key: 'coloring',        label: '🎨 Coloring Books' },
+      { key: 'activity',        label: '✏️ Activity Books' },
+      { key: 'sticker',         label: '⭐ Sticker Books' },
+      { key: 'story',           label: '📖 Story Books' },
+      { key: 'learning',        label: '🔢 Learning Books' },
+      { key: 'puzzle',          label: '🧩 Puzzle Books' },
+      { key: 'facts',           label: '🔭 Facts Books' },
+      { key: 'comics',          label: '🦸 Comics' },
+      { key: 'selfimprovement', label: '🌱 Self Improvement' },
+      { key: 'horror',          label: '👻 Horror Stories' },
+      { key: 'lovestory',       label: '💕 Love Stories' },
+      { key: 'other',           label: '📚 Other' },
+    ];
+
+    // Returns the right category list based on current audience
+    function activeCats() {
+      return _audience === 'teen' ? TEEN_CATS : KIDS_CATS;
+    }
+
+    // Get label for a category key
+    function catLabel(key) {
+      return (ALL_CATS.find(c => c.key === key) || { label: key }).label;
+    }
+
+    // Build admin multi-select checkbox grid for a container id, pre-checking selected keys
+    function renderAdminCatGrid(containerId, selected = []) {
+      const el = document.getElementById(containerId);
+      if (!el) return;
+      el.innerHTML = ALL_CATS.map(c => {
+        const checked = selected.includes(c.key) ? 'checked' : '';
+        const checkedClass = selected.includes(c.key) ? 'checked' : '';
+        return `<label class="cat-check-item ${checkedClass}" onclick="toggleCatCheck(this)">
+          <input type="checkbox" value="${c.key}" ${checked}/>
+          <span class="cat-check-tick">${selected.includes(c.key) ? '✓' : ''}</span>
+          <span>${c.label}</span>
+        </label>`;
+      }).join('');
+    }
+
+    function toggleCatCheck(label) {
+      label.classList.toggle('checked');
+      const cb = label.querySelector('input[type=checkbox]');
+      const tick = label.querySelector('.cat-check-tick');
+      cb.checked = label.classList.contains('checked');
+      tick.textContent = cb.checked ? '✓' : '';
+    }
+
+    function getCheckedCats(containerId) {
+      const el = document.getElementById(containerId);
+      if (!el) return [];
+      return Array.from(el.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value);
+    }
+
     const BOOKS_PER_ROW = 3;
     const _expanded = {};
-    let _activeCat = 'all'; // tracks selected filter
+    let _activeCat = 'all';
 
     function bookCard(b) {
       return `<div class="bcard" onclick="openBM('${b.id}')">
@@ -3363,19 +3780,19 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
     function renderCatPills() {
       const wrap = document.getElementById('bcatFilters');
       if (!wrap) return;
-
-      // Only show pills for categories that have books
+      const CATS = activeCats();
+      const audFiltered = _audience === 'all' ? books : books.filter(b => (b.audience || 'kids') === _audience);
+      // Count books per category (a book with multiple categories counts in each)
       const groups = {};
-      books.forEach(b => {
-        const cat = (b.category && b.category.trim()) ? b.category.trim() : 'other';
-        groups[cat] = (groups[cat] || 0) + 1;
+      audFiltered.forEach(b => {
+        const cats = Array.isArray(b.categories) && b.categories.length ? b.categories
+                   : (b.category ? [b.category] : ['other']);
+        cats.forEach(cat => { groups[cat] = (groups[cat] || 0) + 1; });
       });
-
       const presentCats = CATS.filter(c => groups[c.key]);
       if (presentCats.length <= 1) { wrap.innerHTML = ''; return; }
-
       const allActive = _activeCat === 'all' ? 'active' : '';
-      const pills = `<button class="bcat-pill all-pill ${allActive}" onclick="filterCat('all')">✨ All Books <span style="opacity:.7;font-size:.75rem">${books.length}</span></button>` +
+      const pills = `<button class="bcat-pill all-pill ${allActive}" onclick="filterCat('all')">✨ All <span style="opacity:.7;font-size:.75rem">${audFiltered.length}</span></button>` +
         presentCats.map(c => {
           const active = _activeCat === c.key ? 'active' : '';
           return `<button class="bcat-pill ${active}" onclick="filterCat('${c.key}')">${c.label} <span style="opacity:.7;font-size:.75rem">${groups[c.key]}</span></button>`;
@@ -3386,11 +3803,8 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
     function filterCat(key) {
       _activeCat = key;
       renderCatPills();
-      if (key === 'all') {
-        renderBooks();
-      } else {
-        // Scroll to that section
-        renderBooks();
+      renderBooks();
+      if (key !== 'all') {
         setTimeout(() => {
           const el = document.getElementById('bcat-' + key);
           if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -3401,19 +3815,40 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
     function renderBooks() {
       const wrap = document.getElementById('bcat-sections');
       if (!books.length) { wrap.innerHTML = '<p class="nc-section">No books yet. Check back soon!</p>'; renderCatPills(); return; }
+      const CATS = activeCats();
 
-      // Group books by category
+      // Filter by audience
+      const audFiltered = _audience === 'all'
+        ? books
+        : books.filter(b => (b.audience || 'kids') === _audience);
+
+      // Group by category — a book appears in EVERY category it belongs to
       const groups = {};
-      books.forEach(b => {
-        const cat = (b.category && b.category.trim()) ? b.category.trim() : 'other';
-        if (!groups[cat]) groups[cat] = [];
-        groups[cat].push(b);
+      audFiltered.forEach(b => {
+        const cats = Array.isArray(b.categories) && b.categories.length ? b.categories
+                   : (b.category ? [b.category] : ['other']);
+        cats.forEach(cat => {
+          if (!groups[cat]) groups[cat] = [];
+          // Avoid duplicates within a section
+          if (!groups[cat].find(x => x.id === b.id)) groups[cat].push(b);
+        });
       });
 
-      // If a category filter is active, only show that section
+      // Audience banner
+      let bannerHtml = '';
+      if (_audience !== 'all') {
+        const c = AUDIENCE_CONTENT[_audience];
+        bannerHtml = `<div class="books-aud-banner"><span>${_audience === 'kids' ? '🧒' : '🎒'}</span>${c.audioBanner} &nbsp;·&nbsp; <a href="javascript:void(0)" onclick="setAudience('all')" style="color:var(--gd);font-weight:800;text-decoration:underline">Show all</a></div>`;
+      }
+
       const catsToShow = _activeCat === 'all'
-        ? CATS.filter(c => groups[c.key])
-        : CATS.filter(c => c.key === _activeCat && groups[c.key]);
+        ? CATS.filter(c => groups[c.key] && groups[c.key].length)
+        : CATS.filter(c => c.key === _activeCat && groups[c.key] && groups[c.key].length);
+
+      if (!catsToShow.length) {
+        wrap.innerHTML = bannerHtml + '<p class="nc-section">No books in this section yet. Check back soon!</p>';
+        renderCatPills(); return;
+      }
 
       const html = catsToShow.map(c => {
         const list = groups[c.key];
@@ -3433,7 +3868,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
           </div>`;
       }).join('');
 
-      wrap.innerHTML = html || '<p class="nc-section">No books in this category yet.</p>';
+      wrap.innerHTML = bannerHtml + (html || '<p class="nc-section">No books in this section yet.</p>');
       renderCatPills();
     }
 
@@ -3511,7 +3946,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
     function openAdmin() {
       document.getElementById('pws').style.display = unlocked ? 'none' : 'block';
       document.getElementById('amain').style.display = unlocked ? 'block' : 'none';
-      if (unlocked) renderManage();
+      if (unlocked) { renderManage(); renderAdminCatGrid('abcatGrid', []); }
       show('aov');
       if (!unlocked) setTimeout(() => document.getElementById('pwi').focus(), 200);
     }
@@ -3560,6 +3995,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
         if (id === 'tman') renderManage();
         if (id === 'tsite') populateSiteForm();
         if (id === 'tim') populateIMForm();
+        if (id === 'tadd') renderAdminCatGrid('abcatGrid', []);
       } catch (e) { console.error('swTab error:', e); }
     }
 
@@ -3604,20 +4040,23 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       const amz = document.getElementById('abz').value.trim();
       const desc = document.getElementById('abd').value.trim();
       const feats = document.getElementById('abf').value.trim().split('\n').map(s => s.trim()).filter(Boolean);
-      const category = document.getElementById('abcat').value;
+      const categories = getCheckedCats('abcatGrid');
+      const audience = document.getElementById('abaud').value || 'kids';
       const cover = document.getElementById('abc').value.trim() || null;
       const samples = document.getElementById('abs').value.trim().split('\n').map(s => s.trim()).filter(s => s.startsWith('http')).slice(0, 3);
       const pdfUrl = document.getElementById('abpdf').value.trim();
       const er = document.getElementById('aber');
       er.style.display = 'none';
       if (!title || !price || !desc) { er.textContent = 'Please fill in Title, Price and Description.'; er.style.display = 'block'; return; }
+      if (!categories.length) { er.textContent = 'Please select at least one category.'; er.style.display = 'block'; return; }
       const btn = document.getElementById('abbtn');
       btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Saving...';
-      books.push({ id: 'bk' + Date.now(), title, price, priceInr, age, amazon: amz, desc, features: feats, category, cover, samples, pdfData: pdfUrl || null });
+      books.push({ id: 'bk' + Date.now(), title, price, priceInr, age, amazon: amz, desc, features: feats, categories, audience, cover, samples, pdfData: pdfUrl || null });
       await save(); renderBooks();
       ['abt', 'abp', 'abpinr', 'aba', 'abz', 'abd', 'abf', 'abc', 'abpdf'].forEach(i => document.getElementById(i).value = '');
       document.getElementById('abs').value = '';
-      document.getElementById('abcat').value = '';
+      document.getElementById('abaud').value = 'kids';
+      renderAdminCatGrid('abcatGrid', []);
       btn.disabled = false; btn.innerHTML = 'Add Book to Website';
       flash('abok');
     }
@@ -3692,7 +4131,11 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       document.getElementById('ebz').value = b.amazon || '';
       document.getElementById('ebd').value = b.desc || '';
       document.getElementById('ebf').value = (b.features || []).join('\n');
-      document.getElementById('ebcat').value = b.category || '';
+      // Populate category checkboxes — support both old .category and new .categories
+      const selCats = Array.isArray(b.categories) && b.categories.length ? b.categories
+                    : (b.category ? [b.category] : []);
+      renderAdminCatGrid('ebcatGrid', selCats);
+      document.getElementById('ebaud').value = b.audience || 'kids';
       document.getElementById('ebc').value = (b.cover && b.cover.startsWith('http')) ? b.cover : '';
       document.getElementById('ebs').value = (b.samples || []).filter(s => s && s.startsWith('http')).join('\n');
       document.getElementById('ebpdf').value = (b.pdfData && b.pdfData.startsWith('http')) ? b.pdfData : '';
@@ -3709,13 +4152,15 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       const amz = document.getElementById('ebz').value.trim();
       const desc = document.getElementById('ebd').value.trim();
       const feats = document.getElementById('ebf').value.trim().split('\n').map(s => s.trim()).filter(Boolean);
-      const category = document.getElementById('ebcat').value;
+      const categories = getCheckedCats('ebcatGrid');
+      const audience = document.getElementById('ebaud').value || 'kids';
       const coverUrl = document.getElementById('ebc').value.trim();
       const samplesRaw = document.getElementById('ebs').value.trim();
       const pdfUrl = document.getElementById('ebpdf').value.trim();
       const er = document.getElementById('eber');
       er.style.display = 'none';
       if (!title || !price || !desc) { er.textContent = 'Please fill in Title, Price and Description.'; er.style.display = 'block'; return; }
+      if (!categories.length) { er.textContent = 'Please select at least one category.'; er.style.display = 'block'; return; }
       const btn = document.getElementById('ebSaveBtn');
       btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Saving...';
       const idx = books.findIndex(x => x.id === _editBookId);
@@ -3726,7 +4171,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
         ? samplesRaw.split('\n').map(s => s.trim()).filter(s => s.startsWith('http')).slice(0, 3)
         : (existing.samples || []);
       const newPdf = pdfUrl || existing.pdfData || null;
-      books[idx] = { ...existing, title, price, priceInr, age, amazon: amz, desc, features: feats, category, cover: newCover, samples: newSamples, pdfData: newPdf };
+      books[idx] = { ...existing, title, price, priceInr, age, amazon: amz, desc, features: feats, categories, audience, cover: newCover, samples: newSamples, pdfData: newPdf };
       await save(); renderBooks(); renderManage();
       btn.disabled = false; btn.innerHTML = 'Save Changes';
       flash('ebok');
