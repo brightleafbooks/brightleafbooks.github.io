@@ -3738,28 +3738,24 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       const el = document.getElementById(containerId);
       if (!el) return;
       el.innerHTML = ALL_CATS.map(c => {
-        const checked = selected.includes(c.key) ? 'checked' : '';
-        const checkedClass = selected.includes(c.key) ? 'checked' : '';
-        return `<label class="cat-check-item ${checkedClass}" onclick="toggleCatCheck(this)">
-          <input type="checkbox" value="${c.key}" ${checked}/>
-          <span class="cat-check-tick">${selected.includes(c.key) ? '✓' : ''}</span>
+        const isSel = selected.includes(c.key);
+        return `<div class="cat-check-item${isSel ? ' checked' : ''}" onclick="toggleCatCheck(this)" data-key="${c.key}">
+          <span class="cat-check-tick">${isSel ? '✓' : ''}</span>
           <span>${c.label}</span>
-        </label>`;
+        </div>`;
       }).join('');
     }
 
-    function toggleCatCheck(label) {
-      label.classList.toggle('checked');
-      const cb = label.querySelector('input[type=checkbox]');
-      const tick = label.querySelector('.cat-check-tick');
-      cb.checked = label.classList.contains('checked');
-      tick.textContent = cb.checked ? '✓' : '';
+    function toggleCatCheck(div) {
+      div.classList.toggle('checked');
+      const tick = div.querySelector('.cat-check-tick');
+      tick.textContent = div.classList.contains('checked') ? '✓' : '';
     }
 
     function getCheckedCats(containerId) {
       const el = document.getElementById(containerId);
       if (!el) return [];
-      return Array.from(el.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value);
+      return Array.from(el.querySelectorAll('.cat-check-item.checked')).map(d => d.dataset.key);
     }
 
     const BOOKS_PER_ROW = 3;
