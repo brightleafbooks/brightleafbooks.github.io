@@ -2658,7 +2658,7 @@
             </div>
             <div class="afg"><label for="abt">Title *</label><input id="abt" placeholder="Happy Animals Coloring Book" / autocomplete="off"></div>
             <div class="afrow">
-              <div class="afg"><label for="abp">Price (USD $) *</label><input id="abp" placeholder="11" /
+              <div class="afg"><label for="abp">Price (INR ₹) *</label><input id="abp" placeholder="11" /
                   autocomplete="off"></div>
               <div class="afg"><label for="abpinr">Price (INR ₹) for Instamojo *</label><input id="abpinr"
                   placeholder="900" / autocomplete="off"></div>
@@ -2975,7 +2975,7 @@
           </div>
           <div class="afrow">
             <div class="afg"><label for="ebt">Title *</label><input id="ebt" placeholder="Book title" / autocomplete="off"></div>
-            <div class="afg"><label for="ebp">Price (USD $) *</label><input id="ebp" placeholder="11" / autocomplete="off"></div>
+            <div class="afg"><label for="ebp">Price (INR ₹) *</label><input id="ebp" placeholder="11" / autocomplete="off"></div>
           </div>
           <div class="afrow">
             <div class="afg"><label for="ebpinr">Price (INR ₹) for Instamojo *</label><input id="ebpinr"
@@ -3767,7 +3767,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
         ${b.cover ? `<img class="bcov" src="${b.cover}" alt="${b.title}"/>` : `<div class="bcov-ph">📚<span>${b.title}</span></div>`}
         <div class="bfoot">
           <div class="bname">${b.title}</div>
-          <div class="bprice">$${b.price}</div>
+          <div class="bprice">₹${b.price}</div>
           <button class="bbtn">See Details</button>
         </div>
       </div>`;
@@ -3888,7 +3888,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       document.getElementById('mbd').innerHTML = `
     <button class="mclose" onclick="closeBM()">✕</button>
     <div class="mtit">${b.title}</div>
-    <div class="mprice">$${b.price}</div>
+    <div class="mprice">₹${b.price}</div>
     ${b.age ? `<div class="mage">👶 ${b.age}</div>` : ''}
     <p class="mdesc">${b.desc}</p>
     ${feats ? `<ul class="mfeats">${feats}</ul>` : ''}
@@ -4087,7 +4087,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
     function renderManage() {
       document.getElementById('mlb').innerHTML = books.map(b => `
     <div class="mi">
-      <div><div class="mit">${b.title}</div><div class="mis">$${b.price} · ${b.age || '–'}</div></div>
+      <div><div class="mit">${b.title}</div><div class="mis">₹${b.price} · ${b.age || '–'}</div></div>
       <div class="mi-btns">
         <button class="medit" onclick="openEditBook('${b.id}')">Edit</button>
         <button class="mdel" onclick="delBook('${b.id}')">Delete</button>
@@ -4501,7 +4501,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
             <div class="nsr-thumb">${b.cover?`<img src="${b.cover}" alt="${b.title}"/>`:((_CAT_ICONS[b.category])||'📚')}</div>
             <div class="nsr-info">
               <div class="nsr-title">${_hl(b.title,q)}</div>
-              <div class="nsr-sub">$${b.price}${b.age?' · '+b.age:''}</div>
+              <div class="nsr-sub">₹${b.price}${b.age?' · '+b.age:''}</div>
             </div>
             <span class="nsr-badge">Book</span>
           </div>`).join('');
