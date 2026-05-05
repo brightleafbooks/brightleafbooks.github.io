@@ -2982,6 +2982,7 @@
           <button class="atab" onclick="swTab('tsite',this)">🌐 Site</button>
           <button class="atab" onclick="swTab('tim',this)">💳 Pay</button>
           <button class="atab" onclick="swTab('tpw',this)">🔑 PW</button>
+          <button class="atab" onclick="swTab('tusers',this)">👥 Users</button>
           <button class="axbtn" onclick="closeAdmin()">✕</button>
         </div>
         <!-- Add Book -->
@@ -3294,7 +3295,16 @@
     </div>
   </div>
 
-  <!-- Edit Book Modal -->
+        <!-- Users tab panel -->
+        <div class="ac" id="tusers" style="display:none">
+          <h3 style="margin-bottom:1rem">👥 Signed-Up Users</h3>
+          <div id="tusers-list" style="min-height:60px">
+            <p style="color:var(--mu);font-size:.85rem">Click the Users tab to load.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="ov" id="editBookOv" onclick="if(event.target===this)closeEditBook()">
     <div class="abox">
       <div class="atabs" style="border-radius:22px 22px 0 0">
@@ -4325,7 +4335,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
 
     function swTab(id, btn) {
       try {
-        ['tadd', 'tblg', 'tman', 'tsite', 'tim', 'tpw'].forEach(t => {
+        ['tadd', 'tblg', 'tman', 'tsite', 'tim', 'tpw', 'tusers'].forEach(t => {
           const el = document.getElementById(t);
           if (el) el.style.display = t === id ? 'block' : 'none';
         });
@@ -4335,6 +4345,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
         if (id === 'tsite') populateSiteForm();
         if (id === 'tim') populateIMForm();
         if (id === 'tadd') renderAdminCatGrid('abcatGrid', []);
+        if (id === 'tusers') renderAdminUsers();
       } catch (e) { console.error('swTab error:', e); }
     }
 
@@ -4799,16 +4810,47 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       inp.value = v;
     }
 
-    // ── AUTH SYSTEM ───────────────────────────────────────────────────────────────
-    const AUTH_KEY = 'brightleaf_users';
+    // ── AUTH SYSTEM (Firebase-backed, cross-device) ───────────────────────────────
     const AUTH_SESSION = 'brightleaf_session';
 
-    function _getUsers() {
-      try { return JSON.parse(localStorage.getItem(AUTH_KEY) || '{}'); } catch(e) { return {}; }
+    // Simple password hash (not cryptographic, but better than plaintext)
+    async function _hashPw(pw) {
+      if (window.crypto && window.crypto.subtle) {
+        const enc = new TextEncoder();
+        const buf = await window.crypto.subtle.digest('SHA-256', enc.encode(pw));
+        return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+      }
+      // fallback: base64-like obfuscation if SubtleCrypto unavailable
+      return btoa(unescape(encodeURIComponent(pw)));
     }
-    function _saveUsers(u) {
-      try { localStorage.setItem(AUTH_KEY, JSON.stringify(u)); } catch(e) {}
+
+    // Firestore user doc helpers — email key is base64-encoded to avoid invalid chars
+    function _emailKey(email) {
+      return btoa(unescape(encodeURIComponent(email))).replace(/=/g,'');
     }
+
+    async function _fsGetUser(email) {
+      try {
+        const ok = await initFirebase();
+        if (!ok) return null;
+        const { doc, getDoc } = window._fbModules;
+        const ref = doc(_db, 'users', _emailKey(email));
+        const snap = await getDoc(ref);
+        return snap.exists() ? snap.data() : null;
+      } catch(e) { console.error('_fsGetUser error:', e); return null; }
+    }
+
+    async function _fsSaveUser(email, data) {
+      try {
+        const ok = await initFirebase();
+        if (!ok) return false;
+        const { doc, setDoc } = window._fbModules;
+        const ref = doc(_db, 'users', _emailKey(email));
+        await setDoc(ref, data);
+        return true;
+      } catch(e) { console.error('_fsSaveUser error:', e); return false; }
+    }
+
     function _getSession() {
       try { return JSON.parse(sessionStorage.getItem(AUTH_SESSION) || 'null'); } catch(e) { return null; }
     }
@@ -4872,7 +4914,6 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
         : 'Already have an account? <a onclick="switchAuthTab(\'login\')">Log in</a>';
       document.getElementById('authErr').style.display = 'none';
       document.getElementById('authOk').style.display = 'none';
-      // focus first input
       setTimeout(() => {
         const inp = isLogin
           ? document.getElementById('loginEmail')
@@ -4892,21 +4933,45 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       document.getElementById('authErr').style.display = 'none';
     }
 
-    function doSignup() {
+    async function doSignup() {
+      const btn = document.getElementById('signupBtn');
       const name = document.getElementById('signupName').value.trim();
       const email = document.getElementById('signupEmail').value.trim().toLowerCase();
       const pw = document.getElementById('signupPassword').value;
       if (!name) { _authShowErr('Please enter your name.'); return; }
       if (!email || !/\S+@\S+\.\S+/.test(email)) { _authShowErr('Please enter a valid email.'); return; }
       if (pw.length < 6) { _authShowErr('Password must be at least 6 characters.'); return; }
-      const users = _getUsers();
-      if (users[email]) { _authShowErr('An account with this email already exists. Log in instead.'); return; }
-      users[email] = { name, pw };
-      _saveUsers(users);
+
+      btn.disabled = true; btn.innerHTML = '<span class="spin"></span> Creating…';
+
+      // Check if account already exists in Firestore
+      const existing = await _fsGetUser(email);
+      if (existing) {
+        btn.disabled = false; btn.innerHTML = 'Create Account &#x2192;';
+        _authShowErr('An account with this email already exists. Log in instead.');
+        return;
+      }
+
+      const pwHash = await _hashPw(pw);
+      const userData = {
+        name,
+        email,
+        pwHash,
+        joinedAt: new Date().toISOString(),
+        device: navigator.userAgent.substring(0, 80)
+      };
+      const saved = await _fsSaveUser(email, userData);
+      btn.disabled = false; btn.innerHTML = 'Create Account &#x2192;';
+
+      if (!saved) {
+        _authShowErr('Could not save account. Please try again.');
+        return;
+      }
+
       _authUser = { email, name };
       _saveSession(_authUser);
       _updateNavAuth();
-      _authShowOk('Account created! Welcome, ' + name + ' 🎉');
+      _authShowOk('Account created! Welcome, ' + name + ' \uD83C\uDF89');
       setTimeout(() => {
         closeAuth();
         if (_pendingAuthAction) {
@@ -4916,21 +4981,34 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       }, 1200);
     }
 
-    function doLogin() {
+    async function doLogin() {
+      const btn = document.getElementById('loginBtn');
       const email = document.getElementById('loginEmail').value.trim().toLowerCase();
       const pw = document.getElementById('loginPassword').value;
       if (!email) { _authShowErr('Please enter your email.'); return; }
       if (!pw) { _authShowErr('Please enter your password.'); return; }
-      const users = _getUsers();
-      if (!users[email]) { _authShowErr('No account found with this email. Sign up first!'); return; }
-      if (users[email].pw !== pw) { _authShowErr('Incorrect password. Please try again.'); return; }
-      _authUser = { email, name: users[email].name };
+
+      btn.disabled = true; btn.innerHTML = '<span class="spin"></span> Signing in…';
+
+      const userData = await _fsGetUser(email);
+      btn.disabled = false; btn.innerHTML = 'Log In &#x2192;';
+
+      if (!userData) {
+        _authShowErr('No account found with this email. Sign up first!');
+        return;
+      }
+      const pwHash = await _hashPw(pw);
+      if (userData.pwHash !== pwHash) {
+        _authShowErr('Incorrect password. Please try again.');
+        return;
+      }
+
+      _authUser = { email, name: userData.name };
       _saveSession(_authUser);
       _updateNavAuth();
-      _authShowOk('Welcome back, ' + (_authUser.name || email) + '!');
+      _authShowOk('Welcome back, ' + (userData.name || email) + '!');
       setTimeout(() => {
         closeAuth();
-        // if there was a pending action, run it
         if (_pendingAuthAction) {
           const fn = _pendingAuthAction; _pendingAuthAction = null;
           setTimeout(fn, 200);
@@ -4946,10 +5024,44 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       document.getElementById('authGateOv').classList.add('open');
     }
 
-    // After successful login/signup from gate, run pending action
-    const _origCloseAuth = closeAuth;
-    // Override openAuth to track pending action slot
-    // (pending is handled inside doLogin/doSignup already)
+    // ── ADMIN: View signed-up users ───────────────────────────────────────────────
+    async function renderAdminUsers() {
+      const wrap = document.getElementById('tusers-list');
+      if (!wrap) return;
+      wrap.innerHTML = '<p style="color:var(--mu);font-size:.85rem">Loading users…</p>';
+      try {
+        const ok = await initFirebase();
+        if (!ok) { wrap.innerHTML = '<p style="color:#c0392b">Could not connect to Firebase.</p>'; return; }
+        // List all keys in users collection via REST
+        const url = 'https://firestore.googleapis.com/v1/projects/' + firebaseConfig.projectId + '/databases/(default)/documents/users?key=' + firebaseConfig.apiKey + '&pageSize=200';
+        const res = await fetch(url);
+        if (res.status === 404 || res.status === 200) {
+          const json = await res.json();
+          const docs = json.documents || [];
+          if (!docs.length) {
+            wrap.innerHTML = '<p style="color:var(--mu);font-size:.88rem;text-align:center;padding:1.5rem">No users have signed up yet.</p>';
+            return;
+          }
+          let html = '<table style="width:100%;border-collapse:collapse;font-size:.83rem">';
+          html += '<tr style="background:var(--gl);font-weight:700"><td style="padding:.5rem .7rem">Name</td><td style="padding:.5rem .7rem">Email</td><td style="padding:.5rem .7rem">Joined</td></tr>';
+          docs.forEach((d, i) => {
+            const f = d.fields || {};
+            const name = f.name ? f.name.stringValue : '—';
+            const email = f.email ? f.email.stringValue : '—';
+            const joined = f.joinedAt ? (f.joinedAt.stringValue || '').substring(0,10) : '—';
+            const bg = i % 2 === 0 ? '#fff' : '#f7fdf9';
+            html += `<tr style="background:${bg}"><td style="padding:.45rem .7rem">${name}</td><td style="padding:.45rem .7rem">${email}</td><td style="padding:.45rem .7rem">${joined}</td></tr>`;
+          });
+          html += '</table>';
+          html += `<p style="margin-top:1rem;font-size:.8rem;color:var(--mu);text-align:right">Total: <strong>${docs.length}</strong> user${docs.length!==1?'s':''}</p>`;
+          wrap.innerHTML = html;
+        } else {
+          wrap.innerHTML = '<p style="color:#c0392b">Error loading users (HTTP ' + res.status + ').</p>';
+        }
+      } catch(e) {
+        wrap.innerHTML = '<p style="color:#c0392b">Error: ' + e.message + '</p>';
+      }
+    }
 
     // ── SEARCH ────────────────────────────────────────────────────────────────────
     const _CAT_ICONS = {
