@@ -2390,6 +2390,90 @@
     body.theme-teen .nav-user-chip { background: var(--tgl); color: var(--tgd) }
     body.theme-teen .nav-user-chip .chip-avatar { background: var(--tg) }
 
+    /* USER DROPDOWN */
+    .user-menu-wrap {
+      position: relative;
+      flex-shrink: 0
+    }
+    .user-dropdown {
+      display: none;
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      min-width: 200px;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0,0,0,.14);
+      padding: .5rem 0;
+      z-index: 9000;
+      animation: mIn .15s ease
+    }
+    .user-dropdown.open { display: block }
+    .ud-header {
+      padding: .7rem 1.1rem .5rem;
+      border-bottom: 1px solid var(--gl);
+      margin-bottom: .3rem
+    }
+    .ud-header .ud-name {
+      font-weight: 800;
+      font-size: .9rem;
+      color: var(--tx)
+    }
+    .ud-header .ud-email {
+      font-size: .75rem;
+      color: var(--mu);
+      margin-top: .1rem;
+      word-break: break-all
+    }
+    .ud-item {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      padding: .55rem 1.1rem;
+      font-size: .84rem;
+      font-weight: 600;
+      color: var(--tx);
+      cursor: pointer;
+      transition: background .15s;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      font-family: 'Nunito', sans-serif
+    }
+    .ud-item:hover { background: var(--gl) }
+    .ud-item .ud-icon { font-size: 1rem; width: 20px; text-align: center }
+    .ud-divider { height: 1px; background: var(--gl); margin: .3rem 0 }
+    .ud-item.ud-logout { color: #c0392b }
+    .ud-item.ud-logout:hover { background: #fdecea }
+
+    /* Sub-menu for Browse Books */
+    .ud-item-wrap {
+      position: relative
+    }
+    .ud-submenu {
+      display: none;
+      position: absolute;
+      right: calc(100% + 4px);
+      top: 0;
+      min-width: 180px;
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 8px 28px rgba(0,0,0,.13);
+      padding: .4rem 0;
+      z-index: 9100;
+      animation: mIn .15s ease
+    }
+    .ud-submenu.open { display: block }
+    @media(max-width: 600px) {
+      .ud-submenu {
+        right: 0;
+        left: auto;
+        top: 100%;
+        min-width: 100%
+      }
+    }
+
     /* AUTH MODAL */
     .auth-ov {
       display: none;
@@ -2662,11 +2746,43 @@
       <button class="nav-login-btn" onclick="openAuth('login')">Log In</button>
       <button class="nav-signup-btn" onclick="openAuth('signup')">Sign Up</button>
     </div>
-    <div id="navUserChip" style="display:none">
-      <button class="nav-user-chip" onclick="handleUserChipClick()">
+    <div id="navUserChip" style="display:none" class="user-menu-wrap">
+      <button class="nav-user-chip" onclick="toggleUserDropdown(event)">
         <span class="chip-avatar" id="chipAvatar"></span>
         <span id="chipName"></span>
+        <span style="font-size:.65rem;margin-left:.1rem;opacity:.7">▾</span>
       </button>
+      <div class="user-dropdown" id="userDropdown">
+        <div class="ud-header">
+          <div class="ud-name" id="udName">—</div>
+          <div class="ud-email" id="udEmail">—</div>
+        </div>
+        <!-- Browse Books with sub-menu -->
+        <div class="ud-item-wrap" onmouseenter="showSubMenu()" onmouseleave="hideSubMenu()">
+          <button class="ud-item ud-has-sub" onclick="toggleSubMenu(event)">
+            <span class="ud-icon">📚</span> Browse Books
+            <span style="margin-left:auto;font-size:.65rem;opacity:.6">▸</span>
+          </button>
+          <div class="ud-submenu" id="udSubMenu">
+            <button class="ud-item" onclick="closeUserDropdown();setAudience('kids');document.getElementById('books').scrollIntoView({behavior:'smooth'})">
+              <span class="ud-icon">🧒</span> Little Readers
+            </button>
+            <button class="ud-item" onclick="closeUserDropdown();setAudience('teen');document.getElementById('books').scrollIntoView({behavior:'smooth'})">
+              <span class="ud-icon">🎒</span> Young Explorers
+            </button>
+          </div>
+        </div>
+        <button class="ud-item" onclick="closeUserDropdown();document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
+          <span class="ud-icon">✉️</span> Send us your questions
+        </button>
+        <button class="ud-item" onclick="closeUserDropdown();openAuth('login')">
+          <span class="ud-icon">🔑</span> My Account
+        </button>
+        <div class="ud-divider"></div>
+        <button class="ud-item ud-logout" onclick="doLogout()">
+          <span class="ud-icon">🚪</span> Log Out
+        </button>
+      </div>
     </div>
   </nav>
 
@@ -4871,20 +4987,50 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
         chip.style.display = 'flex';
         document.getElementById('chipAvatar').textContent = (_authUser.name || _authUser.email)[0].toUpperCase();
         document.getElementById('chipName').textContent = (_authUser.name || _authUser.email).split(' ')[0];
+        document.getElementById('udName').textContent = _authUser.name || 'User';
+        document.getElementById('udEmail').textContent = _authUser.email || '';
       } else {
         btns.style.display = 'flex';
         chip.style.display = 'none';
+        closeUserDropdown();
       }
     }
     _updateNavAuth();
 
-    function handleUserChipClick() {
+    function toggleUserDropdown(e) {
+      e.stopPropagation();
+      const dd = document.getElementById('userDropdown');
+      dd.classList.toggle('open');
+      if (!dd.classList.contains('open')) hideSubMenu();
+    }
+    function closeUserDropdown() {
+      document.getElementById('userDropdown').classList.remove('open');
+      hideSubMenu();
+    }
+    function showSubMenu() {
+      document.getElementById('udSubMenu').classList.add('open');
+    }
+    function hideSubMenu() {
+      const sm = document.getElementById('udSubMenu');
+      if (sm) sm.classList.remove('open');
+    }
+    function toggleSubMenu(e) {
+      e.stopPropagation();
+      document.getElementById('udSubMenu').classList.toggle('open');
+    }
+    function doLogout() {
+      closeUserDropdown();
       if (confirm('Log out of Bright Leaf Books?')) {
         _authUser = null;
         _clearSession();
         _updateNavAuth();
       }
     }
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+      const wrap = document.getElementById('navUserChip');
+      if (wrap && !wrap.contains(e.target)) closeUserDropdown();
+    });
 
     function openAuth(tab) {
       document.getElementById('authOv').classList.add('open');
