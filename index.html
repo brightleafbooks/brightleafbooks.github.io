@@ -2707,19 +2707,41 @@
     .tsec h2 { text-align: center; font-family: 'Fraunces', serif; font-size: clamp(1.4rem,3vw,2rem); margin-bottom: .4rem }
     .tsec h2 em { color: var(--g); font-style: italic }
     .tsec .tsub { text-align: center; color: var(--mu); font-size: .9rem; margin-bottom: 2rem }
-    .tgrid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 1.2rem;
-      max-width: 1000px;
+    /* ── REVIEWS CAROUSEL ───────────────────────────────────────── */
+    .tgrid-outer {
+      max-width: 1100px;
       margin: 0 auto;
+      position: relative;
+    }
+    .tgrid {
+      display: flex;
+      gap: 1.1rem;
+      overflow: hidden;        /* hides cards beyond the viewport */
+      transition: none;
+      padding: 6px 4px 12px;  /* breathing room for shadows */
     }
     .tcard {
-      background: #f9fdf9;
+      background: #fff;
       border: 1.5px solid var(--gl);
-      border-radius: 20px;
+      border-radius: 16px;
       padding: 1.4rem 1.5rem;
       position: relative;
+      box-shadow: 0 4px 18px rgba(61,170,92,.10), 0 1.5px 4px rgba(0,0,0,.06);
+      transition: box-shadow .2s, transform .2s;
+      /* Each card takes exactly 1/3 of the row */
+      flex: 0 0 calc(33.333% - .75rem);
+      min-width: 0;
+    }
+    .tcard:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 32px rgba(61,170,92,.18), 0 2px 8px rgba(0,0,0,.08);
+    }
+    /* Responsive: 1 card on mobile, 2 on tablet, 3 on desktop */
+    @media (max-width: 700px) {
+      .tcard { flex: 0 0 calc(100% - .5rem); }
+    }
+    @media (min-width: 701px) and (max-width: 960px) {
+      .tcard { flex: 0 0 calc(50% - .6rem); }
     }
     .tcard .tq {
       font-size: 2.5rem;
@@ -2840,38 +2862,189 @@
       flex-shrink: 0;
     }
 
-    @media(max-width:600px) {
+    /* ── HAMBURGER BUTTON ───────────────────────────────────────── */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 8px;
+      z-index: 200;
+      flex-shrink: 0;
+    }
+    .hamburger span {
+      display: block;
+      width: 22px;
+      height: 2.5px;
+      background: var(--gd);
+      border-radius: 2px;
+      transition: transform .25s, opacity .2s, width .2s;
+      transform-origin: center;
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; width: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
+
+    /* ── MOBILE DRAWER ──────────────────────────────────────────── */
+    .mob-drawer {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 150;
+      flex-direction: column;
+    }
+    .mob-drawer.open { display: flex; }
+    .mob-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,.38);
+      backdrop-filter: blur(2px);
+    }
+    .mob-panel {
+      position: absolute;
+      top: 0; right: 0;
+      width: 80%;
+      max-width: 320px;
+      height: 100%;
+      background: #fff;
+      box-shadow: -6px 0 28px rgba(0,0,0,.14);
+      display: flex;
+      flex-direction: column;
+      padding: 1.2rem 1.4rem 2rem;
+      overflow-y: auto;
+      transform: translateX(100%);
+      transition: transform .3s cubic-bezier(.4,0,.2,1);
+    }
+    .mob-drawer.open .mob-panel { transform: translateX(0); }
+    .mob-close {
+      align-self: flex-end;
+      background: none;
+      border: none;
+      font-size: 1.4rem;
+      cursor: pointer;
+      color: var(--mu);
+      padding: 4px 6px;
+      margin-bottom: .8rem;
+    }
+    .mob-nav-links { list-style: none; margin-bottom: 1.2rem; }
+    .mob-nav-links li { border-bottom: 1px solid var(--gl); }
+    .mob-nav-links li a,
+    .mob-nav-links li button {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: .85rem .2rem;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--tx);
+      text-decoration: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    .mob-aud-toggle {
+      display: flex;
+      gap: .5rem;
+      margin-bottom: 1.2rem;
+    }
+    .mob-aud-btn {
+      flex: 1;
+      padding: .55rem .4rem;
+      border-radius: 999px;
+      border: 1.5px solid var(--gl);
+      background: #fff;
+      font-size: .78rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .mob-aud-btn.active { background: var(--g); color: #fff; border-color: var(--g); }
+    .mob-auth-btns { display: flex; gap: .6rem; margin-top: auto; }
+    .mob-auth-btns button {
+      flex: 1;
+      padding: .65rem;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: .88rem;
+      cursor: pointer;
+    }
+    .mob-login { border: 2px solid var(--g); background: #fff; color: var(--g); }
+    .mob-signup { border: 2px solid var(--g); background: var(--g); color: #fff; }
+
+    /* ── COMPREHENSIVE MOBILE RESPONSIVE ────────────────────────── */
+    @media(max-width:768px) {
+      /* NAV */
       nav {
-        padding: 1rem 1.1rem
+        padding: .75rem 1rem;
+        gap: .5rem;
       }
-      .nav-auth-btns .nav-login-btn { display: none }
+      .hamburger { display: flex; }
+      .nl, .nav-audience-toggle, .ncta, .nav-auth-btns, .user-menu-wrap, .nsearch { display: none !important; }
+      .logo { font-size: 1.1rem; }
+      .logo img { height: 28px !important; }
 
-      .nl {
-        display: none
-      }
+      /* LIVE BAR */
+      .live-bar { font-size: .72rem; padding: .3rem .8rem; }
 
-      .fr,
-      .afrow {
-        grid-template-columns: 1fr
-      }
-
+      /* HERO */
+      .hl { font-size: clamp(1.5rem, 7vw, 2rem) !important; }
+      .hsub { font-size: .88rem; }
       .hstats {
-        gap: 1.5rem;
+        gap: 1rem;
         flex-wrap: wrap;
-        justify-content: center
+        justify-content: center;
+        font-size: .8rem;
       }
+      .hbtns { flex-wrap: wrap; gap: .6rem; }
+      .hbtns a, .hbtns button { width: 100%; text-align: center; }
 
-      .dd {
-        display: none
-      }
+      /* BOOKS GRID */
+      .bgrid { grid-template-columns: repeat(2, 1fr) !important; gap: .8rem; }
 
-      .blgrid {
-        grid-template-columns: 1fr
-      }
+      /* ABOUT / FEATURES */
+      .fr, .afrow { grid-template-columns: 1fr !important; }
+      .aico { display: none; }
+      .dd { display: none; }
 
-      .bgrid {
-        grid-template-columns: repeat(2, 1fr)
-      }
+      /* BLOG */
+      .blgrid { grid-template-columns: 1fr !important; }
+
+      /* REVIEWS */
+      .tgrid { flex-direction: column !important; }
+      .tcard { flex: none !important; width: 100% !important; }
+      .tgrid-outer { padding: 0 .5rem; }
+      .rvfp { flex-wrap: wrap; gap: .4rem; }
+      .rvfp button { font-size: .75rem; padding: .3rem .7rem; }
+
+      /* CONTACT FORM */
+      .fr { grid-template-columns: 1fr !important; }
+
+      /* FOOTER */
+      footer .fr { grid-template-columns: 1fr !important; gap: 1.5rem; }
+
+      /* SECTIONS */
+      .tsec, .about, .blsec, .bsec { padding: 2.5rem 1rem; }
+      section { padding: 2rem 1rem; }
+
+      /* RATING SUMMARY */
+      .rv-summary { flex-direction: column; align-items: flex-start; gap: .8rem; }
+
+      /* AUTH BUTTONS fallback for logged-in user */
+      #navUserChip { display: none !important; }
+      #navAuthBtns { display: none !important; }
+    }
+
+    @media(max-width:480px) {
+      .bgrid { grid-template-columns: 1fr !important; }
+      .logo span.logo-text { display: none; }
+    }
+
+    @media(max-width:600px) {
+      .nav-auth-btns .nav-login-btn { display: none }
     }
   </style>
 </head>
@@ -2948,7 +3121,43 @@
         </button>
       </div>
     </div>
+    <!-- HAMBURGER BUTTON (mobile only) -->
+    <button class="hamburger" id="hamburgerBtn" onclick="toggleMobDrawer()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
   </nav>
+
+  <!-- MOBILE DRAWER -->
+  <div class="mob-drawer" id="mobDrawer">
+    <div class="mob-overlay" onclick="closeMobDrawer()"></div>
+    <div class="mob-panel">
+      <button class="mob-close" onclick="closeMobDrawer()">✕</button>
+      <!-- Audience toggle -->
+      <div class="mob-aud-toggle">
+        <button class="mob-aud-btn active" id="mobBtnKids" onclick="setAudience('kids');closeMobDrawer()">🧒 Little Readers</button>
+        <button class="mob-aud-btn" id="mobBtnTeen" onclick="setAudience('teen');closeMobDrawer()">🎒 Young Explorers</button>
+      </div>
+      <!-- Nav links -->
+      <ul class="mob-nav-links">
+        <li><button onclick="openBooksDialog();closeMobDrawer()">📚 Books</button></li>
+        <li><a href="#about" onclick="closeMobDrawer()">About</a></li>
+        <li><a href="#reviews" onclick="closeMobDrawer()">Reviews</a></li>
+        <li><a href="#blog" onclick="closeMobDrawer()">Blog</a></li>
+        <li><a href="#contact" onclick="closeMobDrawer()">Contact</a></li>
+        <li><a href="#books" onclick="closeMobDrawer()" style="color:var(--g)">🛒 Shop Books →</a></li>
+      </ul>
+      <!-- Auth -->
+      <div class="mob-auth-btns" id="mobAuthBtns">
+        <button class="mob-login" onclick="openAuth('login');closeMobDrawer()">Log In</button>
+        <button class="mob-signup" onclick="openAuth('signup');closeMobDrawer()">Sign Up</button>
+      </div>
+      <div id="mobUserInfo" style="display:none;margin-top:auto;padding-top:1rem;border-top:1px solid var(--gl)">
+        <div style="font-weight:700;font-size:.95rem" id="mobUserName">—</div>
+        <div style="font-size:.8rem;color:var(--mu);margin-bottom:.8rem" id="mobUserEmail">—</div>
+        <button onclick="doLogout();closeMobDrawer()" style="width:100%;padding:.55rem;border-radius:999px;border:2px solid #ff4757;color:#ff4757;background:#fff;font-weight:700;cursor:pointer">🚪 Log Out</button>
+      </div>
+    </div>
+  </div>
 
   <!-- AUTH MODAL -->
   <div class="auth-ov" id="authOv" onclick="if(event.target===this)closeAuth()">
@@ -3161,10 +3370,19 @@
     <div id="rvFilterPills" style="display:none;flex-wrap:wrap;gap:.5rem;justify-content:center;margin-bottom:1.2rem"></div>
 
     <!-- Published reviews grid -->
-    <div class="tgrid" id="rvGrid">
-      <div style="grid-column:1/-1;text-align:center;color:var(--mu);font-size:.9rem;padding:2rem 0" id="rvEmpty">
-        Loading reviews…
+    <div class="tgrid-outer">
+      <div class="tgrid" id="rvGrid">
+        <div style="text-align:center;color:var(--mu);font-size:.9rem;padding:2rem 0;width:100%" id="rvEmpty">
+          Loading reviews…
+        </div>
       </div>
+    </div>
+
+    <!-- See more / collapse button -->
+    <div id="rvSeeMoreWrap" style="display:none;text-align:center;margin-top:1rem">
+      <button id="rvSeeMoreBtn" onclick="toggleRvExpanded()" style="background:transparent;color:var(--g);border:2px solid var(--g);border-radius:999px;padding:.55rem 1.8rem;font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;transition:background .2s,color .2s" onmouseover="this.style.background='var(--g)';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='var(--g)'">
+        See more reviews ▾
+      </button>
     </div>
 
     <!-- Write a review form -->
@@ -3848,6 +4066,22 @@
   </div>
 
   <script>
+    // ── MOBILE DRAWER ─────────────────────────────────────────────────────────────
+    function toggleMobDrawer() {
+      const drawer = document.getElementById('mobDrawer');
+      const btn = document.getElementById('hamburgerBtn');
+      const isOpen = drawer.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      document.body.style.overflow = isOpen ? 'hidden' : '';
+    }
+    function closeMobDrawer() {
+      document.getElementById('mobDrawer').classList.remove('open');
+      document.getElementById('hamburgerBtn').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    // Close drawer on ESC
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMobDrawer(); });
+
     // ── DATA ──────────────────────────────────────────────────────────────────────
     const SEED_BOOKS = [
       {
@@ -4342,6 +4576,11 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       // Update nav buttons
       document.getElementById('navBtnKids').classList.toggle('active', aud === 'kids');
       document.getElementById('navBtnTeen').classList.toggle('active', aud === 'teen');
+      // Sync mobile drawer buttons
+      const mk = document.getElementById('mobBtnKids');
+      const mt = document.getElementById('mobBtnTeen');
+      if (mk) mk.classList.toggle('active', aud === 'kids');
+      if (mt) mt.classList.toggle('active', aud === 'teen');
 
       // Update divider buttons
       document.getElementById('divBtnKids').classList.toggle('active', aud === 'kids');
@@ -5258,6 +5497,8 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
     function _updateNavAuth() {
       const btns = document.getElementById('navAuthBtns');
       const chip = document.getElementById('navUserChip');
+      const mobAuth = document.getElementById('mobAuthBtns');
+      const mobUser = document.getElementById('mobUserInfo');
       if (_authUser) {
         btns.style.display = 'none';
         chip.style.display = 'flex';
@@ -5265,10 +5506,19 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
         document.getElementById('chipName').textContent = (_authUser.name || _authUser.email).split(' ')[0];
         document.getElementById('udName').textContent = _authUser.name || 'User';
         document.getElementById('udEmail').textContent = _authUser.email || '';
+        // Mobile drawer
+        if (mobAuth) mobAuth.style.display = 'none';
+        if (mobUser) {
+          mobUser.style.display = 'block';
+          document.getElementById('mobUserName').textContent = _authUser.name || 'User';
+          document.getElementById('mobUserEmail').textContent = _authUser.email || '';
+        }
       } else {
         btns.style.display = 'flex';
         chip.style.display = 'none';
         closeUserDropdown();
+        if (mobAuth) mobAuth.style.display = 'flex';
+        if (mobUser) mobUser.style.display = 'none';
       }
       _rvCheckAuth && _rvCheckAuth();
     }
@@ -5518,14 +5768,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
             _bookRatings[b.id] = { avg, count: br.length };
           }
         });
-        // Fallback: for books with no specific reviews, show site-wide average
-        const siteAvg = reviews.reduce((s, r) => s + r.stars, 0) / reviews.length;
-        const siteCount = reviews.length;
-        books.forEach(b => {
-          if (!_bookRatings[b.id]) {
-            _bookRatings[b.id] = { avg: siteAvg, count: siteCount, isSiteWide: true };
-          }
-        });
+        // Only books with their own specific reviews get a rating badge on their card
         renderBooks(); // re-render cards with stars
       } catch(e) {}
     }
@@ -5692,6 +5935,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
     let _rvFilterBook = '';
     function setRvBookFilter(bookId) {
       _rvFilterBook = bookId;
+      _rvExpanded = false; // reset expansion when filter changes
       // Update pill styles
       document.querySelectorAll('.rv-filter-pill').forEach(p => {
         p.style.background = p.dataset.val === bookId ? 'var(--g)' : 'var(--gl)';
@@ -5700,19 +5944,12 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       _renderRvCards(window._cachedReviews || []);
     }
 
-    function _renderRvCards(reviews) {
-      const grid = document.getElementById('rvGrid');
-      if (!grid) return;
-      const filtered = _rvFilterBook
-        ? reviews.filter(r => r.bookId === _rvFilterBook)
-        : reviews;
-      if (filtered.length === 0) {
-        grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;color:var(--mu);font-size:.9rem;padding:2rem 0">No reviews for this book yet — be the first!</div>`;
-        return;
-      }
-      grid.innerHTML = filtered.map(r => {
-        const bookLabel = r.bookId ? books.find(b => b.id === r.bookId)?.title : '';
-        return `<div class="tcard">
+    const RV_PAGE_SIZE = 3;
+    let _rvExpanded = false;
+
+    function _rvCardHtml(r) {
+      const bookLabel = r.bookId ? books.find(b => b.id === r.bookId)?.title : '';
+      return `<div class="tcard">
           <div class="tq">"</div>
           ${bookLabel ? `<div style="font-size:.72rem;font-weight:700;color:var(--g);margin-top:1.2rem;margin-bottom:.15rem;background:var(--gl);display:inline-block;padding:.18rem .55rem;border-radius:8px">📖 ${bookLabel.replace(/</g,'&lt;')}</div>` : ''}
           <div style="color:#f5a623;font-size:.88rem;margin-top:.4rem;margin-bottom:.3rem">${_rvStars(r.stars)}</div>
@@ -5725,7 +5962,47 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
             </div>
           </div>
         </div>`;
-      }).join('');
+    }
+
+    function toggleRvExpanded() {
+      _rvExpanded = !_rvExpanded;
+      _renderRvCards(window._cachedReviews || []);
+      if (!_rvExpanded) {
+        document.getElementById('reviews')?.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    function _renderRvCards(reviews) {
+      const grid = document.getElementById('rvGrid');
+      const seeMoreWrap = document.getElementById('rvSeeMoreWrap');
+      const seeMoreBtn = document.getElementById('rvSeeMoreBtn');
+      if (!grid) return;
+
+      const filtered = _rvFilterBook
+        ? reviews.filter(r => r.bookId === _rvFilterBook)
+        : reviews;
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div style="text-align:center;color:var(--mu);font-size:.9rem;padding:2rem 0;width:100%">No reviews for this book yet — be the first!</div>`;
+        if (seeMoreWrap) seeMoreWrap.style.display = 'none';
+        return;
+      }
+
+      // Newest first (index 0 = newest). Show first 3 by default, all when expanded.
+      const toShow = _rvExpanded ? filtered : filtered.slice(0, RV_PAGE_SIZE);
+      grid.innerHTML = toShow.map(_rvCardHtml).join('');
+
+      // See more / show less
+      if (seeMoreWrap) {
+        if (filtered.length > RV_PAGE_SIZE) {
+          seeMoreWrap.style.display = 'block';
+          if (seeMoreBtn) {
+            seeMoreBtn.innerHTML = _rvExpanded ? 'Show less ▴' : 'See more ▾';
+          }
+        } else {
+          seeMoreWrap.style.display = 'none';
+        }
+      }
     }
 
     // Render public reviews
