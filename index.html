@@ -1121,6 +1121,7 @@
 
     /* BOOK MODAL */
     .bmbox {
+      -webkit-overflow-scrolling: touch;
       background: var(--cr);
       border-radius: 26px;
       max-width: 700px;
@@ -2311,26 +2312,177 @@
       margin-right: 5px
     }
 
+    /* ═══════════════════════════════════════════════
+       RESPONSIVE — TABLET  (≤880px)
+    ═══════════════════════════════════════════════ */
     @media(max-width:880px) {
       .about {
         grid-template-columns: 1fr;
-        gap: 2.25rem
+        gap: 2rem;
+        padding: 4rem 1.5rem
       }
-
-      .blgrid {
-        grid-template-columns: 1fr 1fr
-      }
-
-      .bmbox {
-        grid-template-columns: 1fr
-      }
-
-      .bmcov img,
-      .bmcov-ph {
+      .blgrid { grid-template-columns: 1fr 1fr }
+      .bmbox  { grid-template-columns: 1fr }
+      .bmcov img, .bmcov-ph {
         border-radius: 26px 26px 0 0;
         min-height: 180px;
         width: 100%
       }
+      .csec { padding: 4rem 1.5rem }
+      .bsec { padding: 4rem 1.5rem }
+      .tsec { padding: 4rem 1.5rem }
+    }
+
+    /* ═══════════════════════════════════════════════
+       RESPONSIVE — MOBILE  (≤600px)
+    ═══════════════════════════════════════════════ */
+    @media(max-width:600px) {
+
+      /* ── NAV ── */
+      nav { padding: .85rem 1rem }
+      .nav-hamburger { display: flex }
+      .nl { display: none }
+      .nav-auth-btns .nav-login-btn { display: none }
+      .nav-audience-toggle { display: none }
+      .nav-cta { display: none }
+
+      /* ── HERO ── */
+      .hero { padding: 5.5rem 1.1rem 3rem; min-height: auto }
+      h1 { font-size: clamp(2rem,8vw,3rem); line-height: 1.15 }
+      .hsub { font-size: .95rem; margin: 1.1rem auto 1.6rem }
+      .hbtns { flex-direction: column; align-items: stretch; gap: .7rem }
+      .bp, .bs { padding: .85rem 1.2rem; font-size: .95rem; text-align: center }
+      .hstats { gap: 1.2rem; flex-wrap: wrap; justify-content: center; margin-top: 2rem }
+      .sn { font-size: 1.55rem }
+      .sl { font-size: .75rem }
+      .dd { display: none }
+
+      /* ── ABOUT ── */
+      .about { padding: 3rem 1.1rem; gap: 1.5rem }
+      h2 { font-size: clamp(1.5rem,6vw,2rem) }
+      .acards { gap: .7rem }
+      .acard { padding: 1rem 1.1rem }
+
+      /* ── BOOKS SECTION ── */
+      .bsec { padding: 3rem 1rem }
+      .bsh { margin-bottom: 2rem }
+      .bgrid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: .85rem
+      }
+      .bcard { border-radius: 16px }
+      .bcov { height: 140px }
+      .bcov-ph { height: 140px; font-size: 2rem }
+      .bfoot { padding: .7rem .8rem .8rem }
+      .bname { font-size: .82rem }
+      .bprice { font-size: .88rem }
+      .bbtn { font-size: .72rem; padding: .3rem .7rem }
+      .bcat-filters { gap: .4rem; margin-bottom: 1.8rem }
+      .bcat-pill { font-size: .74rem; padding: .38rem .8rem }
+      .bcat-section { margin-bottom: 2rem }
+      .bcat-title { font-size: 1rem }
+      .seemore-btn { font-size: .75rem; padding: .35rem .85rem }
+      .fr, .afrow { grid-template-columns: 1fr }
+
+      /* ── BOOK MODAL ── */
+      .bmbox { border-radius: 22px 22px 0 0; max-height: 92vh; overflow-y: auto }
+      .mbd { padding: 1.1rem 1rem 1.5rem }
+      .mtit { font-size: 1.15rem }
+      .mprice { font-size: 1rem }
+      .mage { font-size: .78rem }
+      .mdesc { font-size: .84rem }
+      .macts { gap: .5rem; flex-wrap: wrap }
+      .macts > * { font-size: .8rem; padding: .55rem .9rem }
+      .bm-share-trigger { padding: .55rem .9rem; font-size: .8rem }
+      .mstars { font-size: .82rem }
+      .msamp { gap: .5rem }
+      .msamp img { border-radius: 10px }
+      .bm-quickrate-wrap { flex-wrap: wrap; gap: .35rem }
+      .bm-qstar { font-size: 1.35rem }
+
+      /* ── SHARE POPUP ── */
+      .share-pop-box { padding: 1.3rem 1.1rem 1.8rem }
+      .share-pop-grid { grid-template-columns: repeat(4,1fr); gap: .5rem }
+      .share-pop-icon-circle { width: 46px; height: 46px; font-size: 1.2rem }
+      .share-pop-icon-label { font-size: .65rem }
+
+      /* ── REVIEWS ── */
+      .tsec { padding: 3rem 1rem }
+      .tgrid { grid-template-columns: 1fr }
+      .tcard { padding: 1.3rem 1.1rem }
+
+      /* ── BLOG ── */
+      .blsec { padding: 3rem 1rem }
+      .blgrid { grid-template-columns: 1fr }
+      .blcard { flex-direction: column }
+      .bltmb { width: 100%; height: 160px; border-radius: 14px 14px 0 0 }
+      .bltph { height: 100px; border-radius: 14px 14px 0 0; width: 100% }
+      .blbd { padding: 1rem }
+      .blh { margin-bottom: 1.8rem }
+
+      /* ── CONTACT ── */
+      .csec { padding: 3rem 1rem }
+      .cwrap { max-width: 100% }
+      .cform input, .cform select, .cform textarea {
+        font-size: 16px /* prevents iOS zoom on focus */
+      }
+      .cform button[type=submit] { width: 100%; justify-content: center }
+
+      /* ── PAYMENT MODAL ── */
+      .paybox {
+        border-radius: 22px 22px 0 0;
+        padding: 1.5rem 1.1rem 2rem;
+        max-width: 100%;
+        width: 100%;
+        position: fixed;
+        bottom: 0; left: 0; right: 0;
+        max-height: 92vh;
+        overflow-y: auto
+      }
+      .ov.open > .paybox { margin-top: auto }
+      .pay-field input, .pay-field select { font-size: 16px }
+
+      /* ── ADMIN / AUTH MODALS ── */
+      .abox, .auth-modal {
+        border-radius: 22px 22px 0 0;
+        width: 100%;
+        max-width: 100%;
+        position: fixed;
+        bottom: 0; left: 0; right: 0;
+        max-height: 92vh;
+        overflow-y: auto;
+        margin: 0;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0
+      }
+      .auth-modal { padding: 1.8rem 1.2rem 2rem }
+      .afrow { grid-template-columns: 1fr }
+      .af input, .af select, .af textarea { font-size: 16px }
+
+      /* ── FOOTER ── */
+      .footer-inner { grid-template-columns: 1fr; gap: 1.5rem }
+      .footer-links { grid-template-columns: 1fr 1fr }
+      .footer-bottom { flex-direction: column; text-align: center; gap: .5rem }
+      footer { padding: 3rem 1.1rem 1.5rem }
+
+      /* ── MISC ── */
+      .hbadge { font-size: .7rem }
+      .stag { font-size: .68rem }
+      .ticker .it { font-size: .82rem; padding: 0 1.5rem }
+      section { scroll-margin-top: 60px }
+    }
+
+    /* ═══════════════════════════════════════════════
+       RESPONSIVE — TINY  (≤380px)
+    ═══════════════════════════════════════════════ */
+    @media(max-width:380px) {
+      nav { padding: .75rem .8rem }
+      .bgrid { grid-template-columns: repeat(2,1fr); gap: .6rem }
+      .bcov { height: 120px }
+      .bname { font-size: .75rem }
+      .share-pop-grid { grid-template-columns: repeat(4,1fr) }
+      .share-pop-icon-circle { width: 40px; height: 40px }
+      h1 { font-size: 1.85rem }
     }
 
     /* AUTH BUTTONS IN NAV */
@@ -2851,39 +3003,7 @@
       flex-shrink: 0;
     }
 
-    @media(max-width:600px) {
-      nav {
-        padding: 1rem 1.1rem
-      }
-      .nav-auth-btns .nav-login-btn { display: none }
-
-      .nl {
-        display: none
-      }
-
-      .fr,
-      .afrow {
-        grid-template-columns: 1fr
-      }
-
-      .hstats {
-        gap: 1.5rem;
-        flex-wrap: wrap;
-        justify-content: center
-      }
-
-      .dd {
-        display: none
-      }
-
-      .blgrid {
-        grid-template-columns: 1fr
-      }
-
-      .bgrid {
-        grid-template-columns: repeat(2, 1fr)
-      }
-    }
+    /* mobile styles consolidated above */
 
     /* HAMBURGER MENU FOR MOBILE */
     .nav-hamburger {
@@ -2940,9 +3060,7 @@
     }
     .mobile-menu a:last-child { border-bottom: none }
 
-    @media(max-width:600px) {
-      .nav-hamburger { display: flex }
-    }
+    /* hamburger shown in consolidated mobile block above */
 
     /* ── SHARE PANEL ── */
     /* ── SHARE TRIGGER BUTTON (inside modal actions) ── */
