@@ -3,7 +3,6 @@
 <html lang="en">
 
 <head>
-
   <meta charset="UTF-8" />
   <title>Bright Leaf Books - Fun Learning for Kids</title>
   <meta name="description" content="Interactive kids books, coloring pages and fun learning content.">
@@ -700,7 +699,7 @@
       transition: background .2s
     }
     .books-all-btn:hover { background: var(--o) }
-    @media(max-width:768px) {
+    @media(max-width:600px) {
       .books-cat-grid { grid-template-columns: repeat(2,1fr) }
     }
 
@@ -2337,18 +2336,15 @@
     /* ═══════════════════════════════════════════════
        RESPONSIVE — MOBILE  (≤600px)
     ═══════════════════════════════════════════════ */
-    @media(max-width:768px) {
+    @media(max-width:600px) {
 
       /* ── NAV ── */
-      nav { padding: .75rem 1.1rem }
-      .nav-hamburger { display: flex !important }
-      .nl { display: none !important }
-      .nav-auth-btns { display: none !important }
-      .nav-audience-toggle { display: none !important }
-      .ncta { display: none !important }
-      #nav-cta { display: none !important }
-      .nsearch { display: none !important }
-      .user-menu-wrap { display: none !important }
+      nav { padding: .85rem 1rem }
+      .nav-hamburger { display: flex }
+      .nl { display: none }
+      .nav-auth-btns { display: none }
+      .nav-audience-toggle { display: none }
+      .nav-cta { display: none }
 
       /* ── HERO ── */
       .hero { padding: 5.5rem 1.1rem 3rem; min-height: auto }
@@ -2629,7 +2625,7 @@
       animation: mIn .15s ease
     }
     .ud-submenu.open { display: block }
-    @media(max-width:768px) {
+    @media(max-width: 600px) {
       .ud-submenu {
         right: 0;
         left: auto;
@@ -3013,20 +3009,18 @@
     .nav-hamburger {
       display: none;
       flex-direction: column;
-      justify-content: center;
       gap: 5px;
-      background: var(--gl);
+      background: none;
       border: none;
       cursor: pointer;
-      padding: .55rem .65rem;
-      border-radius: 10px;
+      padding: .4rem;
+      border-radius: 8px;
       transition: background .2s;
-      flex-shrink: 0;
     }
-    .nav-hamburger:hover { background: #b8e6c8 }
+    .nav-hamburger:hover { background: var(--gl) }
     .nav-hamburger span {
       display: block;
-      width: 24px;
+      width: 22px;
       height: 2.5px;
       background: var(--gd);
       border-radius: 2px;
@@ -3039,18 +3033,16 @@
     .mobile-menu {
       display: none;
       position: fixed;
-      top: 60px;
+      top: 64px;
       left: 0; right: 0;
       background: rgba(255,251,242,.97);
       backdrop-filter: blur(12px);
       border-bottom: 1.5px solid rgba(61,170,92,.15);
       z-index: 99;
-      padding: 1.2rem 1.3rem 1.8rem;
+      padding: 1rem 1.5rem 1.5rem;
       flex-direction: column;
-      gap: .85rem;
-      box-shadow: 0 8px 24px rgba(0,0,0,.1);
-      max-height: calc(100vh - 60px);
-      overflow-y: auto;
+      gap: .75rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,.08);
     }
     .mobile-menu.open { display: flex }
     .mobile-menu a, .mobile-menu button.nav-books-btn {
@@ -6063,14 +6055,8 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
             _bookRatings[b.id] = { avg, count: br.length };
           }
         });
-        // Fallback: for books with no specific reviews, show site-wide average
-        const siteAvg = reviews.reduce((s, r) => s + r.stars, 0) / reviews.length;
-        const siteCount = reviews.length;
-        books.forEach(b => {
-          if (!_bookRatings[b.id]) {
-            _bookRatings[b.id] = { avg: siteAvg, count: siteCount, isSiteWide: true };
-          }
-        });
+        // Books with no specific reviews simply have no entry in _bookRatings
+        // (they will show no stars rather than inheriting the site-wide average)
         renderBooks(); // re-render cards with stars
       } catch(e) {}
     }
@@ -6242,7 +6228,34 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
         p.style.background = p.dataset.val === bookId ? 'var(--g)' : 'var(--gl)';
         p.style.color = p.dataset.val === bookId ? '#fff' : 'var(--gd)';
       });
-      _renderRvCards(window._cachedReviews || []);
+      const allReviews = window._cachedReviews || [];
+      // Update summary stats to reflect the selected book (or all books)
+      const scoped = bookId ? allReviews.filter(r => r.bookId === bookId) : allReviews;
+      const sum = document.getElementById('rvSummary');
+      if (sum && scoped.length > 0) {
+        const avg = scoped.reduce((s, r) => s + r.stars, 0) / scoped.length;
+        document.getElementById('rvAvgNum').textContent = avg.toFixed(1);
+        document.getElementById('rvStarDisp').textContent = _rvStars(Math.round(avg));
+        document.getElementById('rvTotal').textContent = scoped.length + ' review' + (scoped.length !== 1 ? 's' : '') + (bookId ? '' : ' (combined)');
+        const bars = document.getElementById('rvBars');
+        let bhtml = '';
+        for (let s = 5; s >= 1; s--) {
+          const cnt = scoped.filter(r => r.stars === s).length;
+          const pct = Math.round((cnt / scoped.length) * 100);
+          bhtml += `<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;font-size:.72rem">
+            <span style="color:#f5a623;width:16px;text-align:right">${s}★</span>
+            <div style="flex:1;height:7px;background:#e8e8e8;border-radius:4px;overflow:hidden">
+              <div style="width:${pct}%;height:100%;background:#f5a623;border-radius:4px"></div>
+            </div>
+            <span style="color:var(--mu);width:20px">${cnt}</span>
+          </div>`;
+        }
+        bars.innerHTML = bhtml;
+        sum.style.display = 'flex';
+      } else if (sum && scoped.length === 0) {
+        sum.style.display = 'none';
+      }
+      _renderRvCards(allReviews);
     }
 
     function _renderRvCards(reviews) {
@@ -6708,45 +6721,6 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       </div>
     </div>
   </div>
-
-
-<!-- MOBILE NAV OVERRIDE — must stay at bottom to win specificity -->
-<style>
-@media screen and (max-width: 768px) {
-  nav .nl,
-  nav .nav-audience-toggle,
-  nav .nav-auth-btns,
-  nav .ncta,
-  nav #nav-cta,
-  nav .nsearch,
-  nav .user-menu-wrap {
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-    width: 0 !important;
-    height: 0 !important;
-    overflow: hidden !important;
-    position: absolute !important;
-    left: -9999px !important;
-  }
-  nav .nav-hamburger {
-    display: flex !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    position: static !important;
-    width: auto !important;
-    height: auto !important;
-  }
-  nav {
-    padding: .75rem 1rem !important;
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    flex-wrap: nowrap !important;
-  }
-}
-</style>
 
 </body>
 
