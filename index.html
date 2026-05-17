@@ -2344,7 +2344,9 @@
       .nl { display: none }
       .nav-auth-btns { display: none }
       .nav-audience-toggle { display: none }
-      .nav-cta { display: none }
+      .ncta { display: none }
+      .nsearch { display: none }
+      .user-menu-wrap { display: none !important }
 
       /* ── HERO ── */
       .hero { padding: 5.5rem 1.1rem 3rem; min-height: auto }
@@ -3148,6 +3150,36 @@
     body.theme-teen .mob-login-btn:hover { background: var(--tg); color: #fff; }
     body.theme-teen .mob-signup-btn { background: var(--tg); }
     body.theme-teen .mob-signup-btn:hover { background: var(--tgd); }
+
+    @media(max-width:768px) {
+      nav { padding: .85rem 1rem }
+      .nav-hamburger { display: flex }
+      .nl,
+      .nav-auth-btns,
+      .nav-audience-toggle,
+      .ncta,
+      .nsearch,
+      .user-menu-wrap {
+        display: none !important;
+      }
+      .logo {
+        font-size: 1.08rem;
+        gap: 6px;
+        min-width: 0
+      }
+      .logo img {
+        height: 34px !important
+      }
+      .mobile-menu {
+        top: 64px
+      }
+    }
+
+    @media(min-width:769px) {
+      .mobile-menu.open {
+        display: none
+      }
+    }
 
     /* ── SHARE PANEL ── */
     /* ── SHARE TRIGGER BUTTON (inside modal actions) ── */
