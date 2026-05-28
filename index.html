@@ -5733,7 +5733,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
           dlLink.href = '#';
           dlLink.onclick = e => {
             e.preventDefault();
-            alert('PDF not yet uploaded for this book. Please contact books.whosebooks@gmail.com with your transaction ID: ' + paymentId);
+            alert('PDF not yet uploaded for this book. Please contact hello@whosebooks.in with your transaction ID: ' + paymentId);
           };
           document.getElementById('success-msg').textContent =
             'Payment received! The PDF will be sent to your email shortly.';
@@ -6563,7 +6563,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
     // Render email without @ in HTML to avoid bot-protection interference
     (function () {
       var el = document.getElementById('femail');
-      if (el) { var e = 'books.WhoseBooks' + '@' + 'gmail.com'; el.innerHTML = '<a href="mailto:' + e + '" style="color:var(--y)">' + e + '</a>'; }
+      if (el) { var e = 'hello' + '@' + 'whosebooks.in'; el.innerHTML = '<a href="mailto:' + e + '" style="color:var(--y)">' + e + '</a>'; }
     })();
     // ── BOOK MODAL: QUICK-RATE STARS ────────────────────────────────────────────
     let _bmStarSelected = {}; // { bookId: starValue }
