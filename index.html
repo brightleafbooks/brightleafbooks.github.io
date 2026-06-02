@@ -4374,14 +4374,17 @@
             <div class="afg"><label for="dpt">Product Title *</label><input id="dpt" placeholder="e.g. My Daily Study Planner – Kids Edition" autocomplete="off" /></div>
             <div class="afrow">
               <div class="afg"><label for="dpp">Price (INR ₹) *</label><input id="dpp" placeholder="99" autocomplete="off" /></div>
-              <div class="afg"><label for="dppinr">Instamojo Price (INR ₹)</label><input id="dppinr" placeholder="99" autocomplete="off" /></div>
+              <div class="afg"><label for="dppinr">Price (INR ₹) for Checkout</label><input id="dppinr" placeholder="99" autocomplete="off" /></div>
             </div>
             <div class="afg"><label for="dpag">Age Range Label</label><input id="dpag" placeholder="Ages 8–14" autocomplete="off" /></div>
             <div class="afg"><label for="dpd">Description *</label><textarea id="dpd" placeholder="Describe what's inside, how it helps, and why kids/teens will love it..." autocomplete="off"></textarea></div>
             <div class="afg"><label for="dpf">What's Inside (one item per line)</label><textarea id="dpf" style="min-height:75px" placeholder="Weekly goal tracker&#10;Monthly reflection page&#10;Daily habit checkboxes" autocomplete="off"></textarea></div>
             <div class="afg"><label>🖼️ Cover Image URL</label><input type="url" id="dpcov" placeholder="https://res.cloudinary.com/..." autocomplete="off" /></div>
             <div class="afg"><label>📄 PDF Download URL *</label><input type="url" id="dppdf" placeholder="https://drive.google.com/uc?export=download&id=..." autocomplete="off" /></div>
-            <div class="afg"><label>🔗 Instamojo Payment Link</label><input type="url" id="dpim" placeholder="https://imojo.in/..." autocomplete="off" /></div>
+            <div class="afrow">
+              <div class="afg"><label>🛍️ Gumroad Link</label><input type="url" id="dpgumroad" placeholder="https://gumroad.com/l/..." autocomplete="off" /></div>
+              <div class="afg"><label>🧶 Etsy Link</label><input type="url" id="dpetsy" placeholder="https://www.etsy.com/listing/..." autocomplete="off" /></div>
+            </div>
             <button class="afbtn" id="dpabtn" onclick="addDigitalProduct()">Add Digital Product</button>
             <div class="ok" id="dpok">✅ Digital product added!</div>
             <div class="er" id="dper"></div>
@@ -6168,17 +6171,18 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       const features = document.getElementById('dpf').value.trim().split('\n').map(s => s.trim()).filter(Boolean);
       const cover = document.getElementById('dpcov').value.trim() || null;
       const pdfUrl = document.getElementById('dppdf').value.trim();
-      const instamojoLink = document.getElementById('dpim').value.trim();
+      const gumroad = document.getElementById('dpgumroad').value.trim();
+      const etsy = document.getElementById('dpetsy').value.trim();
       const er = document.getElementById('dper');
       er.style.display = 'none';
       if (!title || !price || !desc) { er.textContent = 'Please fill in Title, Price and Description.'; er.style.display = 'block'; return; }
       const btn = document.getElementById('dpabtn');
       btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Saving...';
-      digitalProducts.push({ id: 'dp' + Date.now(), title, category, audience, price, priceInr, ageRange, desc, features, cover, pdfUrl: pdfUrl || null, instamojoLink: instamojoLink || null });
+      digitalProducts.push({ id: 'dp' + Date.now(), title, category, audience, price, priceInr, ageRange, desc, features, cover, pdfUrl: pdfUrl || null, gumroad: gumroad || null, etsy: etsy || null });
       await save();
       renderDPSection();
       renderDPManageList();
-      ['dpt','dpp','dppinr','dpag','dpd','dpf','dpcov','dppdf','dpim'].forEach(i => { const el = document.getElementById(i); if (el) el.value = ''; });
+      ['dpt','dpp','dppinr','dpag','dpd','dpf','dpcov','dppdf','dpgumroad','dpetsy'].forEach(i => { const el = document.getElementById(i); if (el) el.value = ''; });
       document.getElementById('dpaud').value = 'both';
       document.getElementById('dpc').value = 'study-planner';
       btn.disabled = false; btn.innerHTML = 'Add Digital Product';
