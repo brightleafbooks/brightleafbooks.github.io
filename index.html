@@ -4813,6 +4813,66 @@
     </div>
   </div>
 
+  <!-- Edit Digital Product Modal -->
+  <div class="ov" id="editDPOv" onclick="if(event.target===this)closeEditDP()">
+    <div class="abox">
+      <div class="atabs" style="border-radius:22px 22px 0 0">
+        <span style="padding:.9rem 1.4rem;font-family:'Fraunces',serif;font-size:1rem;font-weight:700;color:var(--gd)">✏️ Edit Digital Product</span>
+        <button class="axbtn" style="margin-left:auto" onclick="closeEditDP()">✕</button>
+      </div>
+      <div class="ac">
+        <div class="af">
+          <div class="afg"><label>📂 Category *</label>
+            <select id="edpc">
+              <option value="fund-planner">💰 Fund Planner</option>
+              <option value="emi-calculator">🧮 EMI Calculator Sheet</option>
+              <option value="study-planner">📅 Study Planner</option>
+              <option value="pomodoro">⏱️ Pomodoro Sheet</option>
+              <option value="exam-prep">📝 Exam Prep Planner</option>
+              <option value="habit-tracker">✅ Habit Tracker for Students</option>
+              <option value="daily-planner">🗓️ Daily Planner</option>
+              <option value="goal-setting">🎯 Goal Setting Workbook</option>
+              <option value="vocabulary">📖 Vocabulary Builder</option>
+              <option value="gym-tracker">🏋️ Gym Workout Tracker</option>
+              <option value="water-intake">💧 Water Intake Tracker</option>
+              <option value="meal-planner">🥗 Meal Planner</option>
+              <option value="budget-sheet">💵 Budget Sheet</option>
+              <option value="journal">📓 Journal / Diary</option>
+              <option value="other">📦 Other</option>
+            </select>
+          </div>
+          <div class="afg"><label>👥 Audience *</label>
+            <select id="edpaud">
+              <option value="both">👨‍👩‍👧 Both Kids &amp; Teens</option>
+              <option value="kids">🧒 Kids (Ages 3–12)</option>
+              <option value="teen">🎒 Teens (Ages 13–18)</option>
+            </select>
+          </div>
+          <div class="afg"><label>Product Title *</label><input id="edpt" placeholder="e.g. My Daily Study Planner" autocomplete="off" /></div>
+          <div class="afrow">
+            <div class="afg"><label>Price (INR ₹) *</label><input id="edpp" placeholder="99" autocomplete="off" /></div>
+            <div class="afg"><label>Price (INR ₹) for Checkout</label><input id="edppinr" placeholder="99" autocomplete="off" /></div>
+          </div>
+          <div class="afg"><label>Age Range Label</label><input id="edpag" placeholder="Ages 8–14" autocomplete="off" /></div>
+          <div class="afg"><label>Description *</label><textarea id="edpd" placeholder="Describe what's inside..." autocomplete="off"></textarea></div>
+          <div class="afg"><label>What's Inside (one item per line)</label><textarea id="edpf" style="min-height:75px" placeholder="Weekly goal tracker&#10;Monthly reflection page" autocomplete="off"></textarea></div>
+          <div class="afg"><label>🖼️ Cover Image URL (leave blank to keep current)</label><input type="url" id="edpcov" placeholder="https://res.cloudinary.com/..." autocomplete="off" /></div>
+          <div class="afg"><label>📄 PDF Download URL (leave blank to keep current)</label><input type="url" id="edppdf" placeholder="https://drive.google.com/uc?export=download&id=..." autocomplete="off" /></div>
+          <div class="afrow">
+            <div class="afg"><label>🛍️ Gumroad Link</label><input type="url" id="edpgumroad" placeholder="https://gumroad.com/l/..." autocomplete="off" /></div>
+            <div class="afg"><label>🧶 Etsy Link</label><input type="url" id="edpetsy" placeholder="https://www.etsy.com/listing/..." autocomplete="off" /></div>
+          </div>
+          <div style="display:flex;gap:.65rem;flex-wrap:wrap;margin-top:.25rem">
+            <button class="afbtn" id="edpSaveBtn" onclick="saveEditDP()">Save Changes</button>
+            <button class="afbtn" style="background:#888" onclick="closeEditDP()">Cancel</button>
+          </div>
+          <div class="ok" id="edpok">✅ Product updated!</div>
+          <div class="er" id="edper"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- PAYMENT MODAL — Instamojo -->
   <div class="ov" id="payov" onclick="if(event.target===this)closePay()">
     <div class="paybox">
@@ -6197,6 +6257,61 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       renderDPManageList();
     }
 
+    // ── EDIT DIGITAL PRODUCT ──────────────────────────────────────────────────
+    let _editDPId = null;
+    function openEditDP(id) {
+      const p = digitalProducts.find(x => x.id === id);
+      if (!p) return;
+      _editDPId = id;
+      document.getElementById('edpc').value = p.category || 'study-planner';
+      document.getElementById('edpaud').value = p.audience || 'both';
+      document.getElementById('edpt').value = p.title || '';
+      document.getElementById('edpp').value = p.price || '';
+      document.getElementById('edppinr').value = p.priceInr || '';
+      document.getElementById('edpag').value = p.ageRange || '';
+      document.getElementById('edpd').value = p.desc || '';
+      document.getElementById('edpf').value = (p.features || []).join('\n');
+      document.getElementById('edpcov').value = (p.cover && p.cover.startsWith('http')) ? p.cover : '';
+      document.getElementById('edppdf').value = (p.pdfUrl && p.pdfUrl.startsWith('http')) ? p.pdfUrl : '';
+      document.getElementById('edpgumroad').value = p.gumroad || '';
+      document.getElementById('edpetsy').value = p.etsy || '';
+      document.getElementById('edper').style.display = 'none';
+      show('editDPOv');
+    }
+    function closeEditDP() { hide('editDPOv'); _editDPId = null; }
+
+    async function saveEditDP() {
+      const title = document.getElementById('edpt').value.trim();
+      const category = document.getElementById('edpc').value;
+      const audience = document.getElementById('edpaud').value;
+      const price = document.getElementById('edpp').value.trim();
+      const priceInr = document.getElementById('edppinr').value.trim();
+      const ageRange = document.getElementById('edpag').value.trim();
+      const desc = document.getElementById('edpd').value.trim();
+      const features = document.getElementById('edpf').value.trim().split('\n').map(s => s.trim()).filter(Boolean);
+      const coverUrl = document.getElementById('edpcov').value.trim();
+      const pdfUrl = document.getElementById('edppdf').value.trim();
+      const gumroad = document.getElementById('edpgumroad').value.trim();
+      const etsy = document.getElementById('edpetsy').value.trim();
+      const er = document.getElementById('edper');
+      er.style.display = 'none';
+      if (!title || !price || !desc) { er.textContent = 'Please fill in Title, Price and Description.'; er.style.display = 'block'; return; }
+      const btn = document.getElementById('edpSaveBtn');
+      btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Saving...';
+      const idx = digitalProducts.findIndex(x => x.id === _editDPId);
+      if (idx === -1) { btn.disabled = false; btn.innerHTML = 'Save Changes'; return; }
+      const existing = digitalProducts[idx];
+      const newCover = coverUrl || existing.cover || null;
+      const newPdf = pdfUrl || existing.pdfUrl || null;
+      digitalProducts[idx] = { ...existing, title, category, audience, price, priceInr, ageRange, desc, features, cover: newCover, pdfUrl: newPdf, gumroad: gumroad || null, etsy: etsy || null };
+      await save();
+      renderDPSection();
+      renderDPManageList();
+      btn.disabled = false; btn.innerHTML = 'Save Changes';
+      flash('edpok');
+      setTimeout(() => closeEditDP(), 1200);
+    }
+
     function renderDPManageList() {
       const el = document.getElementById('dpmlist');
       if (!el) return;
@@ -6205,6 +6320,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
         return `<div class="mi">
           <div><div class="mit">${p.title}</div><div class="mis">${cat.label} · ₹${p.price}</div></div>
           <div class="mi-btns">
+            <button class="medit" onclick="openEditDP('${p.id}')">Edit</button>
             <button class="mdel" onclick="delDigitalProduct('${p.id}')">Delete</button>
           </div>
         </div>`;
@@ -7395,7 +7511,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
     });
 
     document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') { closeBM(); closeDPM(); closeBlog(); closeAdmin(); closeEditBook(); closeEditBlog(); closePay(); closeSuccess(); hide('failedov'); closeBooksDialog(); closeSearch(); closeAuth(); closeAuthGate(); }
+      if (e.key === 'Escape') { closeBM(); closeDPM(); closeBlog(); closeAdmin(); closeEditBook(); closeEditBlog(); closeEditDP(); closePay(); closeSuccess(); hide('failedov'); closeBooksDialog(); closeSearch(); closeAuth(); closeAuthGate(); }
       if (e.key === '/' && !['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) {
         e.preventDefault();
         document.getElementById('nsearchInput')?.focus();
