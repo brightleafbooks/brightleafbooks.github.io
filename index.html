@@ -1596,6 +1596,46 @@
       background: #e68a00
     }
 
+    /* GUMROAD BUTTON */
+    .gumroad-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #FF90E8;
+      color: #1a1a1a;
+      padding: .65rem 1.2rem;
+      border-radius: 999px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: .85rem;
+      text-decoration: none;
+      transition: background .2s
+    }
+
+    .gumroad-btn:hover {
+      background: #e070cc
+    }
+
+    /* ETSY BUTTON */
+    .etsy-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #F56400;
+      color: #fff;
+      padding: .65rem 1.2rem;
+      border-radius: 999px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: .85rem;
+      text-decoration: none;
+      transition: background .2s
+    }
+
+    .etsy-btn:hover {
+      background: #d45800
+    }
+
     .enq {
       display: inline-flex;
       align-items: center;
@@ -4285,6 +4325,10 @@
               <div class="afg"><label>Amazon Link</label><input type="url" id="abz"
                   placeholder="https://amazon.com/dp/..." / autocomplete="off"></div>
             </div>
+            <div class="afrow">
+              <div class="afg"><label>Gumroad Link</label><input type="url" id="abgumroad" placeholder="https://gumroad.com/l/..." autocomplete="off"></div>
+              <div class="afg"><label>Etsy Link</label><input type="url" id="abetsy" placeholder="https://www.etsy.com/listing/..." autocomplete="off"></div>
+            </div>
             <div class="afg"><label for="abd">Description *</label><textarea id="abd"
                 placeholder="Write a detailed description of this book..." autocomplete="off"></textarea></div>
             <div class="afg"><label for="abf">What's Inside (one item per line)</label><textarea id="abf"
@@ -4702,6 +4746,10 @@
           </div>
           <div class="afg"><label>Amazon Link</label><input type="url" id="ebz" placeholder="https://amazon.com/dp/..."
               / autocomplete="off"></div>
+          <div class="afrow">
+            <div class="afg"><label>Gumroad Link</label><input type="url" id="ebgumroad" placeholder="https://gumroad.com/l/..." autocomplete="off"></div>
+            <div class="afg"><label>Etsy Link</label><input type="url" id="ebetsy" placeholder="https://www.etsy.com/listing/..." autocomplete="off"></div>
+          </div>
           <div class="afg"><label for="ebd">Description *</label><textarea id="ebd"
               placeholder="Write a detailed description..." autocomplete="off"></textarea></div>
           <div class="afg"><label for="ebf">What's Inside (one item per line)</label><textarea id="ebf"
@@ -5791,6 +5839,8 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
         Share
       </button>
       ${b.amazon ? `<a href="${b.amazon}" target="_blank" class="amz">🛒 Buy on Amazon</a>` : ''}
+      ${b.gumroad ? `<a href="${b.gumroad}" target="_blank" class="gumroad-btn">🛍️ Buy on Gumroad</a>` : ''}
+      ${b.etsy ? `<a href="${b.etsy}" target="_blank" class="etsy-btn">🧶 Buy on Etsy</a>` : ''}
       <button class="dlbtn" onclick="requireAuthThen(()=>openPayment('${b.id}'))">📥 Download E-book</button>
       <button class="enq" onclick="closeBM();document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Enquire →</button>
     </div>`;
@@ -5937,6 +5987,8 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       const priceInr = document.getElementById('abpinr').value.trim();
       const age = document.getElementById('aba').value.trim();
       const amz = document.getElementById('abz').value.trim();
+      const gumroad = document.getElementById('abgumroad').value.trim();
+      const etsy = document.getElementById('abetsy').value.trim();
       const desc = document.getElementById('abd').value.trim();
       const feats = document.getElementById('abf').value.trim().split('\n').map(s => s.trim()).filter(Boolean);
       const categories = getCheckedCats('abcatGrid');
@@ -5950,9 +6002,9 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       if (!categories.length) { er.textContent = 'Please select at least one category.'; er.style.display = 'block'; return; }
       const btn = document.getElementById('abbtn');
       btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Saving...';
-      books.push({ id: 'bk' + Date.now(), title, price, priceInr, age, amazon: amz, desc, features: feats, categories, audience, cover, samples, pdfData: pdfUrl || null });
+      books.push({ id: 'bk' + Date.now(), title, price, priceInr, age, amazon: amz, gumroad: gumroad || null, etsy: etsy || null, desc, features: feats, categories, audience, cover, samples, pdfData: pdfUrl || null });
       await save(); renderBooks();
-      ['abt', 'abp', 'abpinr', 'aba', 'abz', 'abd', 'abf', 'abc', 'abpdf'].forEach(i => document.getElementById(i).value = '');
+      ['abt', 'abp', 'abpinr', 'aba', 'abz', 'abgumroad', 'abetsy', 'abd', 'abf', 'abc', 'abpdf'].forEach(i => document.getElementById(i).value = '');
       document.getElementById('abs').value = '';
       document.getElementById('abaud').value = 'kids';
       renderAdminCatGrid('abcatGrid', []);
@@ -6071,15 +6123,39 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
         <p class="mdesc">${p.desc || ''}</p>
         ${feats ? `<div class="mslbl">What's Inside</div><ul class="mfeats">${feats}</ul>` : ''}
         <div class="macts" style="margin-top:.75rem">
-          ${p.pdfUrl ? `<a href="${p.pdfUrl}" target="_blank" rel="noopener" class="dlbtn" onclick="closeDPM()">⬇️ Download Free Preview</a>` : ''}
-          ${p.instamojoLink
-            ? `<a href="${p.instamojoLink}" target="_blank" rel="noopener" class="amz" style="background:#ff5e7d">💳 Buy Now ₹${p.price}</a>`
-            : `<button class="enq" style="background:#ff5e7d" onclick="closeDPM();document.getElementById('contact').scrollIntoView({behavior:'smooth'})">📩 Enquire Now</button>`}
+          <button class="bm-share-trigger" onclick="openSharePop('${p.id}','${p.title.replace(/'/g,'\u2019')}')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            Share
+          </button>
+          ${p.gumroad ? `<a href="${p.gumroad}" target="_blank" class="gumroad-btn">🛍️ Buy on Gumroad</a>` : ''}
+          ${p.etsy ? `<a href="${p.etsy}" target="_blank" class="etsy-btn">🧶 Buy on Etsy</a>` : ''}
+          <button class="dlbtn" onclick="closeDPM();requireAuthThen(()=>openDPPayment('${p.id}'))">📥 Download Now</button>
         </div>`;
       show('dpmov');
     }
 
     function closeDPM() { hide('dpmov'); }
+
+    // ── Digital product payment (reuses the same Instamojo modal as books) ──────
+    let _payDPId = null;
+
+    function openDPPayment(dpId) {
+      const p = digitalProducts.find(x => x.id === dpId);
+      if (!p) return;
+      _payDPId = dpId;
+      _payBookId = null; // clear book context
+      document.getElementById('pay-book-title').textContent = p.title;
+      const priceInr = p.priceInr ? parseFloat(p.priceInr) : parseFloat(p.price);
+      document.getElementById('pay-book-price').textContent = '₹' + priceInr.toFixed(0);
+      ['pay-name', 'pay-email', 'pay-phone'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('pay-err').style.display = 'none';
+      document.getElementById('pay-step1').style.display = 'block';
+      document.getElementById('pay-step2').style.display = 'none';
+      const btn = document.getElementById('pay-btn');
+      btn.disabled = false;
+      btn.innerHTML = '🔐 Pay Securely via Instamojo →';
+      show('payov');
+    }
 
     async function addDigitalProduct() {
       const title = document.getElementById('dpt').value.trim();
@@ -6199,6 +6275,8 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       document.getElementById('ebpinr').value = b.priceInr || '';
       document.getElementById('eba').value = b.age || '';
       document.getElementById('ebz').value = b.amazon || '';
+      document.getElementById('ebgumroad').value = b.gumroad || '';
+      document.getElementById('ebetsy').value = b.etsy || '';
       document.getElementById('ebd').value = b.desc || '';
       document.getElementById('ebf').value = (b.features || []).join('\n');
       // Populate category checkboxes — support both old .category and new .categories
@@ -6220,6 +6298,8 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       const priceInr = document.getElementById('ebpinr').value.trim();
       const age = document.getElementById('eba').value.trim();
       const amz = document.getElementById('ebz').value.trim();
+      const gumroad = document.getElementById('ebgumroad').value.trim();
+      const etsy = document.getElementById('ebetsy').value.trim();
       const desc = document.getElementById('ebd').value.trim();
       const feats = document.getElementById('ebf').value.trim().split('\n').map(s => s.trim()).filter(Boolean);
       const categories = getCheckedCats('ebcatGrid');
@@ -6241,7 +6321,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
         ? samplesRaw.split('\n').map(s => s.trim()).filter(s => s.startsWith('http')).slice(0, 3)
         : (existing.samples || []);
       const newPdf = pdfUrl || existing.pdfData || null;
-      books[idx] = { ...existing, title, price, priceInr, age, amazon: amz, desc, features: feats, categories, audience, cover: newCover, samples: newSamples, pdfData: newPdf };
+      books[idx] = { ...existing, title, price, priceInr, age, amazon: amz, gumroad: gumroad || null, etsy: etsy || null, desc, features: feats, categories, audience, cover: newCover, samples: newSamples, pdfData: newPdf };
       await save(); renderBooks(); renderManage();
       btn.disabled = false; btn.innerHTML = 'Save Changes';
       flash('ebok');
@@ -6356,6 +6436,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
     // INSTAMOJO LIVE:     https://www.instamojo.com/   (use live credentials)
 
     let _payBookId = null;
+    // _payDPId is declared in the Digital Products section above
 
     // ── Instamojo settings (loaded from Firebase/localStorage via siteContent) ──
     // Stored in siteContent.imApiKey, siteContent.imAuthToken, siteContent.imSandbox
@@ -6387,7 +6468,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       show('payov');
     }
 
-    function closePay() { hide('payov'); _payBookId = null; }
+    function closePay() { hide('payov'); _payBookId = null; _payDPId = null; }
     function closeSuccess() { hide('successov'); }
 
     async function initiateInstamojo() {
@@ -6412,15 +6493,17 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       btn.disabled = true;
       btn.innerHTML = '<span class="spin"></span> Creating payment request…';
 
-      const b = books.find(x => x.id === _payBookId);
+      const isDP = !!_payDPId && !_payBookId;
+      const b = isDP ? digitalProducts.find(x => x.id === _payDPId) : books.find(x => x.id === _payBookId);
       if (!b) return;
-      const priceInr = b.priceInr ? parseFloat(b.priceInr) : (parseFloat(b.price) * 83);
+      const priceInr = b.priceInr ? parseFloat(b.priceInr) : parseFloat(b.price);
 
       // Return URL: back to this exact page with query params
       const returnUrl = window.location.href.split('?')[0];
 
-      // Store pending book ID in sessionStorage so we can find it after redirect back
-      sessionStorage.setItem('im_pending_book', _payBookId);
+      // Store pending item in sessionStorage so we can find it after redirect back
+      sessionStorage.setItem('im_pending_item_type', isDP ? 'dp' : 'book');
+      sessionStorage.setItem('im_pending_item_id', isDP ? _payDPId : _payBookId);
 
       try {
         // Show redirecting UI
@@ -6434,7 +6517,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            purpose: b.title + ' – E-book',
+            purpose: b.title + (isDP ? ' – Digital Product' : ' – E-book'),
             amount: priceInr.toFixed(2),
             buyer_name: name,
             email: email,
@@ -6453,7 +6536,8 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
         if (data.success && data.payment_request && data.payment_request.longurl) {
           // Save the payment_request_id so we can match it on return
           sessionStorage.setItem('im_payment_request_id', data.payment_request.id);
-          sessionStorage.setItem('im_pending_book', _payBookId);
+          sessionStorage.setItem('im_pending_item_type', isDP ? 'dp' : 'book');
+          sessionStorage.setItem('im_pending_item_id', isDP ? _payDPId : _payBookId);
 
           // Redirect to Instamojo checkout
           window.location.href = data.payment_request.longurl;
@@ -6496,33 +6580,42 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       });
       await waitForBooks();
 
-      const storedBookId = sessionStorage.getItem('im_pending_book');
+      const storedType = sessionStorage.getItem('im_pending_item_type') || 'book';
+      const storedId = sessionStorage.getItem('im_pending_item_id');
+      sessionStorage.removeItem('im_pending_item_type');
+      sessionStorage.removeItem('im_pending_item_id');
+      // legacy key cleanup
       sessionStorage.removeItem('im_pending_book');
       sessionStorage.removeItem('im_payment_request_id');
 
+      const isDP = storedType === 'dp';
+      const item = storedId
+        ? (isDP ? digitalProducts.find(x => x.id === storedId) : books.find(x => x.id === storedId))
+        : null;
+      // pdfUrl field: books use pdfData, digital products use pdfUrl
+      const pdfFile = item ? (isDP ? item.pdfUrl : item.pdfData) : null;
+
       if (paymentStatus === 'Credit') {
         // Payment successful!
-        const b = storedBookId ? books.find(x => x.id === storedBookId) : null;
-
         document.getElementById('success-txn').textContent =
           'Transaction ID: ' + paymentId;
 
-        if (b && b.pdfData) {
+        if (item && pdfFile) {
           const dlLink = document.getElementById('dl-link');
-          dlLink.href = b.pdfData;
-          dlLink.download = b.title.replace(/[^a-z0-9]/gi, '_') + '_ebook.pdf';
+          dlLink.href = pdfFile;
+          dlLink.download = item.title.replace(/[^a-z0-9]/gi, '_') + (isDP ? '_digital.pdf' : '_ebook.pdf');
           dlLink.onclick = null;
           document.getElementById('success-msg').textContent =
-            'Thank you for purchasing "' + b.title + '"! Your e-book is ready.';
+            'Thank you for purchasing "' + item.title + '"! Your file is ready to download.';
         } else {
           const dlLink = document.getElementById('dl-link');
           dlLink.href = '#';
           dlLink.onclick = e => {
             e.preventDefault();
-            alert('PDF not yet uploaded for this book. Please contact hello@whosebooks.in with your transaction ID: ' + paymentId);
+            alert('File not yet uploaded. Please contact hello@whosebooks.in with your transaction ID: ' + paymentId);
           };
           document.getElementById('success-msg').textContent =
-            'Payment received! The PDF will be sent to your email shortly.';
+            'Payment received! The file will be sent to your email shortly.';
         }
 
         // Slight delay to let page fully render before showing modal
@@ -6532,7 +6625,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
         // Payment failed or cancelled
         const statusMap = {
           'Failed': 'Your payment could not be processed.',
-          'Pending': 'Your payment is pending. You will receive the e-book by email once confirmed.',
+          'Pending': 'Your payment is pending. You will receive the file by email once confirmed.',
           'Cancelled': 'You cancelled the payment. Please try again if you wish to purchase.'
         };
         document.getElementById('failed-msg').textContent =
@@ -7298,7 +7391,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
     });
 
     document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') { closeBM(); closeBlog(); closeAdmin(); closeEditBook(); closeEditBlog(); closePay(); closeSuccess(); hide('failedov'); closeBooksDialog(); closeSearch(); closeAuth(); closeAuthGate(); }
+      if (e.key === 'Escape') { closeBM(); closeDPM(); closeBlog(); closeAdmin(); closeEditBook(); closeEditBlog(); closePay(); closeSuccess(); hide('failedov'); closeBooksDialog(); closeSearch(); closeAuth(); closeAuthGate(); }
       if (e.key === '/' && !['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) {
         e.preventDefault();
         document.getElementById('nsearchInput')?.focus();
