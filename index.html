@@ -2103,29 +2103,6 @@
     }
 
     /* ADMIN */
-    .atog {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      background: rgba(255,255,255,.08);
-      color: rgba(255,255,255,.35);
-      border: 1px solid rgba(255,255,255,.1);
-      border-radius: 999px;
-      padding: .3rem .85rem;
-      font-family: 'Nunito', sans-serif;
-      font-size: .72rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all .2s;
-      margin-top: 1.5rem;
-      letter-spacing: .03em
-    }
-
-    .atog:hover {
-      background: rgba(255,255,255,.14);
-      color: rgba(255,255,255,.65)
-    }
-
     .abox {
       background: #fff;
       border-radius: 22px;
@@ -4248,8 +4225,7 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <p id="footer-copy">© 2025 WhoseBooks · All rights reserved</p>
-      <button class="atog" onclick="openAdmin()">🔐 Admin</button>
+      <p id="footer-copy" onclick="_secretAdminTap()" style="cursor:default;user-select:none">© 2025 WhoseBooks · All rights reserved</p>
     </div>
   </footer>
 
@@ -5948,6 +5924,19 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
     function closeBlog() { hide('blov'); }
 
     // ── ADMIN ─────────────────────────────────────────────────────────────────────
+    // ── SECRET ADMIN TRIGGER (5 clicks on footer copyright) ─────────────────
+    let _sTapCount = 0, _sTapTimer = null;
+    function _secretAdminTap() {
+      _sTapCount++;
+      clearTimeout(_sTapTimer);
+      _sTapTimer = setTimeout(() => { _sTapCount = 0; }, 2000);
+      if (_sTapCount >= 5) {
+        _sTapCount = 0;
+        clearTimeout(_sTapTimer);
+        openAdmin();
+      }
+    }
+
     function openAdmin() {
       document.getElementById('pws').style.display = unlocked ? 'none' : 'block';
       document.getElementById('amain').style.display = unlocked ? 'block' : 'none';
