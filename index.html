@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <!-- Whose v3.1 - Firebase fix applied -->
 <html lang="en">
 
@@ -1567,7 +1567,218 @@
     .msamp img {
       width: 100%;
       border-radius: 7px;
-      border: 1.5px solid rgba(61, 170, 92, .15)
+      border: 1.5px solid rgba(61, 170, 92, .15);
+      cursor: zoom-in;
+      transition: transform .18s, box-shadow .18s
+    }
+    .msamp img:hover {
+      transform: scale(1.04);
+      box-shadow: 0 4px 18px rgba(61,170,92,.2)
+    }
+    .dp-msamp {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 5px;
+      margin-bottom: 1rem
+    }
+    .dp-msamp img {
+      width: 100%;
+      border-radius: 7px;
+      border: 1.5px solid rgba(255,255,255,.15);
+      cursor: zoom-in;
+      transition: transform .18s, box-shadow .18s
+    }
+    .dp-msamp img:hover {
+      transform: scale(1.04);
+      box-shadow: 0 4px 18px rgba(255,94,125,.25)
+    }
+
+    /* Premium sample preview lightbox */
+    .img-lightbox-ov {
+      position: fixed;
+      inset: 0;
+      z-index: 9000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(1rem, 3vw, 2.5rem);
+      background:
+        radial-gradient(circle at 50% 12%, rgba(255, 214, 153, .14), transparent 28%),
+        linear-gradient(135deg, rgba(8, 11, 16, .94), rgba(8, 13, 20, .88) 46%, rgba(0, 0, 0, .96));
+      backdrop-filter: blur(18px) saturate(120%);
+      -webkit-backdrop-filter: blur(18px) saturate(120%);
+      cursor: zoom-out;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity .28s ease, visibility .28s ease
+    }
+    .img-lightbox-ov.open {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto
+    }
+    .img-lightbox-frame {
+      position: relative;
+      width: min(94vw, 1040px);
+      height: min(88vh, 860px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(.75rem, 2vw, 1.35rem);
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 28px;
+      background:
+        linear-gradient(145deg, rgba(255,255,255,.18), rgba(255,255,255,.07)),
+        rgba(16, 18, 22, .46);
+      box-shadow: 0 34px 110px rgba(0,0,0,.62), inset 0 1px 0 rgba(255,255,255,.2);
+      cursor: default;
+      transform: translateY(20px) scale(.965);
+      opacity: 0;
+      transition: transform .34s cubic-bezier(.2,.84,.32,1), opacity .26s ease;
+      overflow: hidden
+    }
+    .img-lightbox-ov.open .img-lightbox-frame {
+      transform: translateY(0) scale(1);
+      opacity: 1
+    }
+    .img-lightbox-stage {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border-radius: 22px;
+      background: rgba(255,255,255,.05)
+    }
+    .img-lightbox-img {
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      border-radius: 18px;
+      box-shadow: 0 24px 70px rgba(0,0,0,.48);
+      object-fit: contain;
+      cursor: default;
+      user-select: none;
+      -webkit-user-drag: none;
+      transition: transform .28s ease, opacity .22s ease
+    }
+    .img-lightbox-img.switching {
+      opacity: 0;
+      transform: scale(.96)
+    }
+    .img-lightbox-close {
+      position: fixed;
+      top: max(1rem, env(safe-area-inset-top));
+      right: max(1rem, env(safe-area-inset-right));
+      background: rgba(255,255,255,.14);
+      border: 1px solid rgba(255,255,255,.24);
+      color: #fff;
+      border-radius: 50%;
+      width: 46px;
+      height: 46px;
+      font-size: 1.15rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform .18s, background .18s, border-color .18s;
+      z-index: 9001;
+      line-height: 1;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px)
+    }
+    .img-lightbox-close:hover {
+      background: rgba(255,255,255,.24);
+      border-color: rgba(255,255,255,.38);
+      transform: translateY(-1px)
+    }
+    .img-lightbox-nav {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255,255,255,.13);
+      border: 1px solid rgba(255,255,255,.24);
+      color: #fff;
+      border-radius: 50%;
+      width: 54px;
+      height: 54px;
+      font-size: 1.8rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform .18s, background .18s, border-color .18s, opacity .18s;
+      z-index: 9001;
+      line-height: 1;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px)
+    }
+    .img-lightbox-nav:hover {
+      background: rgba(255,255,255,.25);
+      border-color: rgba(255,255,255,.4)
+    }
+    .img-lightbox-nav.prev { left: clamp(.8rem, 3vw, 2.2rem) }
+    .img-lightbox-nav.prev:hover { transform: translateY(-50%) translateX(-2px) }
+    .img-lightbox-nav.next { right: clamp(.8rem, 3vw, 2.2rem) }
+    .img-lightbox-nav.next:hover { transform: translateY(-50%) translateX(2px) }
+    .img-lightbox-nav[style*="display:none"] { display: none !important }
+    .img-lightbox-counter {
+      position: fixed;
+      bottom: max(1rem, env(safe-area-inset-bottom));
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.18);
+      color: rgba(255,255,255,.86);
+      font-family: 'Nunito', sans-serif;
+      font-size: .78rem;
+      font-weight: 700;
+      padding: .42rem .95rem;
+      border-radius: 999px;
+      z-index: 9001;
+      letter-spacing: .05em;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px)
+    }
+    body.lightbox-lock {
+      overflow: hidden;
+      touch-action: none
+    }
+    @media(max-width: 760px) {
+      .img-lightbox-ov { padding: .8rem }
+      .img-lightbox-frame {
+        width: 100%;
+        height: min(84vh, 760px);
+        border-radius: 22px;
+        padding: .55rem
+      }
+      .img-lightbox-stage { border-radius: 17px }
+      .img-lightbox-img { border-radius: 14px }
+      .img-lightbox-close {
+        width: 42px;
+        height: 42px;
+        font-size: 1rem
+      }
+      .img-lightbox-nav {
+        width: 42px;
+        height: 42px;
+        font-size: 1.35rem;
+        top: auto;
+        bottom: max(1rem, env(safe-area-inset-bottom));
+        transform: none
+      }
+      .img-lightbox-nav.prev { left: 1rem }
+      .img-lightbox-nav.next { right: 1rem }
+      .img-lightbox-nav.prev:hover,
+      .img-lightbox-nav.next:hover { transform: none }
+      .img-lightbox-counter {
+        bottom: calc(max(1rem, env(safe-area-inset-bottom)) + 6px);
+        font-size: .72rem
+      }
     }
 
     .macts {
@@ -4076,7 +4287,7 @@
       <div style="flex:1" id="rvBars"></div>
     </div>
 
-    <!-- Per-book filter pills -->
+    <!-- Review filter pills -->
     <div id="rvFilterPills" style="display:none;flex-wrap:wrap;gap:.5rem;justify-content:center;margin-bottom:1.2rem"></div>
 
     <!-- Published reviews grid -->
@@ -4094,9 +4305,9 @@
       </div>
       <div id="rvFormInner">
         <div style="margin-bottom:.9rem">
-          <label style="font-size:.78rem;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:.4rem">Which book are you reviewing? <span style="font-weight:400;text-transform:none">(optional)</span></label>
+          <label style="font-size:.78rem;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:.4rem">Which product are you reviewing? <span style="font-weight:400;text-transform:none">(optional)</span></label>
           <select id="rvBookId" style="width:100%;padding:.6rem .9rem;border:2px solid var(--gl);border-radius:12px;font-family:'Nunito',sans-serif;font-size:.88rem;font-weight:600;outline:none;background:#fff;transition:border-color .2s;color:var(--tx)" onfocus="this.style.borderColor='var(--g)'" onblur="this.style.borderColor='var(--gl)'">
-            <option value="">— General review (all books) —</option>
+            <option value="">— General review (all products) —</option>
           </select>
         </div>
         <div style="margin-bottom:.9rem">
@@ -4111,7 +4322,7 @@
         </div>
         <div style="margin-bottom:.9rem">
           <label style="font-size:.78rem;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:.4rem">Your review</label>
-          <textarea id="rvText" placeholder="Tell us what you think about our books — for kids, gifting, classrooms…" style="width:100%;min-height:90px;border:2px solid var(--gl);border-radius:12px;padding:.65rem .9rem;font-family:'Nunito',sans-serif;font-size:.88rem;font-weight:600;resize:vertical;outline:none;transition:border-color .2s" onfocus="this.style.borderColor='var(--g)'" onblur="this.style.borderColor='var(--gl)'"></textarea>
+          <textarea id="rvText" placeholder="Tell us what you think about our books or digital products — for kids, gifting, classrooms…" style="width:100%;min-height:90px;border:2px solid var(--gl);border-radius:12px;padding:.65rem .9rem;font-family:'Nunito',sans-serif;font-size:.88rem;font-weight:600;resize:vertical;outline:none;transition:border-color .2s" onfocus="this.style.borderColor='var(--g)'" onblur="this.style.borderColor='var(--gl)'"></textarea>
         </div>
         <div style="margin-bottom:1.1rem">
           <label style="font-size:.78rem;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:.4rem">Your city <span style="font-weight:400;text-transform:none">(optional)</span></label>
@@ -4356,6 +4567,7 @@
             <div class="afg"><label for="dpd">Description *</label><textarea id="dpd" placeholder="Describe what's inside, how it helps, and why kids/teens will love it..." autocomplete="off"></textarea></div>
             <div class="afg"><label for="dpf">What's Inside (one item per line)</label><textarea id="dpf" style="min-height:75px" placeholder="Weekly goal tracker&#10;Monthly reflection page&#10;Daily habit checkboxes" autocomplete="off"></textarea></div>
             <div class="afg"><label>🖼️ Cover Image URL</label><input type="url" id="dpcov" placeholder="https://res.cloudinary.com/..." autocomplete="off" /></div>
+            <div class="afg"><label>🖼️ Sample Page URLs (up to 3, one per line)</label><textarea id="dpsamp" style="min-height:72px" placeholder="https://res.cloudinary.com/sample1.jpg&#10;https://res.cloudinary.com/sample2.jpg" autocomplete="off"></textarea></div>
             <div class="afg"><label>📄 PDF Download URL *</label><input type="url" id="dppdf" placeholder="https://drive.google.com/uc?export=download&id=..." autocomplete="off" /></div>
             <div class="afrow">
               <div class="afg"><label>🛍️ Gumroad Link</label><input type="url" id="dpgumroad" placeholder="https://gumroad.com/l/..." autocomplete="off" /></div>
@@ -4833,6 +5045,7 @@
           <div class="afg"><label>Description *</label><textarea id="edpd" placeholder="Describe what's inside..." autocomplete="off"></textarea></div>
           <div class="afg"><label>What's Inside (one item per line)</label><textarea id="edpf" style="min-height:75px" placeholder="Weekly goal tracker&#10;Monthly reflection page" autocomplete="off"></textarea></div>
           <div class="afg"><label>🖼️ Cover Image URL (leave blank to keep current)</label><input type="url" id="edpcov" placeholder="https://res.cloudinary.com/..." autocomplete="off" /></div>
+          <div class="afg"><label>🖼️ Sample Page URLs (up to 3, one per line — leave blank to keep current)</label><textarea id="edpsamp" style="min-height:72px" placeholder="https://res.cloudinary.com/sample1.jpg&#10;https://res.cloudinary.com/sample2.jpg" autocomplete="off"></textarea></div>
           <div class="afg"><label>📄 PDF Download URL (leave blank to keep current)</label><input type="url" id="edppdf" placeholder="https://drive.google.com/uc?export=download&id=..." autocomplete="off" /></div>
           <div class="afrow">
             <div class="afg"><label>🛍️ Gumroad Link</label><input type="url" id="edpgumroad" placeholder="https://gumroad.com/l/..." autocomplete="off" /></div>
@@ -5833,10 +6046,10 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       const b = books.find(x => x.id === id);
       if (!b) return;
       document.getElementById('bmcov').innerHTML = b.cover
-        ? `<img src="${b.cover}" alt="${b.title}"/>`
+        ? `<img src="${b.cover}" alt="${b.title}" style="cursor:zoom-in" onclick="openLightbox([${JSON.stringify(b.cover)}${b.samples && b.samples.length ? ',' + b.samples.map(s=>JSON.stringify(s)).join(',') : ''}],0)"/>`
         : `<div class="bmcov-ph">📚</div>`;
       const feats = (b.features || []).map(f => `<li>${f}</li>`).join('');
-      const samps = (b.samples || []).map(s => `<img src="${s}" alt="sample"/>`).join('');
+      const samps = (b.samples || []).map((s,i) => `<img src="${s}" alt="sample page ${i+1}" onclick="openLightbox(${JSON.stringify(b.samples)},${i})"/>`).join('');
       const rating = _bookRatings[b.id];
       const modalStars = rating
         ? `<div class="mstars">
@@ -6127,6 +6340,13 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
         }).join('');
     }
 
+    function dpRatingHtml(id) {
+      const rating = _dpRatings[id];
+      return rating
+        ? `<div class="bstars">${'★'.repeat(Math.round(rating.avg))}${'☆'.repeat(5-Math.round(rating.avg))} <span class="bsc">(${rating.count})</span></div>`
+        : '';
+    }
+
     function dpCard(p) {
       const cat = DP_CATS.find(c => c.key === p.category) || { emoji: '📄', gradient: 'linear-gradient(145deg,#2d1660,#1a0e40)', label: p.category };
       const ageLabel = p.ageRange || (p.audience === 'kids' ? 'Ages 3–12' : p.audience === 'teen' ? 'Ages 13–18' : 'Ages 3–18');
@@ -6140,6 +6360,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
           <div class="dpcard-name">${p.title}</div>
           <div class="dpcard-cat">${cat.label}</div>
           <div class="dpcard-price">₹${p.price}</div>
+          ${dpRatingHtml(p.id)}
           <button class="dpbtn">Get Now</button>
         </div>
       </div>`;
@@ -6163,17 +6384,40 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       const cat = DP_CATS.find(c => c.key === p.category) || { emoji: '📄', gradient: 'linear-gradient(145deg,#2d1660,#1a0e40)', label: p.category };
       const ageLabel = p.ageRange || (p.audience === 'kids' ? 'Ages 3–12' : p.audience === 'teen' ? 'Ages 13–18' : 'Ages 3–18');
       document.getElementById('dpmcov').innerHTML = p.cover
-        ? `<img src="${p.cover}" alt="${p.title}" style="width:100%;height:100%;object-fit:cover;display:block;min-height:280px"/>`
+        ? `<img src="${p.cover}" alt="${p.title}" style="width:100%;height:100%;object-fit:cover;display:block;min-height:280px;cursor:zoom-in" onclick="openLightbox([${JSON.stringify(p.cover)}${p.samples && p.samples.length ? ',' + p.samples.map(s=>JSON.stringify(s)).join(',') : ''}],0)"/>`
         : `<div class="dpmcov-ph" style="background:${cat.gradient};min-height:280px">${cat.emoji}</div>`;
       const feats = (p.features || []).map(f => `<li>${f}</li>`).join('');
+      const dpSamps = (p.samples || []).map((s,i) => `<img src="${s}" alt="sample page ${i+1}" onclick="openLightbox(${JSON.stringify(p.samples)},${i})"/>`).join('');
+      const rating = _dpRatings[p.id];
+      const modalStars = rating
+        ? `<div class="mstars">
+            <span class="ms-val">${rating.avg.toFixed(1)}</span>
+            <span class="ms-stars">${'★'.repeat(Math.round(rating.avg))}${'☆'.repeat(5-Math.round(rating.avg))}</span>
+            <span class="ms-count">${rating.count} review${rating.count !== 1 ? 's' : ''}</span>
+            <a href="#reviews" onclick="closeDPM();setTimeout(()=>document.getElementById('reviews').scrollIntoView({behavior:'smooth'}),200)" style="font-size:.75rem;color:#ffb3c6;font-weight:700;margin-left:4px;text-decoration:none">Read all ›</a>
+          </div>`
+        : `<div class="mstars"><span style="font-size:.8rem;color:rgba(255,255,255,.62)">No reviews yet -- <a href="#reviews" onclick="closeDPM();setTimeout(()=>document.getElementById('reviews').scrollIntoView({behavior:'smooth'}),200)" style="color:#ffb3c6;font-weight:700;text-decoration:none">be the first!</a></span></div>`;
       document.getElementById('dpmbd').innerHTML = `
         <button class="mclose" onclick="closeDPM()">✕</button>
         <div class="dp-modal-cat-badge">${cat.label}</div>
         <div class="dp-age-tag">👶 ${ageLabel}</div>
         <h3 class="mtit" style="clear:both">${p.title}</h3>
         <div class="mprice" style="color:#ff8fab;font-size:1.05rem;font-weight:700;margin-bottom:.2rem">₹${p.price}</div>
+        ${modalStars}
+        <div class="bm-quickrate-wrap" id="bm-quickrate-dp-${p.id}">
+          <span class="bm-quickrate-label">Rate this product:</span>
+          <div class="bm-qstars" id="bm-qstars-dp-${p.id}">
+            <span class="bm-qstar" data-v="1" onmouseenter="bmStarHover('dp-${p.id}',1)" onmouseleave="bmStarOut('dp-${p.id}')" onclick="bmStarPickDP('${p.id}',1)">☆</span>
+            <span class="bm-qstar" data-v="2" onmouseenter="bmStarHover('dp-${p.id}',2)" onmouseleave="bmStarOut('dp-${p.id}')" onclick="bmStarPickDP('${p.id}',2)">☆</span>
+            <span class="bm-qstar" data-v="3" onmouseenter="bmStarHover('dp-${p.id}',3)" onmouseleave="bmStarOut('dp-${p.id}')" onclick="bmStarPickDP('${p.id}',3)">☆</span>
+            <span class="bm-qstar" data-v="4" onmouseenter="bmStarHover('dp-${p.id}',4)" onmouseleave="bmStarOut('dp-${p.id}')" onclick="bmStarPickDP('${p.id}',4)">☆</span>
+            <span class="bm-qstar" data-v="5" onmouseenter="bmStarHover('dp-${p.id}',5)" onmouseleave="bmStarOut('dp-${p.id}')" onclick="bmStarPickDP('${p.id}',5)">☆</span>
+          </div>
+          <span class="bm-quickrate-hint" id="bm-qhint-dp-${p.id}" onclick="dpGoReview('${p.id}')">→ Go to review form</span>
+        </div>
         <p class="mdesc">${p.desc || ''}</p>
         ${feats ? `<div class="mslbl">What's Inside</div><ul class="mfeats">${feats}</ul>` : ''}
+        ${dpSamps ? `<div class="mslbl" style="color:rgba(255,255,255,.7)">Sample Pages</div><div class="dp-msamp">${dpSamps}</div>` : ''}
         <div class="macts" style="margin-top:.75rem">
           <button class="bm-share-trigger" onclick="openSharePop('${p.id}','${p.title.replace(/'/g,'\u2019')}')">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
@@ -6219,6 +6463,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       const desc = document.getElementById('dpd').value.trim();
       const features = document.getElementById('dpf').value.trim().split('\n').map(s => s.trim()).filter(Boolean);
       const cover = document.getElementById('dpcov').value.trim() || null;
+      const samples = document.getElementById('dpsamp').value.trim().split('\n').map(s => s.trim()).filter(s => s.startsWith('http')).slice(0, 3);
       const pdfUrl = document.getElementById('dppdf').value.trim();
       const gumroad = document.getElementById('dpgumroad').value.trim();
       const etsy = document.getElementById('dpetsy').value.trim();
@@ -6227,11 +6472,11 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       if (!title || !price || !desc) { er.textContent = 'Please fill in Title, Price and Description.'; er.style.display = 'block'; return; }
       const btn = document.getElementById('dpabtn');
       btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Saving...';
-      digitalProducts.push({ id: 'dp' + Date.now(), title, category, audience, price, priceInr, ageRange, desc, features, cover, pdfUrl: pdfUrl || null, gumroad: gumroad || null, etsy: etsy || null });
+      digitalProducts.push({ id: 'dp' + Date.now(), title, category, audience, price, priceInr, ageRange, desc, features, cover, samples, pdfUrl: pdfUrl || null, gumroad: gumroad || null, etsy: etsy || null });
       await save();
       renderDPSection();
       renderDPManageList();
-      ['dpt','dpp','dppinr','dpag','dpd','dpf','dpcov','dppdf','dpgumroad','dpetsy'].forEach(i => { const el = document.getElementById(i); if (el) el.value = ''; });
+      ['dpt','dpp','dppinr','dpag','dpd','dpf','dpcov','dpsamp','dppdf','dpgumroad','dpetsy'].forEach(i => { const el = document.getElementById(i); if (el) el.value = ''; });
       document.getElementById('dpaud').value = 'both';
       document.getElementById('dpc').value = 'study-planner';
       btn.disabled = false; btn.innerHTML = 'Add Digital Product';
@@ -6261,6 +6506,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       document.getElementById('edpd').value = p.desc || '';
       document.getElementById('edpf').value = (p.features || []).join('\n');
       document.getElementById('edpcov').value = (p.cover && p.cover.startsWith('http')) ? p.cover : '';
+      document.getElementById('edpsamp').value = (p.samples || []).filter(s => s && s.startsWith('http')).join('\n');
       document.getElementById('edppdf').value = (p.pdfUrl && p.pdfUrl.startsWith('http')) ? p.pdfUrl : '';
       document.getElementById('edpgumroad').value = p.gumroad || '';
       document.getElementById('edpetsy').value = p.etsy || '';
@@ -6279,6 +6525,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       const desc = document.getElementById('edpd').value.trim();
       const features = document.getElementById('edpf').value.trim().split('\n').map(s => s.trim()).filter(Boolean);
       const coverUrl = document.getElementById('edpcov').value.trim();
+      const samplesRaw = document.getElementById('edpsamp').value.trim();
       const pdfUrl = document.getElementById('edppdf').value.trim();
       const gumroad = document.getElementById('edpgumroad').value.trim();
       const etsy = document.getElementById('edpetsy').value.trim();
@@ -6291,8 +6538,11 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       if (idx === -1) { btn.disabled = false; btn.innerHTML = 'Save Changes'; return; }
       const existing = digitalProducts[idx];
       const newCover = coverUrl || existing.cover || null;
+      const newSamples = samplesRaw
+        ? samplesRaw.split('\n').map(s => s.trim()).filter(s => s.startsWith('http')).slice(0, 3)
+        : (existing.samples || []);
       const newPdf = pdfUrl || existing.pdfUrl || null;
-      digitalProducts[idx] = { ...existing, title, category, audience, price, priceInr, ageRange, desc, features, cover: newCover, pdfUrl: newPdf, gumroad: gumroad || null, etsy: etsy || null };
+      digitalProducts[idx] = { ...existing, title, category, audience, price, priceInr, ageRange, desc, features, cover: newCover, samples: newSamples, pdfUrl: newPdf, gumroad: gumroad || null, etsy: etsy || null };
       await save();
       renderDPSection();
       renderDPManageList();
@@ -7059,25 +7309,36 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
     // ── REVIEWS SYSTEM ────────────────────────────────────────────────────────────
     let _rvStarVal = 0;
     let _bookRatings = {}; // { bookId: { avg, count } } — per-book ratings
+    let _dpRatings = {}; // { dpId: { avg, count } } — per-digital-product ratings
 
-    // Build per-book ratings from approved reviews
+    // Build per-item ratings from approved reviews
     async function _loadBookRatings() {
       try {
         const reviews = await _rvList('approved');
-        if (!reviews.length) return;
         _bookRatings = {};
-        // Per-book ratings from reviews that specify a bookId
+        _dpRatings = {};
+        if (!reviews.length) { renderBooks(); renderDPSection(); return; }
+
         const bookReviews = reviews.filter(r => r.bookId);
         books.forEach(b => {
           const br = bookReviews.filter(r => r.bookId === b.id);
           if (br.length > 0) {
-            const avg = br.reduce((s, r) => s + r.stars, 0) / br.length;
+            const avg = br.reduce((sum, r) => sum + r.stars, 0) / br.length;
             _bookRatings[b.id] = { avg, count: br.length };
           }
         });
-        // Books with no specific reviews simply have no entry in _bookRatings
-        // (they will show no stars rather than inheriting the site-wide average)
-        renderBooks(); // re-render cards with stars
+
+        const dpReviews = reviews.filter(r => r.dpId);
+        digitalProducts.forEach(p => {
+          const pr = dpReviews.filter(r => r.dpId === p.id);
+          if (pr.length > 0) {
+            const avg = pr.reduce((sum, r) => sum + r.stars, 0) / pr.length;
+            _dpRatings[p.id] = { avg, count: pr.length };
+          }
+        });
+
+        renderBooks();
+        renderDPSection();
       } catch(e) {}
     }
 
@@ -7143,7 +7404,8 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
               stars: Number(f.stars?.integerValue || f.stars?.doubleValue || 5),
               status: f.status?.stringValue || 'pending',
               createdAt: f.createdAt?.stringValue || '',
-              bookId: f.bookId?.stringValue || ''
+              bookId: f.bookId?.stringValue || '',
+              dpId: f.dpId?.stringValue || ''
             };
           })
           .filter(r => r.status === status)
@@ -7202,7 +7464,12 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       const text = document.getElementById('rvText').value.trim();
       if (!text || text.length < 10) { _rvShowErr('Please write at least a sentence about your experience.'); return; }
       const city = document.getElementById('rvCity').value.trim();
-      const bookId = document.getElementById('rvBookId')?.value || '';
+      const selectedItem = document.getElementById('rvBookId')?.value || '';
+      let bookId = '';
+      let dpId = '';
+      if (selectedItem.startsWith('book:')) bookId = selectedItem.substring(5);
+      else if (selectedItem.startsWith('dp:')) dpId = selectedItem.substring(3);
+      else bookId = selectedItem;
       const btn = document.getElementById('rvSubmitBtn');
       btn.disabled = true; btn.innerHTML = '<span class="spin"></span> Submitting…';
       const id = 'rv_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7);
@@ -7213,6 +7480,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
         text,
         stars: _rvStarVal,
         bookId,
+        dpId,
         status: 'pending',
         createdAt: _rvTimestamp()
       });
@@ -7227,36 +7495,54 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       }
     }
 
-    // Populate book selector in review form
+    // Populate product selector in review form
     function _populateBookSelector() {
       const sel = document.getElementById('rvBookId');
-      if (!sel || sel.options.length > 1) return; // already populated
-      books.forEach(b => {
-        const opt = document.createElement('option');
-        opt.value = b.id;
-        opt.textContent = b.title;
-        sel.appendChild(opt);
-      });
+      if (!sel || sel.dataset.populated === '1') return;
+      sel.innerHTML = '<option value="">-- General review (all products) --</option>';
+      if (books.length) {
+        const bookGroup = document.createElement('optgroup');
+        bookGroup.label = 'Books';
+        books.forEach(b => {
+          const opt = document.createElement('option');
+          opt.value = 'book:' + b.id;
+          opt.textContent = b.title;
+          bookGroup.appendChild(opt);
+        });
+        sel.appendChild(bookGroup);
+      }
+      if (digitalProducts.length) {
+        const dpGroup = document.createElement('optgroup');
+        dpGroup.label = 'Digital products';
+        digitalProducts.forEach(p => {
+          const opt = document.createElement('option');
+          opt.value = 'dp:' + p.id;
+          opt.textContent = p.title;
+          dpGroup.appendChild(opt);
+        });
+        sel.appendChild(dpGroup);
+      }
+      sel.dataset.populated = '1';
     }
 
     // Active filter for public reviews grid
     let _rvFilterBook = '';
-    function setRvBookFilter(bookId) {
-      _rvFilterBook = bookId;
-      // Update pill styles
+    function setRvBookFilter(itemKey) {
+      _rvFilterBook = itemKey;
       document.querySelectorAll('.rv-filter-pill').forEach(p => {
-        p.style.background = p.dataset.val === bookId ? 'var(--g)' : 'var(--gl)';
-        p.style.color = p.dataset.val === bookId ? '#fff' : 'var(--gd)';
+        p.style.background = p.dataset.val === itemKey ? 'var(--g)' : 'var(--gl)';
+        p.style.color = p.dataset.val === itemKey ? '#fff' : 'var(--gd)';
       });
       const allReviews = window._cachedReviews || [];
-      // Update summary stats to reflect the selected book (or all books)
-      const scoped = bookId ? allReviews.filter(r => r.bookId === bookId) : allReviews;
+      const scoped = itemKey
+        ? allReviews.filter(r => (r.bookId && itemKey === 'book:' + r.bookId) || (r.dpId && itemKey === 'dp:' + r.dpId))
+        : allReviews;
       const sum = document.getElementById('rvSummary');
       if (sum && scoped.length > 0) {
         const avg = scoped.reduce((s, r) => s + r.stars, 0) / scoped.length;
         document.getElementById('rvAvgNum').textContent = avg.toFixed(1);
         document.getElementById('rvStarDisp').textContent = _rvStars(Math.round(avg));
-        document.getElementById('rvTotal').textContent = scoped.length + ' review' + (scoped.length !== 1 ? 's' : '') + (bookId ? '' : ' (combined)');
+        document.getElementById('rvTotal').textContent = scoped.length + ' review' + (scoped.length !== 1 ? 's' : '') + (itemKey ? '' : ' (combined)');
         const bars = document.getElementById('rvBars');
         let bhtml = '';
         for (let s = 5; s >= 1; s--) {
@@ -7282,17 +7568,20 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       const grid = document.getElementById('rvGrid');
       if (!grid) return;
       const filtered = _rvFilterBook
-        ? reviews.filter(r => r.bookId === _rvFilterBook)
+        ? reviews.filter(r => (r.bookId && _rvFilterBook === 'book:' + r.bookId) || (r.dpId && _rvFilterBook === 'dp:' + r.dpId))
         : reviews;
       if (filtered.length === 0) {
-        grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;color:var(--mu);font-size:.9rem;padding:2rem 0">No reviews for this book yet — be the first!</div>`;
+        grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;color:var(--mu);font-size:.9rem;padding:2rem 0">No reviews for this product yet -- be the first!</div>`;
         return;
       }
       grid.innerHTML = filtered.map(r => {
         const bookLabel = r.bookId ? books.find(b => b.id === r.bookId)?.title : '';
+        const dpLabel = r.dpId ? digitalProducts.find(p => p.id === r.dpId)?.title : '';
+        const itemLabel = bookLabel || dpLabel;
+        const itemType = dpLabel ? 'Digital' : 'Book';
         return `<div class="tcard">
           <div class="tq">"</div>
-          ${bookLabel ? `<div style="font-size:.72rem;font-weight:700;color:var(--g);margin-top:1.2rem;margin-bottom:.15rem;background:var(--gl);display:inline-block;padding:.18rem .55rem;border-radius:8px">📖 ${bookLabel.replace(/</g,'&lt;')}</div>` : ''}
+          ${itemLabel ? `<div style="font-size:.72rem;font-weight:700;color:var(--g);margin-top:1.2rem;margin-bottom:.15rem;background:var(--gl);display:inline-block;padding:.18rem .55rem;border-radius:8px">${itemType}: ${itemLabel.replace(/</g,'&lt;')}</div>` : ''}
           <div style="color:#f5a623;font-size:.88rem;margin-top:.4rem;margin-bottom:.3rem">${_rvStars(r.stars)}</div>
           <div class="tbody">${r.text.replace(/</g,'&lt;')}</div>
           <div class="tfoot">
@@ -7343,13 +7632,19 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
         }
         bars.innerHTML = bhtml;
       }
-      // Per-book filter pills
+      // Per-product filter pills
       const booksWithReviews = books.filter(b => reviews.some(r => r.bookId === b.id));
+      const dpsWithReviews = digitalProducts.filter(p => reviews.some(r => r.dpId === p.id));
       const pillsEl = document.getElementById('rvFilterPills');
-      if (pillsEl && booksWithReviews.length > 0) {
+      if (pillsEl && (booksWithReviews.length > 0 || dpsWithReviews.length > 0)) {
         let pillsHtml = `<button class="rv-filter-pill" data-val="" onclick="setRvBookFilter('')" style="background:var(--g);color:#fff;border:none;border-radius:999px;padding:.3rem .9rem;font-family:'Nunito',sans-serif;font-size:.78rem;font-weight:700;cursor:pointer;transition:background .2s">All</button>`;
         booksWithReviews.forEach(b => {
-          pillsHtml += `<button class="rv-filter-pill" data-val="${b.id}" onclick="setRvBookFilter('${b.id}')" style="background:var(--gl);color:var(--gd);border:none;border-radius:999px;padding:.3rem .9rem;font-family:'Nunito',sans-serif;font-size:.78rem;font-weight:700;cursor:pointer;transition:background .2s">${b.title.length > 28 ? b.title.substring(0,26)+'…' : b.title}</button>`;
+          const title = b.title.length > 28 ? b.title.substring(0,26)+'...' : b.title;
+          pillsHtml += `<button class="rv-filter-pill" data-val="book:${b.id}" onclick="setRvBookFilter('book:${b.id}')" style="background:var(--gl);color:var(--gd);border:none;border-radius:999px;padding:.3rem .9rem;font-family:'Nunito',sans-serif;font-size:.78rem;font-weight:700;cursor:pointer;transition:background .2s">Book: ${title}</button>`;
+        });
+        dpsWithReviews.forEach(p => {
+          const title = p.title.length > 28 ? p.title.substring(0,26)+'...' : p.title;
+          pillsHtml += `<button class="rv-filter-pill" data-val="dp:${p.id}" onclick="setRvBookFilter('dp:${p.id}')" style="background:var(--gl);color:var(--gd);border:none;border-radius:999px;padding:.3rem .9rem;font-family:'Nunito',sans-serif;font-size:.78rem;font-weight:700;cursor:pointer;transition:background .2s">Digital: ${title}</button>`;
         });
         pillsEl.innerHTML = pillsHtml;
         pillsEl.style.display = 'flex';
@@ -7381,7 +7676,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
             <div style="width:28px;height:28px;border-radius:50%;background:${_rvAvatarColor(r.name)};color:#fff;font-size:.65rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0">${_rvInitials(r.name)}</div>
             <div>
               <div style="font-weight:700;font-size:.85rem;color:var(--tx)">${r.name.replace(/</g,'&lt;')}${r.city ? ' · ' + r.city : ''}</div>
-              <div style="font-size:.72rem;color:var(--mu)">${_rvDateLabel(r.createdAt)} &nbsp;·&nbsp; <span style="color:#f5a623">${_rvStars(r.stars)}</span>${r.bookId ? ' &nbsp;·&nbsp; 📖 ' + (books.find(b=>b.id===r.bookId)?.title||r.bookId) : ''}</div>
+              <div style="font-size:.72rem;color:var(--mu)">${_rvDateLabel(r.createdAt)} &nbsp;·&nbsp; <span style="color:#f5a623">${_rvStars(r.stars)}</span>${r.bookId ? ' &nbsp;·&nbsp; Book: ' + (books.find(b=>b.id===r.bookId)?.title||r.bookId) : ''}${r.dpId ? ' &nbsp;·&nbsp; Digital: ' + (digitalProducts.find(p=>p.id===r.dpId)?.title||r.dpId) : ''}</div>
             </div>
           </div>
           <p style="font-size:.84rem;color:#3a3a3a;line-height:1.55;margin-bottom:.8rem">${r.text.replace(/</g,'&lt;')}</p>
@@ -7518,7 +7813,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       renderBooks();
       renderBlogs();
       renderDPSection();
-      _populateBookSelector(); // populate book dropdown in review form
+      _populateBookSelector(); // populate product dropdown in review form
       await checkInstamojoReturn(); // handle redirect back from Instamojo
     })();
 
@@ -7585,7 +7880,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       if (hint) hint.classList.add('show');
       // Pre-select book and star in the review section form
       const rvBookSel = document.getElementById('rvBookId');
-      if (rvBookSel) rvBookSel.value = bookId;
+      if (rvBookSel) rvBookSel.value = 'book:' + bookId;
       setRvStar(val);
     }
 
@@ -7604,7 +7899,122 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       }, 200);
     }
 
+    function bmStarPickDP(dpId, val) {
+      const key = 'dp-' + dpId;
+      _bmStarSelected[key] = val;
+      bmStarOut(key);
+      const hint = document.getElementById('bm-qhint-' + key);
+      if (hint) hint.classList.add('show');
+      const rvBookSel = document.getElementById('rvBookId');
+      if (rvBookSel) rvBookSel.value = 'dp:' + dpId;
+      setRvStar(val);
+    }
+
+    function dpGoReview(dpId) {
+      closeDPM();
+      setTimeout(() => {
+        const sec = document.getElementById('reviews');
+        if (sec) sec.scrollIntoView({ behavior: 'smooth' });
+        setTimeout(() => {
+          const ta = document.getElementById('rvText');
+          if (ta) ta.focus();
+          _rvCheckAuth();
+        }, 600);
+      }, 200);
+    }
+
     // ── SHARE POPUP ─────────────────────────────────────────────────────────────
+    // Premium sample preview lightbox
+    let _lbImages = [];
+    let _lbIdx = 0;
+    let _lbLastOverflow = '';
+    let _lbTouchStartX = 0;
+    let _lbTouchStartY = 0;
+    let _lbTouching = false;
+
+    function openLightbox(images, startIdx) {
+      const list = (Array.isArray(images) ? images : [images]).filter(Boolean);
+      if (!list.length) return;
+      _lbImages = list;
+      _lbIdx = Math.max(0, Math.min(startIdx || 0, _lbImages.length - 1));
+      _lbRender(true);
+      const ov = document.getElementById('imgLightboxOv');
+      if (!ov) return;
+      _lbLastOverflow = document.body.style.overflow || '';
+      document.body.classList.add('lightbox-lock');
+      document.body.style.overflow = 'hidden';
+      ov.classList.add('open');
+      ov.setAttribute('aria-hidden', 'false');
+      const closeBtn = ov.querySelector('.img-lightbox-close');
+      if (closeBtn) closeBtn.focus({ preventScroll: true });
+    }
+
+    function closeLightbox() {
+      const ov = document.getElementById('imgLightboxOv');
+      if (!ov) return;
+      ov.classList.remove('open');
+      ov.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('lightbox-lock');
+      document.body.style.overflow = _lbLastOverflow;
+    }
+
+    function lbNav(dir) {
+      if (!_lbImages.length) return;
+      _lbIdx = (_lbIdx + dir + _lbImages.length) % _lbImages.length;
+      _lbRender(false);
+    }
+
+    function _lbRender(skipAnim) {
+      const img = document.getElementById('lbImg');
+      const prev = document.getElementById('lbPrev');
+      const next = document.getElementById('lbNext');
+      const counter = document.getElementById('lbCounter');
+      if (img) {
+        const update = () => {
+          img.src = _lbImages[_lbIdx];
+          img.alt = 'Sample page ' + (_lbIdx + 1);
+          img.classList.remove('switching');
+        };
+        if (skipAnim) update();
+        else {
+          img.classList.add('switching');
+          setTimeout(update, 120);
+        }
+      }
+      const multi = _lbImages.length > 1;
+      if (prev) prev.style.display = multi ? '' : 'none';
+      if (next) next.style.display = multi ? '' : 'none';
+      if (counter) counter.textContent = multi ? (_lbIdx + 1) + ' / ' + _lbImages.length : 'Preview';
+    }
+
+    document.addEventListener('keydown', function(e) {
+      const ov = document.getElementById('imgLightboxOv');
+      if (!ov || !ov.classList.contains('open')) return;
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowLeft') lbNav(-1);
+      if (e.key === 'ArrowRight') lbNav(1);
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const ov = document.getElementById('imgLightboxOv');
+      if (!ov) return;
+      ov.addEventListener('touchstart', function(e) {
+        if (!ov.classList.contains('open') || !e.changedTouches.length) return;
+        _lbTouching = true;
+        _lbTouchStartX = e.changedTouches[0].clientX;
+        _lbTouchStartY = e.changedTouches[0].clientY;
+      }, { passive: true });
+      ov.addEventListener('touchend', function(e) {
+        if (!_lbTouching || !e.changedTouches.length) return;
+        _lbTouching = false;
+        const dx = e.changedTouches[0].clientX - _lbTouchStartX;
+        const dy = e.changedTouches[0].clientY - _lbTouchStartY;
+        if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy) * 1.4) {
+          lbNav(dx > 0 ? -1 : 1);
+        }
+      }, { passive: true });
+    });
+
     let _sharePopUrl = '';
 
     function openSharePop(bookId, bookTitle) {
@@ -7700,6 +8110,18 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
   </script>
 
   <!-- ── SHARE POPUP ──────────────────────────────────────────────────────── -->
+  <div class="img-lightbox-ov" id="imgLightboxOv" onclick="if(event.target===this)closeLightbox()" role="dialog" aria-modal="true" aria-label="Sample page preview" aria-hidden="true">
+    <button class="img-lightbox-close" onclick="closeLightbox()" aria-label="Close" type="button">&times;</button>
+    <button class="img-lightbox-nav prev" id="lbPrev" onclick="lbNav(-1);event.stopPropagation()" aria-label="Previous sample page" type="button">&#8249;</button>
+    <div class="img-lightbox-frame" onclick="event.stopPropagation()">
+      <div class="img-lightbox-stage">
+        <img class="img-lightbox-img" id="lbImg" src="" alt="Sample page" draggable="false" />
+      </div>
+    </div>
+    <button class="img-lightbox-nav next" id="lbNext" onclick="lbNav(1);event.stopPropagation()" aria-label="Next sample page" type="button">&#8250;</button>
+    <div class="img-lightbox-counter" id="lbCounter"></div>
+  </div>
+
   <div class="share-pop-ov" id="sharePopOv" onclick="if(event.target===this)closeSharePop()">
     <div class="share-pop-box">
       <div class="share-pop-handle"></div>
@@ -7746,3 +8168,8 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
 </body>
 
 </html>
+
+
+
+
+
