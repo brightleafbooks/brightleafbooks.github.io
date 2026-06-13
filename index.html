@@ -7493,13 +7493,13 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
     }
 
     function _getSession() {
-      try { return JSON.parse(sessionStorage.getItem(AUTH_SESSION) || 'null'); } catch(e) { return null; }
+      try { return JSON.parse(localStorage.getItem(AUTH_SESSION) || 'null'); } catch(e) { return null; }
     }
     function _saveSession(u) {
-      try { sessionStorage.setItem(AUTH_SESSION, JSON.stringify(u)); } catch(e) {}
+      try { localStorage.setItem(AUTH_SESSION, JSON.stringify(u)); } catch(e) {}
     }
     function _clearSession() {
-      try { sessionStorage.removeItem(AUTH_SESSION); } catch(e) {}
+      try { localStorage.removeItem(AUTH_SESSION); } catch(e) {}
     }
 
     let _authUser = _getSession(); // { email, name }
