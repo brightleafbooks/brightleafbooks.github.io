@@ -6009,9 +6009,17 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       const reader = new FileReader();
       reader.onload = function(e) {
         const dataUrl = e.target.result;
+        // Check size — Firestore limit is ~1MB per document, base64 images can exceed this
+        if (dataUrl.length > 200000) {
+          alert('⚠️ Image too large to save to cloud (' + Math.round(dataUrl.length/1024) + 'KB).\n\nPlease upload your logo to Cloudinary (free) and paste the URL instead.\nThe logo will show now but will reset after page refresh.');
+          siteContent.brandLogoUrl = dataUrl;
+          applyBrandLogoToPage(dataUrl);
+          lsSave(); // save to localStorage only
+          return;
+        }
         siteContent.brandLogoUrl = dataUrl;
         applyBrandLogoToPage(dataUrl);
-        saveData();
+        save(); // save to both localStorage and Firebase
       };
       reader.readAsDataURL(file);
     }
@@ -6031,7 +6039,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       applyBrandLogoToPage(url);
       const row = document.getElementById('logoUrlRow');
       if (row) row.classList.remove('open');
-      saveData();
+      save(); // save to both localStorage and Firebase
     }
 
     function changeBrandLogoSize(val) {
@@ -6040,7 +6048,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       const sliderVal = document.getElementById('logoSizeVal');
       if (sliderVal) sliderVal.textContent = sz + 'px';
       applyBrandLogoToPage(siteContent.brandLogoUrl || '');
-      saveData();
+      save(); // save to both localStorage and Firebase
     }
 
     function removeBrandLogo() {
@@ -6052,7 +6060,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
         if (el && el.dataset.origSrc) el.src = el.dataset.origSrc;
       });
       updateLogoPanelPreview('', siteContent.brandLogoSize || 36);
-      saveData();
+      save(); // save to both localStorage and Firebase
     }
 
     // Cache original logo srcs as data-orig-src on DOMContentLoaded
