@@ -5758,6 +5758,15 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
     // Force push everything to Firebase
     async function forceSyncToFirebase() {
       const btn = document.getElementById('forceSyncBtn');
+      // Safety check: never sync if we're only showing seed data (no real products added yet)
+      const isSeedOnly = books.length <= SEED_BOOKS.length && 
+        books.every(b => SEED_BOOKS.some(s => s.id === b.id));
+      if (isSeedOnly && digitalProducts.length === 0) {
+        if (btn) { btn.innerHTML = '⚠️ No real data to sync'; btn.style.background = '#e67e22'; }
+        setTimeout(() => { if(btn){btn.innerHTML='☁️ Force Sync to Firebase';btn.style.background='';} }, 3000);
+        console.warn('Force sync aborted — only seed data present, refusing to overwrite Firebase');
+        return;
+      }
       if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spin"></span> Syncing...'; }
       _db = null; // reset so initFirebase runs fresh
       console.log('Force sync started...');
@@ -5781,8 +5790,8 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
         if (snap.exists()) {
           const d = snap.data();
           console.log('fbLoad: got data, books count =', (d && d.books) ? d.books.length : 0);
-          if (d && d.books && d.books.length) return d;
-          console.warn('fbLoad: document exists but books array is empty');
+          if (d) return d; // return data even if books is empty — never fall through to seed
+          console.warn('fbLoad: document exists but data is null');
         } else {
           console.warn('fbLoad: document does not exist yet in Firestore');
         }
@@ -5864,11 +5873,11 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
         return;
       }
       // 3. Fall back to seed data — ONLY if no real data exists anywhere
-      console.warn('load: no data found in Firebase or localStorage — using seed data');
+      console.warn('load: no data found in Firebase or localStorage — using seed data (NOT saving to Firebase)');
       books = SEED_BOOKS;
       blogs = SEED_BLOGS;
       siteContent = { ...DEFAULT_SITE };
-      await save();
+      lsSave(); // save seed data to localStorage ONLY — never overwrite Firebase with seeds
     }
 
     // ── Main save: localStorage always works, Firebase as bonus ───────────────
