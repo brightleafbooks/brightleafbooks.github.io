@@ -82,7 +82,11 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ fields })
         });
-        if (!res.ok) throw new Error('Firestore PATCH failed: ' + res.status);
+        if (!res.ok) {
+          const errText = await res.text();
+          console.error('Firestore PATCH failed:', res.status, errText);
+          throw new Error('Firestore PATCH failed: ' + res.status + ' — ' + errText);
+        }
       }
     };
     window.dispatchEvent(new Event('fbready'));
@@ -5717,7 +5721,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
     function lsLoad() {
       try {
         const raw = localStorage.getItem(LS_KEY);
-        if (raw) { const d = JSON.parse(raw); if (d && d.books && d.books.length) return d; }
+        if (raw) { const d = JSON.parse(raw); if (d && d.books) return d; }
       } catch (e) { }
       return null;
     }
@@ -5827,8 +5831,10 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
         });
 
         const payload = cleanForFirestore({ books: slimBooks, blogs: slimBlogs, digitalProducts, siteContent });
+        const payloadStr = JSON.stringify(payload);
+        console.log('Firebase PATCH payload size (bytes):', payloadStr.length, '— saving', slimBooks.length, 'books,', digitalProducts.length, 'products');
         await setDoc(ref, payload);
-        console.log('Firebase save SUCCESS — books saved:', slimBooks.length);
+        console.log('Firebase save SUCCESS — books saved:', slimBooks.length, '| digital products:', digitalProducts.length);
         return true;
       } catch (e) {
         console.error('Firebase setDoc error: ', e.message, e);
