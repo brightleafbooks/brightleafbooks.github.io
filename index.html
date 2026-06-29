@@ -552,6 +552,26 @@
 
     .books-aud-banner span { font-size: 1.3rem }
 
+    /* BOOKS ANNOUNCEMENT STRIP */
+    .books-announcement {
+      display: flex;
+      align-items: flex-start;
+      gap: .75rem;
+      margin-bottom: 1.5rem;
+      padding: .85rem 1.2rem;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #fff8e7 0%, #fff3cc 100%);
+      border-left: 4px solid #f5a623;
+      font-family: 'Nunito', sans-serif;
+      font-size: .9rem;
+      font-weight: 600;
+      color: #7a4f00;
+      line-height: 1.5;
+      white-space: pre-wrap;
+    }
+    .books-announcement .ba-icon { font-size: 1.25rem; flex-shrink: 0; margin-top: .05rem }
+    .books-announcement.hidden { display: none }
+
     /* SEARCH BAR */
     .nsearch {
       position: relative;
@@ -4857,6 +4877,10 @@
       <h2 id="books-h2">Find your little one's next <em>favourite</em></h2>
     </div>
     <div class="bcat-filters" id="bcatFilters"></div>
+    <div class="books-announcement" id="booksAnnouncement">
+      <span class="ba-icon">📢</span>
+      <span id="booksAnnouncementText">🔥 Bestseller: "ABC Coloring Fun" — loved by 500+ kids! · 🎉 Free shipping on orders above ₹499</span>
+    </div>
     <div id="bcat-sections"></div>
   </section>
 
@@ -5484,6 +5508,14 @@
           <div class="af">
             <div class="afg"><label for="sc-books-h2">Books Section Heading (HTML ok)</label><textarea id="sc-books-h2"
                 style="min-height:55px" autocomplete="off"></textarea></div>
+            <div class="afg">
+              <label for="sc-books-announcement">📢 Books Section Announcement</label>
+              <textarea id="sc-books-announcement" style="min-height:70px" autocomplete="off" placeholder="e.g. 🔥 Bestseller alert! 'ABC Coloring Fun' — loved by 500+ kids. Or: 🎉 Flat 20% off on all activity books this week!"></textarea>
+              <div style="display:flex;align-items:center;gap:.5rem;margin-top:.4rem">
+                <input type="checkbox" id="sc-books-announcement-enabled" style="width:16px;height:16px;accent-color:var(--gd);cursor:pointer">
+                <label for="sc-books-announcement-enabled" style="font-size:.8rem;font-weight:700;color:var(--gd);cursor:pointer;margin:0">Show this announcement on the site</label>
+              </div>
+            </div>
             <div class="afg"><label for="sc-blog-h2">Blog Section Heading (HTML ok)</label><textarea id="sc-blog-h2"
                 style="min-height:55px" autocomplete="off"></textarea></div>
             <div class="afg"><label for="sc-blog-sub">Blog Sub-text</label><input id="sc-blog-sub" / autocomplete="off">
@@ -5984,7 +6016,9 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       imApiKey: '2b50ec04dc05174c9ac418613269f2a2',
       imAuthToken: 'e3d8c8c9c605013a061aee04c2fe4ea8',
       imSandbox: 'false',
-      imProxy: 'https://us-central1-bright-leaf-9ce73.cloudfunctions.net/instamojoProxy'
+      imProxy: 'https://us-central1-bright-leaf-9ce73.cloudfunctions.net/instamojoProxy',
+      booksAnnouncement: '🔥 Bestseller: "ABC Coloring Fun" — loved by 500+ kids! · 🎉 Free shipping on orders above ₹499',
+      booksAnnouncementEnabled: true
     };
     let siteContent = { ...DEFAULT_SITE };
 
@@ -6214,6 +6248,21 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       applyBrandLogoToPage(s.brandLogoUrl || '');
       // Sync featured product IDs
       if (s.featuredIds) { _featuredIds = s.featuredIds; }
+
+      // Books announcement banner
+      const annEl = document.getElementById('booksAnnouncement');
+      const annTxt = document.getElementById('booksAnnouncementText');
+      if (annEl && annTxt) {
+        const text = (s.booksAnnouncement || '').trim();
+        // Hide only if explicitly disabled OR no text. Default (undefined) = show if text present.
+        const disabled = s.booksAnnouncementEnabled === false;
+        if (!disabled && text) {
+          annTxt.textContent = text;
+          annEl.classList.remove('hidden');
+        } else if (disabled || !text) {
+          annEl.classList.add('hidden');
+        }
+      }
     }
 
     function applyBrandLogoToPage(url) {
@@ -6370,6 +6419,9 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       v('sc-nav-cta', s.navCta);
       v('sc-footer-logo', s.footerLogo);
       v('sc-footer-copy', s.footerCopy);
+      v('sc-books-announcement', s.booksAnnouncement || '');
+      const annChk = document.getElementById('sc-books-announcement-enabled');
+      if (annChk) annChk.checked = !!s.booksAnnouncementEnabled;
       // Populate logo preview panel
       updateLogoPanelPreview(s.brandLogoUrl || '', s.brandLogoSize || 36);
     }
@@ -6406,7 +6458,9 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
         imApiKey: siteContent.imApiKey || '',
         imAuthToken: siteContent.imAuthToken || '',
         imSandbox: siteContent.imSandbox || 'true',
-        imProxy: siteContent.imProxy || ''
+        imProxy: siteContent.imProxy || '',
+        booksAnnouncement: g('sc-books-announcement'),
+        booksAnnouncementEnabled: document.getElementById('sc-books-announcement-enabled') ? document.getElementById('sc-books-announcement-enabled').checked : false
       };
       const btn = document.getElementById('scSaveBtn');
       btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Saving...';
