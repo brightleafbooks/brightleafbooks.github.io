@@ -386,11 +386,134 @@
     }
 
     /* HERO CONTENT TRANSITION */
-    .hero-content {
+    /* ── FEATURED PRODUCT STACK ── */
+    .hfeat {
       position: relative;
+      flex-shrink: 0;
+      width: 240px;
+      height: 330px;
       z-index: 2;
-      transition: opacity .4s ease, transform .4s ease
+      animation: fu .6s .5s ease both
     }
+
+    .hfeat-card {
+      position: absolute;
+      width: 190px;
+      border-radius: 18px;
+      background: #fff;
+      box-shadow: 0 10px 36px rgba(0,0,0,.16);
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform .3s cubic-bezier(.34,1.56,.64,1), box-shadow .2s;
+      will-change: transform
+    }
+
+    .hfeat-card:nth-child(1) {
+      top: 26px; left: 26px;
+      transform: rotate(-6deg);
+      z-index: 1
+    }
+
+    .hfeat-card:nth-child(2) {
+      top: 13px; left: 13px;
+      transform: rotate(-2deg);
+      z-index: 2
+    }
+
+    .hfeat-card:nth-child(3) {
+      top: 0; left: 0;
+      transform: rotate(2deg);
+      z-index: 3
+    }
+
+    .hfeat-card:hover { box-shadow: 0 18px 44px rgba(0,0,0,.22) }
+    .hfeat-card.hfeat-active {
+      transform: rotate(0deg) translateY(-8px) !important;
+      z-index: 10 !important;
+      box-shadow: 0 22px 54px rgba(0,0,0,.24)
+    }
+
+    .hfeat-cover {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      display: block;
+      background: var(--gl)
+    }
+
+    .hfeat-cover-placeholder {
+      width: 100%;
+      height: 200px;
+      background: linear-gradient(135deg, var(--gl), #fff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem
+    }
+
+    .hfeat-info {
+      padding: .6rem .7rem .7rem;
+      background: #fff
+    }
+
+    .hfeat-badge {
+      display: inline-block;
+      font-size: .62rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      background: var(--y);
+      color: var(--tx);
+      border-radius: 999px;
+      padding: .12rem .5rem;
+      margin-bottom: .22rem
+    }
+
+    .hfeat-title {
+      font-family: 'Fraunces', serif;
+      font-size: .85rem;
+      font-weight: 700;
+      color: var(--tx);
+      line-height: 1.25;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis
+    }
+
+    .hfeat-author {
+      font-size: .7rem;
+      color: var(--mu);
+      margin-top: .08rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis
+    }
+
+    .hfeat-dots {
+      display: flex;
+      gap: 5px;
+      justify-content: center;
+      position: absolute;
+      bottom: -20px;
+      left: 0;
+      right: 0
+    }
+
+    .hfeat-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--gl);
+      cursor: pointer;
+      transition: background .2s, transform .15s
+    }
+
+    .hfeat-dot.active {
+      background: var(--g);
+      transform: scale(1.3)
+    }
+
+    .hfeat-empty { display: none }
 
     .hero-content.switching {
       opacity: 0;
@@ -711,13 +834,22 @@
     .hero {
       min-height: 100vh;
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
       align-items: center;
       justify-content: center;
-      text-align: center;
-      padding: 8rem 1.5rem 4rem;
+      text-align: left;
+      padding: 8rem 4rem 4rem;
       position: relative;
-      overflow: hidden
+      overflow: hidden;
+      gap: 3rem
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      flex: 1;
+      max-width: 620px;
+      transition: opacity .4s ease, transform .4s ease
     }
 
     .blob {
@@ -802,7 +934,7 @@
       font-size: 1.1rem;
       color: var(--mu);
       max-width: 480px;
-      margin: 1.5rem auto 2.25rem;
+      margin: 1.5rem 0 2.25rem;
       line-height: 1.75;
       animation: fu .6s .2s ease both
     }
@@ -811,7 +943,7 @@
       display: flex;
       gap: 1rem;
       flex-wrap: wrap;
-      justify-content: center;
+      justify-content: flex-start;
       animation: fu .6s .3s ease both
     }
 
@@ -855,8 +987,8 @@
       gap: 3rem;
       margin-top: 3.5rem;
       animation: fu .6s .4s ease both;
-      justify-content: center;
-      text-align: center
+      justify-content: flex-start;
+      text-align: left
     }
 
     .sn {
@@ -1424,6 +1556,37 @@
 
     .ov.open {
       display: flex
+    }
+
+    /* Admin overlay is full page, not a centered modal */
+    #aov {
+      padding: 0;
+      background: #f4f7f5;
+      backdrop-filter: none;
+      display: none;
+      flex-direction: column
+    }
+
+    #aov.open {
+      display: flex
+    }
+
+    #aov > .abox {
+      border-radius: 0;
+      box-shadow: none;
+      max-width: 100%;
+      max-height: 100%;
+      height: 100%
+    }
+
+    /* Password screen stays centered on the full page */
+    #aov > .abox > .pws {
+      max-width: 420px;
+      margin: 8vh auto 0;
+      background: #fff;
+      border-radius: 18px;
+      padding: 2.5rem 2rem;
+      box-shadow: 0 8px 32px rgba(0,0,0,.1)
     }
 
     @keyframes mIn {
@@ -2318,28 +2481,29 @@
     }
 
     /* ADMIN */
+    /* ── ADMIN FULL-PAGE LAYOUT ── */
     .abox {
-      background: #fff;
-      border-radius: 22px;
-      max-width: 740px;
+      background: #f4f7f5;
       width: 100%;
-      max-height: 92vh;
-      overflow-y: auto;
-      box-shadow: 0 28px 70px rgba(0, 0, 0, .4);
-      animation: mIn .25s ease
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: mIn .2s ease
     }
 
+    /* Admin top bar */
     .atabs {
       display: flex;
       flex-wrap: nowrap;
-      border-bottom: 2px solid rgba(61, 170, 92, .12);
-      position: sticky;
-      top: 0;
+      border-bottom: 2px solid rgba(61, 170, 92, .15);
       background: #fff;
       z-index: 1;
-      border-radius: 22px 22px 0 0;
       overflow-x: auto;
-      scrollbar-width: none
+      scrollbar-width: none;
+      flex-shrink: 0;
+      padding: 0 1rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,.06)
     }
 
     .atabs::-webkit-scrollbar {
@@ -2347,18 +2511,18 @@
     }
 
     .atab {
-      flex: 1;
-      min-width: 0;
-      padding: .85rem .3rem;
+      flex-shrink: 0;
+      padding: 1rem 1.1rem;
       background: none;
       border: none;
       font-family: 'Nunito', sans-serif;
-      font-size: .78rem;
+      font-size: .82rem;
       font-weight: 700;
       cursor: pointer;
       color: var(--mu);
       transition: color .2s, background .2s;
-      white-space: nowrap
+      white-space: nowrap;
+      letter-spacing: .01em
     }
 
     .atab.act {
@@ -2368,17 +2532,79 @@
     }
 
     .atab:first-child {
-      border-radius: 22px 0 0 0
+      border-radius: 0
     }
 
     .axbtn {
-      padding: .9rem;
+      margin-left: auto;
+      flex-shrink: 0;
+      padding: 1rem 1.2rem;
       background: none;
       border: none;
       font-size: 1.3rem;
       cursor: pointer;
-      color: var(--mu)
+      color: var(--mu);
+      transition: color .2s
     }
+
+    .axbtn:hover { color: #c0392b }
+
+    /* Admin content area scrolls independently */
+    #amain {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      overflow: hidden
+    }
+
+    #amain > .atabs { border-radius: 0 }
+
+    .ac {
+      flex: 1;
+      overflow-y: auto;
+      padding: 2rem 2.5rem;
+      max-width: 860px;
+      width: 100%;
+      margin: 0 auto;
+      box-sizing: border-box
+    }
+
+    /* Admin page header strip */
+    .admin-page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #fff;
+      padding: .65rem 1.5rem;
+      border-bottom: 1px solid rgba(61,170,92,.1);
+      flex-shrink: 0
+    }
+
+    .admin-page-header .admin-brand {
+      font-family: 'Fraunces', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--gd);
+      letter-spacing: -.01em
+    }
+
+    .admin-close-btn {
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      padding: .45rem 1rem;
+      background: #fef2f2;
+      border: 1px solid #fca5a5;
+      border-radius: 8px;
+      font-family: 'Nunito', sans-serif;
+      font-size: .82rem;
+      font-weight: 700;
+      color: #c0392b;
+      cursor: pointer;
+      transition: background .2s
+    }
+
+    .admin-close-btn:hover { background: #fee2e2 }
 
     .ac {
       padding: 1.6rem 1.8rem
@@ -2896,15 +3122,17 @@
       .user-menu-wrap { display: none !important }
 
       /* ── HERO ── */
-      .hero { padding: 5.5rem 1.1rem 3rem; min-height: auto }
+      .hero { padding: 5.5rem 1.1rem 3rem; min-height: auto; flex-direction: column; align-items: center; text-align: center; gap: 2rem }
+      .hero-content { text-align: center; max-width: 100% }
       h1 { font-size: clamp(2rem,8vw,3rem); line-height: 1.15 }
       .hsub { font-size: .95rem; margin: 1.1rem auto 1.6rem }
-      .hbtns { flex-direction: column; align-items: stretch; gap: .7rem }
+      .hbtns { flex-direction: column; align-items: stretch; gap: .7rem; justify-content: center }
       .bp, .bs { padding: .85rem 1.2rem; font-size: .95rem; text-align: center }
       .hstats { gap: 1.2rem; flex-wrap: wrap; justify-content: center; margin-top: 2rem }
       .sn { font-size: 1.55rem }
       .sl { font-size: .75rem }
       .dd { display: none }
+      .hfeat { width: 180px; height: 260px; margin: 0 auto }
 
       /* ── ABOUT ── */
       .about { padding: 3rem 1.1rem; gap: 1.5rem }
@@ -2992,7 +3220,7 @@
       .pay-field input, .pay-field select { font-size: 16px }
 
       /* ── ADMIN / AUTH MODALS ── */
-      .abox, .auth-modal {
+      .auth-modal {
         border-radius: 22px 22px 0 0;
         width: 100%;
         max-width: 100%;
@@ -3004,6 +3232,10 @@
         border-bottom-left-radius: 0;
         border-bottom-right-radius: 0
       }
+
+      /* Admin panel is always full-page on mobile too */
+      .abox { border-radius: 0; max-height: 100%; }
+      .ac { padding: 1.25rem 1rem; }
       .auth-modal { padding: 1.8rem 1.2rem 2rem }
       .afrow { grid-template-columns: 1fr }
       .af input, .af select, .af textarea { font-size: 16px }
@@ -4571,6 +4803,8 @@
         <div><div class="sn" id="stat3-num">100%</div><div class="sl" id="stat3-lbl">Kid-friendly</div></div>
       </div>
     </div>
+    <!-- Featured product stack — small corner accent -->
+    <div class="hfeat" id="heroFeatStack" aria-label="Featured products"></div>
   </section>
 
   <!-- Trust badges -->
@@ -4919,19 +5153,24 @@
           <button class="afbtn" style="background:#888" onclick="closeAdmin()">Cancel</button>
         </div>
       </div>
+      <!-- Admin Page Header -->
+      <div class="admin-page-header" id="adminPageHeader" style="display:none">
+        <span class="admin-brand">📋 WhoseBooks Admin</span>
+        <button class="admin-close-btn" onclick="closeAdmin()">✕ Close</button>
+      </div>
       <!-- Main -->
-      <div id="amain" style="display:none">
+      <div id="amain" style="display:none;flex:1;overflow:hidden;flex-direction:column">
         <div class="atabs">
           <button class="atab act" onclick="swTab('tadd',this)">📚 Books</button>
           <button class="atab" onclick="swTab('tdp',this)">💜 Digital</button>
           <button class="atab" onclick="swTab('tblg',this)">✏️ Blog</button>
           <button class="atab" onclick="swTab('tman',this)">⚙️ Manage</button>
+          <button class="atab" onclick="swTab('tfeat',this);buildFeaturedOptions()">🃏 Hero Cards</button>
           <button class="atab" onclick="swTab('tsite',this)">🌐 Site</button>
           <button class="atab" onclick="swTab('tim',this)">💳 Pay</button>
           <button class="atab" onclick="swTab('tpw',this)">🔑 PW</button>
           <button class="atab" onclick="swTab('tusers',this)">👥 Users</button>
           <button class="atab" onclick="swTab('treviews',this)">⭐ Reviews</button>
-          <button class="axbtn" onclick="closeAdmin()">✕</button>
         </div>
         <!-- Add Book -->
         <div class="ac" id="tadd">
@@ -5073,6 +5312,38 @@
           <h3 style="margin-top:1.75rem">Blog Posts</h3>
           <div class="ml" id="mlp"></div>
         </div>
+        <!-- HERO FEATURED CARDS -->
+        <div class="ac" id="tfeat" style="display:none">
+          <h3>🃏 Hero Card Stack</h3>
+          <div style="background:var(--gl);border-radius:12px;padding:.8rem 1rem;margin-bottom:1.2rem;font-size:.83rem;color:var(--gd);font-weight:700">
+            These 3 cards appear as a small stacked widget in your hero section. Visitors click any card to open that product's page.
+          </div>
+
+          <div class="af">
+            <div class="afg">
+              <label for="sc-feat-1">Card Slot 1 (back)</label>
+              <select id="sc-feat-1" autocomplete="off"><option value="">— None —</option></select>
+            </div>
+            <div class="afg">
+              <label for="sc-feat-2">Card Slot 2 (middle)</label>
+              <select id="sc-feat-2" autocomplete="off"><option value="">— None —</option></select>
+            </div>
+            <div class="afg">
+              <label for="sc-feat-3">Card Slot 3 (front / highlighted)</label>
+              <select id="sc-feat-3" autocomplete="off"><option value="">— None —</option></select>
+            </div>
+          </div>
+
+          <div style="margin-top:.8rem;display:flex;align-items:center;gap:.8rem;flex-wrap:wrap">
+            <button class="afbtn" onclick="saveFeaturedProducts()">💾 Save Hero Cards</button>
+            <span class="ok" id="featOk" style="display:none">✅ Saved! Hero stack updated live.</span>
+          </div>
+
+          <div style="margin-top:1.2rem;font-size:.78rem;color:var(--mu);font-weight:600;line-height:1.6">
+            💡 <b>Tip:</b> Slot 3 is the front card with the ⭐ Featured badge. Pick your bestseller or newest release there. Slots 1 &amp; 2 peek out behind it. Leave a slot empty to show fewer cards.
+          </div>
+        </div>
+
         <!-- SITE CONTENT -->
         <div class="ac" id="tsite" style="display:none">
           <h3>🌐 Edit Site Content</h3>
@@ -5941,6 +6212,8 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
 
       // Apply brand logo to all locations if set
       applyBrandLogoToPage(s.brandLogoUrl || '');
+      // Sync featured product IDs
+      if (s.featuredIds) { _featuredIds = s.featuredIds; }
     }
 
     function applyBrandLogoToPage(url) {
@@ -6335,6 +6608,141 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       { key: 'other',           label: '📚 Others' },
     ];
 
+    // ── HERO FEATURED PRODUCTS ────────────────────────────────────────────────
+
+    // Storage key in Firestore siteContent
+    let _featuredIds = []; // array of { type:'book'|'dp', id }
+    let _featAutoTimer = null;
+    let _featActive = 0;
+
+    function buildFeaturedOptions() {
+      const selects = [1,2,3].map(i => document.getElementById('sc-feat-' + i));
+      if (!selects[0]) return;
+      const opts = '<option value="">— None —</option>'
+        + (books.length ? '<optgroup label="📚 Books">' + books.map(b=>`<option value="book::${b.id}">${b.title}</option>`).join('') + '</optgroup>' : '')
+        + (digitalProducts.length ? '<optgroup label="💻 Digital Products">' + digitalProducts.map(p=>`<option value="dp::${p.id}">${p.title}</option>`).join('') + '</optgroup>' : '');
+      selects.forEach((sel, i) => {
+        if (!sel) return;
+        sel.innerHTML = opts;
+        const cur = _featuredIds[i];
+        if (cur) sel.value = cur.type + '::' + cur.id;
+      });
+    }
+
+    async function saveFeaturedProducts() {
+      const ids = [1,2,3].map(i => {
+        const v = (document.getElementById('sc-feat-' + i) || {}).value || '';
+        if (!v) return null;
+        const [type, id] = v.split('::');
+        return { type, id };
+      }).filter(Boolean);
+      _featuredIds = ids;
+      // Persist in siteContent
+      siteContent.featuredIds = ids;
+      await save();
+      renderHeroFeatStack();
+      const ok = document.getElementById('featOk');
+      if (ok) { ok.style.display = 'inline'; setTimeout(() => ok.style.display = 'none', 2200); }
+    }
+
+    function renderHeroFeatStack() {
+      const wrap = document.getElementById('heroFeatStack');
+      if (!wrap) return;
+
+      // Resolve product objects from saved featured IDs
+      let items = (_featuredIds || []).map(f => {
+        if (!f) return null;
+        const obj = f.type === 'book'
+          ? books.find(x => x.id === f.id)
+          : digitalProducts.find(x => x.id === f.id);
+        return obj ? { ...obj, _type: f.type } : null;
+      }).filter(Boolean);
+
+      // Fallback: if no featured products saved yet, use first available books/dp
+      if (!items.length) {
+        const allItems = [
+          ...books.map(b => ({ ...b, _type: 'book' })),
+          ...digitalProducts.map(p => ({ ...p, _type: 'dp' }))
+        ];
+        items = allItems.slice(0, 3);
+      }
+
+      if (!items.length) {
+        wrap.style.display = 'none';
+        return;
+      }
+      wrap.style.display = '';
+
+      // Build stacked cards — pad to 3 slots
+      const slots = items.length === 1 ? [items[0], items[0], items[0]]
+                  : items.length === 2 ? [items[0], items[1], items[1]]
+                  : items.slice(0, 3);
+
+      wrap.innerHTML = slots.map((item, i) => {
+        const cover = item.cover
+          ? `<img class="hfeat-cover" src="${item.cover}" alt="${item.title}" loading="lazy"/>`
+          : `<div class="hfeat-cover-placeholder">${item.emoji || '📖'}</div>`;
+        const badge = i === slots.length - 1 ? '<span class="hfeat-badge">⭐ Featured</span>' : '';
+        return `<div class="hfeat-card${i === 2 ? ' hfeat-active' : ''}" data-idx="${i}" data-type="${item._type}" data-id="${item.id}">
+          ${cover}
+          <div class="hfeat-info">
+            ${badge}
+            <div class="hfeat-title">${item.title}</div>
+            <div class="hfeat-author">${item.ageRange || item.category || ''}</div>
+          </div>
+        </div>`;
+      }).join('') + `<div class="hfeat-dots">${slots.map((_,i)=>`<span class="hfeat-dot${i===2?' active':''}" data-feat-dot="${i}"></span>`).join('')}</div>`;
+
+      _featActive = 2;
+
+      // Click on card → open product page
+      wrap.querySelectorAll('.hfeat-card').forEach(card => {
+        card.addEventListener('click', () => {
+          openPP(card.dataset.type === 'book' ? 'book' : 'dp', card.dataset.id);
+        });
+      });
+
+      // Click on dots → bring card to front
+      wrap.querySelectorAll('[data-feat-dot]').forEach(dot => {
+        dot.addEventListener('click', e => {
+          e.stopPropagation();
+          setFeatActive(+dot.dataset.featDot);
+          resetFeatTimer();
+        });
+      });
+
+      startFeatTimer();
+    }
+
+    function setFeatActive(idx) {
+      const wrap = document.getElementById('heroFeatStack');
+      if (!wrap) return;
+      const cards = wrap.querySelectorAll('.hfeat-card');
+      const dots = wrap.querySelectorAll('[data-feat-dot]');
+      _featActive = idx;
+      cards.forEach((c, i) => {
+        c.classList.toggle('hfeat-active', i === idx);
+        c.style.zIndex = i === idx ? 10 : 3 - i;
+      });
+      dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+    }
+
+    function startFeatTimer() {
+      if (_featAutoTimer) clearInterval(_featAutoTimer);
+      const wrap = document.getElementById('heroFeatStack');
+      if (!wrap) return;
+      const total = wrap.querySelectorAll('.hfeat-card').length;
+      if (total < 2) return;
+      _featAutoTimer = setInterval(() => {
+        setFeatActive((_featActive + 1) % total);
+      }, 3000);
+    }
+
+    function resetFeatTimer() {
+      if (_featAutoTimer) clearInterval(_featAutoTimer);
+      startFeatTimer();
+    }
+
     // ALL categories combined (for admin dropdowns and search)
     const ALL_CATS = [
       { key: 'coloring',        label: '🎨 Coloring Books' },
@@ -6620,9 +7028,11 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
     }
 
     function openAdmin() {
+      const hdr = document.getElementById('adminPageHeader');
       document.getElementById('pws').style.display = unlocked ? 'none' : 'block';
-      document.getElementById('amain').style.display = unlocked ? 'block' : 'none';
-      if (unlocked) { renderManage(); renderAdminCatGrid('abcatGrid', []); }
+      document.getElementById('amain').style.display = unlocked ? 'flex' : 'none';
+      if (hdr) hdr.style.display = unlocked ? 'flex' : 'none';
+      if (unlocked) { renderManage(); renderAdminCatGrid('abcatGrid', []); buildFeaturedOptions(); }
       show('aov');
       if (!unlocked) setTimeout(() => document.getElementById('pwi').focus(), 200);
     }
@@ -6654,9 +7064,12 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       if (document.getElementById('pwi').value === getPw()) {
         unlocked = true;
         document.getElementById('pws').style.display = 'none';
-        document.getElementById('amain').style.display = 'block';
+        document.getElementById('amain').style.display = 'flex';
+        const hdr = document.getElementById('adminPageHeader');
+        if (hdr) hdr.style.display = 'flex';
         document.getElementById('pwerr').style.display = 'none';
         renderManage();
+        buildFeaturedOptions();
       } else {
         document.getElementById('pwerr').style.display = 'block';
         document.getElementById('pwi').value = '';
@@ -6666,7 +7079,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
 
     function swTab(id, btn) {
       try {
-        ['tadd', 'tdp', 'tblg', 'tman', 'tsite', 'tim', 'tpw', 'tusers', 'treviews'].forEach(t => {
+        ['tadd', 'tdp', 'tblg', 'tman', 'tfeat', 'tsite', 'tim', 'tpw', 'tusers', 'treviews'].forEach(t => {
           const el = document.getElementById(t);
           if (el) el.style.display = t === id ? 'block' : 'none';
         });
@@ -8284,6 +8697,9 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       renderBlogs();
       renderDPSection();
       _populateBookSelector(); // populate product dropdown in review form
+      // Load featured product IDs and render hero stack
+      _featuredIds = (siteContent.featuredIds || []);
+      renderHeroFeatStack();
       await checkInstamojoReturn(); // handle redirect back from Instamojo
     })();
 
