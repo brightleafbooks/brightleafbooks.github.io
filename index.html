@@ -72,6 +72,10 @@
         const json = await res.json();
         const data = {};
         for (const k in (json.fields || {})) data[k] = _fromFS(json.fields[k]);
+        // Ensure arrays are always arrays even if Firestore returned them oddly
+        if (data.books !== undefined && !Array.isArray(data.books)) data.books = [];
+        if (data.blogs !== undefined && !Array.isArray(data.blogs)) data.blogs = [];
+        if (data.digitalProducts !== undefined && !Array.isArray(data.digitalProducts)) data.digitalProducts = [];
         return { exists: () => true, data: () => data };
       },
       setDoc: async function (ref, obj) {
@@ -6149,22 +6153,30 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       const lsData = lsLoad(); // always load localStorage first (has full image data)
 
       // 1. Try Firebase (has latest book/blog list)
-      const fbData = await fbLoad();
+      let fbData = null;
+      try { fbData = await fbLoad(); } catch(e) { console.error('load: fbLoad threw:', e); }
       if (fbData) {
+        const fbBooks = Array.isArray(fbData.books) ? fbData.books : [];
         // Merge: use Firebase for structure/text, localStorage for cover images if Firebase has none
-        if (lsData && lsData.books) {
+        if (lsData && Array.isArray(lsData.books) && lsData.books.length) {
           const lsMap = {};
           lsData.books.forEach(b => { lsMap[b.id] = b; });
-          books = fbData.books.map(b => ({
+          books = fbBooks.map(b => ({
             ...b,
             cover: b.cover || (lsMap[b.id] && lsMap[b.id].cover) || null,
             samples: (b.samples && b.samples.length) ? b.samples : (lsMap[b.id] && lsMap[b.id].samples) || []
           }));
         } else {
-          books = fbData.books;
+          books = fbBooks;
         }
-        blogs = fbData.blogs || [];
-        digitalProducts = fbData.digitalProducts || [];
+        // If Firebase returned an empty books array but localStorage has books, prefer localStorage books
+        // (this handles the case where Firebase save failed but localStorage save succeeded)
+        if (!books.length && lsData && Array.isArray(lsData.books) && lsData.books.length) {
+          console.warn('load: Firebase returned 0 books but localStorage has', lsData.books.length, '— using localStorage books');
+          books = lsData.books;
+        }
+        blogs = Array.isArray(fbData.blogs) ? fbData.blogs : (lsData && lsData.blogs ? lsData.blogs : []);
+        digitalProducts = Array.isArray(fbData.digitalProducts) ? fbData.digitalProducts : (lsData && lsData.digitalProducts ? lsData.digitalProducts : []);
         siteContent = { ...DEFAULT_SITE, ...(fbData.siteContent || {}) };
         lsSave(); // sync merged data back to localStorage
         console.log('load: loaded from Firebase, books =', books.length);
@@ -6172,9 +6184,9 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       }
       // 2. Fall back to localStorage
       if (lsData) {
-        books = lsData.books;
-        blogs = lsData.blogs || [];
-        digitalProducts = lsData.digitalProducts || [];
+        books = Array.isArray(lsData.books) ? lsData.books : [];
+        blogs = Array.isArray(lsData.blogs) ? lsData.blogs : [];
+        digitalProducts = Array.isArray(lsData.digitalProducts) ? lsData.digitalProducts : [];
         siteContent = { ...DEFAULT_SITE, ...(lsData.siteContent || {}) };
         console.log('load: loaded from localStorage, books =', books.length, '— pushing to Firebase');
         fbSave(); // try to sync up to Firebase
@@ -6191,9 +6203,14 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
     // ── Main save: localStorage always works, Firebase as bonus ───────────────
     async function save() {
       lsSave(); // always save locally first (instant, never fails)
-      const ok = await fbSave(); // await so we know if it succeeded
+      let ok = false;
+      try {
+        ok = await fbSave(); // await so we know if it succeeded
+      } catch(e) {
+        console.error('save: fbSave threw unexpectedly:', e);
+      }
       if (!ok) {
-        console.warn('Firebase save failed — data only in localStorage');
+        console.warn('⚠️ Firebase save failed — data saved to localStorage only. Changes will show on THIS tab but may not persist on refresh if Firebase keeps returning old data. Use "Force Sync to Firebase" in admin to retry.');
       }
       return ok;
     }
@@ -7199,13 +7216,18 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       const btn = document.getElementById('abbtn');
       btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Saving...';
       books.push({ id: 'bk' + Date.now(), title, price, priceInr, age, amazon: amz, gumroad: gumroad || null, etsy: etsy || null, desc, features: feats, categories, audience, cover, samples, pdfData: pdfUrl || null });
-      await save(); renderBooks();
+      const savedToCloud = await save(); renderBooks();
       ['abt', 'abp', 'abpinr', 'aba', 'abz', 'abgumroad', 'abetsy', 'abd', 'abf', 'abc', 'abpdf'].forEach(i => document.getElementById(i).value = '');
       document.getElementById('abs').value = '';
       document.getElementById('abaud').value = 'kids';
       renderAdminCatGrid('abcatGrid', []);
       btn.disabled = false; btn.innerHTML = 'Add Book to Website';
-      flash('abok');
+      if (!savedToCloud) {
+        er.textContent = '⚠️ Book added locally but Firebase sync failed. Use "Force Sync to Firebase" button below to push to cloud, otherwise it may revert on refresh.';
+        er.style.background = '#fff3cd'; er.style.color = '#856404'; er.style.display = 'block';
+      } else {
+        flash('abok');
+      }
     }
 
     // ── DIGITAL PRODUCTS ─────────────────────────────────────────────────────
