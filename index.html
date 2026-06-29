@@ -5328,6 +5328,9 @@
             style="background:#fff8e1;border:2px solid #FFD84D;border-radius:12px;padding:.8rem 1rem;margin-bottom:1rem;font-size:.82rem;color:#7a5800;line-height:1.6">
             <strong>💡 Changes not showing live?</strong> Click Force Sync to push all data fresh to Firebase.
           </div>
+          <div id="fbSaveWarn" style="display:none;background:#ffe5e5;border:2px solid #e74c3c;border-radius:12px;padding:.8rem 1rem;margin-bottom:1rem;font-size:.82rem;color:#c0392b;line-height:1.6">
+            <strong>⚠️ Firebase save FAILED!</strong> Your data is saved locally but NOT on the server. Click <strong>Force Sync</strong> below to retry pushing to Firebase.
+          </div>
           <button class="afbtn" id="forceSyncBtn" onclick="forceSyncToFirebase()"
             style="background:#6EC6F0;margin-bottom:1.25rem;width:100%">☁️ Force Sync to Firebase</button>
           <h3>Books</h3>
@@ -6026,7 +6029,19 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       return null;
     }
     function lsSave() {
-      try { localStorage.setItem(LS_KEY, JSON.stringify({ books, blogs, digitalProducts, siteContent })); } catch (e) { }
+      try {
+        localStorage.setItem(LS_KEY, JSON.stringify({ books, blogs, digitalProducts, siteContent }));
+      } catch (e) {
+        // localStorage quota exceeded — try saving without covers/images
+        try {
+          const slim = {
+            books: books.map(b => ({ ...b, cover: b.cover && b.cover.startsWith('http') ? b.cover : null, samples: (b.samples||[]).filter(s=>s&&s.startsWith('http')) })),
+            blogs: blogs.map(b => ({ ...b, img: b.img && b.img.startsWith('http') ? b.img : null })),
+            digitalProducts, siteContent
+          };
+          localStorage.setItem(LS_KEY, JSON.stringify(slim));
+        } catch (e2) { console.error('lsSave: localStorage full, cannot save locally', e2); }
+      }
     }
 
     // ── Firebase helpers ───────────────────────────────────────────────────────
@@ -6149,17 +6164,32 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       // 1. Try Firebase (has latest book/blog list)
       const fbData = await fbLoad();
       if (fbData) {
+        const fbBooks = fbData.books || [];
+        const lsBooks = (lsData && lsData.books) || [];
+
+        // If Firebase has FEWER books than localStorage, localStorage is more up-to-date
+        // (Firebase save may have failed last time). Use localStorage books instead.
+        if (fbBooks.length < lsBooks.length) {
+          console.warn('load: Firebase has fewer books (' + fbBooks.length + ') than localStorage (' + lsBooks.length + ') — using localStorage books and re-syncing to Firebase');
+          books = lsBooks;
+          blogs = (lsData && lsData.blogs) || fbData.blogs || [];
+          digitalProducts = (lsData && lsData.digitalProducts) || fbData.digitalProducts || [];
+          siteContent = { ...DEFAULT_SITE, ...(fbData.siteContent || {}) };
+          fbSave(); // push the more complete localStorage data up to Firebase
+          return;
+        }
+
         // Merge: use Firebase for structure/text, localStorage for cover images if Firebase has none
         if (lsData && lsData.books) {
           const lsMap = {};
           lsData.books.forEach(b => { lsMap[b.id] = b; });
-          books = fbData.books.map(b => ({
+          books = fbBooks.map(b => ({
             ...b,
             cover: b.cover || (lsMap[b.id] && lsMap[b.id].cover) || null,
             samples: (b.samples && b.samples.length) ? b.samples : (lsMap[b.id] && lsMap[b.id].samples) || []
           }));
         } else {
-          books = fbData.books;
+          books = fbBooks;
         }
         blogs = fbData.blogs || [];
         digitalProducts = fbData.digitalProducts || [];
@@ -6192,6 +6222,9 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       const ok = await fbSave(); // await so we know if it succeeded
       if (!ok) {
         console.warn('Firebase save failed — data only in localStorage');
+        // Show visible warning so admin knows Firebase didn't save
+        const warn = document.getElementById('fbSaveWarn');
+        if (warn) { warn.style.display = 'block'; setTimeout(() => { warn.style.display = 'none'; }, 6000); }
       }
       return ok;
     }
