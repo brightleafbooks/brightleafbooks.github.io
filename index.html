@@ -554,7 +554,7 @@
 
     /* BOOKS ANNOUNCEMENT STRIP */
     .books-announcement {
-      display: flex;
+      display: none;
       align-items: flex-start;
       gap: .75rem;
       margin-bottom: 1.5rem;
@@ -563,14 +563,13 @@
       background: linear-gradient(135deg, #fff8e7 0%, #fff3cc 100%);
       border-left: 4px solid #f5a623;
       font-family: 'Nunito', sans-serif;
-      font-size: .9rem;
+      font-size: .92rem;
       font-weight: 600;
       color: #7a4f00;
       line-height: 1.5;
       white-space: pre-wrap;
     }
     .books-announcement .ba-icon { font-size: 1.25rem; flex-shrink: 0; margin-top: .05rem }
-    .books-announcement.hidden { display: none }
 
     /* SEARCH BAR */
     .nsearch {
@@ -4879,7 +4878,7 @@
     <div class="bcat-filters" id="bcatFilters"></div>
     <div class="books-announcement" id="booksAnnouncement">
       <span class="ba-icon">📢</span>
-      <span id="booksAnnouncementText">🔥 Bestseller: "ABC Coloring Fun" — loved by 500+ kids! · 🎉 Free shipping on orders above ₹499</span>
+      <span id="booksAnnouncementText"></span>
     </div>
     <div id="bcat-sections"></div>
   </section>
@@ -5509,9 +5508,9 @@
             <div class="afg"><label for="sc-books-h2">Books Section Heading (HTML ok)</label><textarea id="sc-books-h2"
                 style="min-height:55px" autocomplete="off"></textarea></div>
             <div class="afg">
-              <label for="sc-books-announcement">📢 Books Section Announcement</label>
-              <textarea id="sc-books-announcement" style="min-height:70px" autocomplete="off" placeholder="e.g. 🔥 Bestseller alert! 'ABC Coloring Fun' — loved by 500+ kids. Or: 🎉 Flat 20% off on all activity books this week!"></textarea>
-              <div style="font-size:.75rem;color:#888;margin-top:.3rem">💡 Leave empty to hide the banner. Just type something to show it.</div>
+              <label for="sc-books-announcement">📢 Books Announcement Banner</label>
+              <textarea id="sc-books-announcement" style="min-height:65px" autocomplete="off" placeholder="e.g. 🔥 Bestseller: 'ABC Coloring Fun' — loved by 500+ kids!  |  Leave empty to hide the banner."></textarea>
+              <div style="font-size:.75rem;color:#888;margin-top:.3rem">Type anything to show the banner above books. Clear it to hide.</div>
             </div>
             <div class="afg"><label for="sc-blog-h2">Blog Section Heading (HTML ok)</label><textarea id="sc-blog-h2"
                 style="min-height:55px" autocomplete="off"></textarea></div>
@@ -6014,8 +6013,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       imAuthToken: 'e3d8c8c9c605013a061aee04c2fe4ea8',
       imSandbox: 'false',
       imProxy: 'https://us-central1-bright-leaf-9ce73.cloudfunctions.net/instamojoProxy',
-      booksAnnouncement: '🔥 Bestseller: "ABC Coloring Fun" — loved by 500+ kids! · 🎉 Free shipping on orders above ₹499',
-      booksAnnouncementEnabled: true
+      booksAnnouncement: ''
     };
     let siteContent = { ...DEFAULT_SITE };
 
@@ -6246,7 +6244,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       // Sync featured product IDs
       if (s.featuredIds) { _featuredIds = s.featuredIds; }
 
-      // Books announcement banner
+      // Books announcement banner — show if text exists, hide if empty
       const annEl = document.getElementById('booksAnnouncement');
       const annTxt = document.getElementById('booksAnnouncementText');
       if (annEl && annTxt) {
@@ -6415,8 +6413,6 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       v('sc-footer-logo', s.footerLogo);
       v('sc-footer-copy', s.footerCopy);
       v('sc-books-announcement', s.booksAnnouncement || '');
-      const annChk = document.getElementById('sc-books-announcement-enabled');
-      if (annChk) annChk.checked = s.booksAnnouncementEnabled !== false;
       // Populate logo preview panel
       updateLogoPanelPreview(s.brandLogoUrl || '', s.brandLogoSize || 36);
     }
@@ -6454,8 +6450,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
         imAuthToken: siteContent.imAuthToken || '',
         imSandbox: siteContent.imSandbox || 'true',
         imProxy: siteContent.imProxy || '',
-        booksAnnouncement: g('sc-books-announcement'),
-        booksAnnouncementEnabled: true
+        booksAnnouncement: g('sc-books-announcement')
       };
       const btn = document.getElementById('scSaveBtn');
       btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Saving...';
