@@ -5193,7 +5193,7 @@
           <button class="atab" onclick="swTab('tdp',this)">💜 Digital</button>
           <button class="atab" onclick="swTab('tblg',this)">✏️ Blog</button>
           <button class="atab" onclick="swTab('tman',this)">⚙️ Manage</button>
-          <button class="atab" onclick="swTab('tfeat',this);buildFeaturedOptions()">🃏 Hero Cards</button>
+          <button class="atab" onclick="swTab('tfeat',this);renderFeaturedAdminSummary()">Featured</button>
           <button class="atab" onclick="swTab('tsite',this)">🌐 Site</button>
           <button class="atab" onclick="swTab('tim',this)">💳 Pay</button>
           <button class="atab" onclick="swTab('tpw',this)">🔑 PW</button>
@@ -5242,6 +5242,10 @@
             <div class="afg"><label>🖼️ Cover Image URL (upload to Cloudinary/Google Drive, paste link)</label><input type="url" id="abc" placeholder="https://res.cloudinary.com/..." autocomplete="off"></div>
             <div class="afg"><label>🖼️ Sample Page URLs (up to 3, one per line)</label><textarea id="abs" style="min-height:72px" placeholder="https://res.cloudinary.com/sample1.jpg&#10;https://res.cloudinary.com/sample2.jpg" autocomplete="off"></textarea></div>
             <div class="afg"><label>📄 E-book PDF URL (paste a hosted link, e.g. Google Drive, Dropbox)</label><input type="url" id="abpdf" placeholder="https://drive.google.com/uc?export=download&id=..." autocomplete="off"></div>
+            <div class="afrow">
+              <div class="afg"><label><input type="checkbox" id="abfeat" autocomplete="off"> Featured on homepage</label></div>
+              <div class="afg"><label for="aborder">Display Order</label><input type="number" id="aborder" placeholder="1" min="0" step="1" autocomplete="off"></div>
+            </div>
             <button class="afbtn" id="abbtn" onclick="addBook()">Add Book to Website</button>
             <div class="ok" id="abok">✅ Book added!</div>
             <div class="er" id="aber"></div>
@@ -5288,6 +5292,10 @@
             <div class="afrow">
               <div class="afg"><label>🛍️ Gumroad Link</label><input type="url" id="dpgumroad" placeholder="https://gumroad.com/l/..." autocomplete="off" /></div>
               <div class="afg"><label>🧶 Etsy Link</label><input type="url" id="dpetsy" placeholder="https://www.etsy.com/listing/..." autocomplete="off" /></div>
+            </div>
+                        <div class="afrow">
+              <div class="afg"><label><input type="checkbox" id="dpfeat" autocomplete="off"> Featured on homepage</label></div>
+              <div class="afg"><label for="dporder">Display Order</label><input type="number" id="dporder" placeholder="1" min="0" step="1" autocomplete="off"></div>
             </div>
             <button class="afbtn" id="dpabtn" onclick="addDigitalProduct()">Add Digital Product</button>
             <div class="ok" id="dpok">✅ Digital product added!</div>
@@ -5342,34 +5350,11 @@
         </div>
         <!-- HERO FEATURED CARDS -->
         <div class="ac" id="tfeat" style="display:none">
-          <h3>🃏 Hero Card Stack</h3>
+          <h3>Featured Hero Items</h3>
           <div style="background:var(--gl);border-radius:12px;padding:.8rem 1rem;margin-bottom:1.2rem;font-size:.83rem;color:var(--gd);font-weight:700">
-            These 3 cards appear as a small stacked widget in your hero section. Visitors click any card to open that product's page.
+            Mark books or digital products as Featured from their Add/Edit forms. The homepage shows the first 3 featured items sorted by Display Order.
           </div>
-
-          <div class="af">
-            <div class="afg">
-              <label for="sc-feat-1">Card Slot 1 (back)</label>
-              <select id="sc-feat-1" autocomplete="off"><option value="">— None —</option></select>
-            </div>
-            <div class="afg">
-              <label for="sc-feat-2">Card Slot 2 (middle)</label>
-              <select id="sc-feat-2" autocomplete="off"><option value="">— None —</option></select>
-            </div>
-            <div class="afg">
-              <label for="sc-feat-3">Card Slot 3 (front / highlighted)</label>
-              <select id="sc-feat-3" autocomplete="off"><option value="">— None —</option></select>
-            </div>
-          </div>
-
-          <div style="margin-top:.8rem;display:flex;align-items:center;gap:.8rem;flex-wrap:wrap">
-            <button class="afbtn" onclick="saveFeaturedProducts()">💾 Save Hero Cards</button>
-            <span class="ok" id="featOk" style="display:none">✅ Saved! Hero stack updated live.</span>
-          </div>
-
-          <div style="margin-top:1.2rem;font-size:.78rem;color:var(--mu);font-weight:600;line-height:1.6">
-            💡 <b>Tip:</b> Slot 3 is the front card with the ⭐ Featured badge. Pick your bestseller or newest release there. Slots 1 &amp; 2 peek out behind it. Leave a slot empty to show fewer cards.
-          </div>
+          <div class="ml" id="featSummary"></div>
         </div>
 
         <!-- SITE CONTENT -->
@@ -5701,6 +5686,10 @@
           <div class="afg"><label>🖼️ Cover Image URL (leave blank to keep current)</label><input type="url" id="ebc" placeholder="https://res.cloudinary.com/..." autocomplete="off"></div>
           <div class="afg"><label>🖼️ Sample Page URLs (up to 3, one per line — leave blank to keep current)</label><textarea id="ebs" style="min-height:72px" placeholder="https://res.cloudinary.com/sample1.jpg&#10;https://res.cloudinary.com/sample2.jpg" autocomplete="off"></textarea></div>
           <div class="afg"><label>📄 E-book PDF URL (leave blank to keep current)</label><input type="url" id="ebpdf" placeholder="https://drive.google.com/uc?export=download&id=..." autocomplete="off"></div>
+          <div class="afrow">
+            <div class="afg"><label><input type="checkbox" id="ebfeat" autocomplete="off"> Featured on homepage</label></div>
+            <div class="afg"><label for="eborder">Display Order</label><input type="number" id="eborder" placeholder="1" min="0" step="1" autocomplete="off"></div>
+          </div>
           <div style="display:flex;gap:.65rem;flex-wrap:wrap;margin-top:.25rem">
             <button class="afbtn" id="ebSaveBtn" onclick="saveEditBook()">Save Changes</button>
             <button class="afbtn" style="background:#888" onclick="closeEditBook()">Cancel</button>
@@ -5803,6 +5792,10 @@
           <div class="afrow">
             <div class="afg"><label>🛍️ Gumroad Link</label><input type="url" id="edpgumroad" placeholder="https://gumroad.com/l/..." autocomplete="off" /></div>
             <div class="afg"><label>🧶 Etsy Link</label><input type="url" id="edpetsy" placeholder="https://www.etsy.com/listing/..." autocomplete="off" /></div>
+          </div>
+                    <div class="afrow">
+            <div class="afg"><label><input type="checkbox" id="edpfeat" autocomplete="off"> Featured on homepage</label></div>
+            <div class="afg"><label for="edporder">Display Order</label><input type="number" id="edporder" placeholder="1" min="0" step="1" autocomplete="off"></div>
           </div>
           <div style="display:flex;gap:.65rem;flex-wrap:wrap;margin-top:.25rem">
             <button class="afbtn" id="edpSaveBtn" onclick="saveEditDP()">Save Changes</button>
@@ -5986,6 +5979,34 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
 
     let _db = null;
     let books = [], blogs = [], digitalProducts = [], unlocked = false;
+
+    function _displayOrderValue(value) {
+      const n = Number(value);
+      return Number.isFinite(n) ? n : 0;
+    }
+
+    function normalizeFeaturedCatalog() {
+      const legacyFeatured = siteContent && Array.isArray(siteContent.featuredIds) ? siteContent.featuredIds : [];
+      const alreadyFeatured = [...books, ...digitalProducts].some(item => item && item.featured === true);
+      if (!alreadyFeatured && legacyFeatured.length) {
+        legacyFeatured.forEach((f, i) => {
+          if (!f || !f.id) return;
+          const list = f.type === 'book' ? books : digitalProducts;
+          const item = list.find(x => x.id === f.id);
+          if (item) { item.featured = true; item.displayOrder = i + 1; }
+        });
+      }
+      books = books.map(b => ({ ...b, featured: b.featured === true, displayOrder: _displayOrderValue(b.displayOrder) }));
+      digitalProducts = digitalProducts.map(p => ({ ...p, featured: p.featured === true, displayOrder: _displayOrderValue(p.displayOrder) }));
+    }
+
+    function getFeaturedItems() {
+      return [
+        ...books.map(b => ({ ...b, _type: 'book' })),
+        ...digitalProducts.map(p => ({ ...p, _type: 'dp' }))
+      ].filter(item => item.featured === true)
+        .sort((a, b) => _displayOrderValue(a.displayOrder) - _displayOrderValue(b.displayOrder) || String(a.title || '').localeCompare(String(b.title || '')));
+    }
     const LS_KEY = 'WhoseBooks_sitedata';
 
     // Default site content (used as fallback if nothing saved)
@@ -6032,7 +6053,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       return null;
     }
     function lsSave() {
-      try { localStorage.setItem(LS_KEY, JSON.stringify({ books, blogs, digitalProducts, siteContent })); } catch (e) { }
+      try { normalizeFeaturedCatalog(); localStorage.setItem(LS_KEY, JSON.stringify({ books, blogs, digitalProducts, siteContent })); } catch (e) { }
     }
 
     // ── Firebase helpers ───────────────────────────────────────────────────────
@@ -6120,6 +6141,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
         }
         const { doc, setDoc } = window._fbModules;
         const ref = doc(_db, 'sitedata', 'main');
+        normalizeFeaturedCatalog();
 
         // Keep http URLs AND base64 data URLs (base64 may be large but Firestore allows up to 1MB per doc)
         // Only strip extremely large base64 blobs (> 500KB) to stay within Firestore limits
@@ -6178,6 +6200,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
         blogs = Array.isArray(fbData.blogs) ? fbData.blogs : (lsData && lsData.blogs ? lsData.blogs : []);
         digitalProducts = Array.isArray(fbData.digitalProducts) ? fbData.digitalProducts : (lsData && lsData.digitalProducts ? lsData.digitalProducts : []);
         siteContent = { ...DEFAULT_SITE, ...(fbData.siteContent || {}) };
+        normalizeFeaturedCatalog();
         lsSave(); // sync merged data back to localStorage
         console.log('load: loaded from Firebase, books =', books.length);
         return;
@@ -6188,6 +6211,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
         blogs = Array.isArray(lsData.blogs) ? lsData.blogs : [];
         digitalProducts = Array.isArray(lsData.digitalProducts) ? lsData.digitalProducts : [];
         siteContent = { ...DEFAULT_SITE, ...(lsData.siteContent || {}) };
+        normalizeFeaturedCatalog();
         console.log('load: loaded from localStorage, books =', books.length, '— pushing to Firebase');
         fbSave(); // try to sync up to Firebase
         return;
@@ -6260,9 +6284,6 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
 
       // Apply brand logo to all locations if set
       applyBrandLogoToPage(s.brandLogoUrl || '');
-      // Sync featured product IDs
-      if (s.featuredIds) { _featuredIds = s.featuredIds; }
-
       // Books announcement banner
       const annEl = document.getElementById('booksAnnouncement');
       const annTxt = document.getElementById('booksAnnouncementText');
@@ -6676,80 +6697,47 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
 
     // ── HERO FEATURED PRODUCTS ────────────────────────────────────────────────
 
-    // Storage key in Firestore siteContent
-    let _featuredIds = []; // array of { type:'book'|'dp', id }
     let _featAutoTimer = null;
     let _featActive = 0;
 
-    function buildFeaturedOptions() {
-      const selects = [1,2,3].map(i => document.getElementById('sc-feat-' + i));
-      if (!selects[0]) return;
-      const opts = '<option value="">— None —</option>'
-        + (books.length ? '<optgroup label="📚 Books">' + books.map(b=>`<option value="book::${b.id}">${b.title}</option>`).join('') + '</optgroup>' : '')
-        + (digitalProducts.length ? '<optgroup label="💻 Digital Products">' + digitalProducts.map(p=>`<option value="dp::${p.id}">${p.title}</option>`).join('') + '</optgroup>' : '');
-      selects.forEach((sel, i) => {
-        if (!sel) return;
-        sel.innerHTML = opts;
-        const cur = _featuredIds[i];
-        if (cur) sel.value = cur.type + '::' + cur.id;
-      });
+    function buildFeaturedOptions() { renderFeaturedAdminSummary(); }
+
+    function renderFeaturedAdminSummary() {
+      const el = document.getElementById('featSummary');
+      if (!el) return;
+      const items = getFeaturedItems();
+      el.innerHTML = items.map(item => `
+        <div class="mi">
+          <div><div class="mit">${item.title}</div><div class="mis">${item._type === 'book' ? 'Book' : 'Digital Product'} - Order ${_displayOrderValue(item.displayOrder)}</div></div>
+          <div class="mi-btns">
+            <button class="medit" onclick="${item._type === 'book' ? 'openEditBook' : 'openEditDP'}('${item.id}')">Edit</button>
+          </div>
+        </div>`).join('') || '<p style="color:var(--mu);font-size:.83rem">No featured items yet. Mark any book or digital product as Featured to show it on the homepage.</p>';
     }
 
-    async function saveFeaturedProducts() {
-      const ids = [1,2,3].map(i => {
-        const v = (document.getElementById('sc-feat-' + i) || {}).value || '';
-        if (!v) return null;
-        const [type, id] = v.split('::');
-        return { type, id };
-      }).filter(Boolean);
-      _featuredIds = ids;
-      // Persist in siteContent
-      siteContent.featuredIds = ids;
-      await save();
-      renderHeroFeatStack();
-      const ok = document.getElementById('featOk');
-      if (ok) { ok.style.display = 'inline'; setTimeout(() => ok.style.display = 'none', 2200); }
-    }
+    async function saveFeaturedProducts() { renderFeaturedAdminSummary(); renderHeroFeatStack(); }
 
     function renderHeroFeatStack() {
       const wrap = document.getElementById('heroFeatStack');
       if (!wrap) return;
-
-      // Resolve product objects from saved featured IDs
-      let items = (_featuredIds || []).map(f => {
-        if (!f) return null;
-        const obj = f.type === 'book'
-          ? books.find(x => x.id === f.id)
-          : digitalProducts.find(x => x.id === f.id);
-        return obj ? { ...obj, _type: f.type } : null;
-      }).filter(Boolean);
-
-      // Fallback: if no featured products saved yet, use first available books/dp
-      if (!items.length) {
-        const allItems = [
-          ...books.map(b => ({ ...b, _type: 'book' })),
-          ...digitalProducts.map(p => ({ ...p, _type: 'dp' }))
-        ];
-        items = allItems.slice(0, 3);
-      }
+      const items = getFeaturedItems().slice(0, 3);
 
       if (!items.length) {
         wrap.style.display = 'none';
+        wrap.innerHTML = '';
         return;
       }
       wrap.style.display = '';
 
-      // Build stacked cards — pad to 3 slots
-      const slots = items.length === 1 ? [items[0], items[0], items[0]]
-                  : items.length === 2 ? [items[0], items[1], items[1]]
-                  : items.slice(0, 3);
+      const slots = items;
+      const frontIndex = slots.length - 1;
 
       wrap.innerHTML = slots.map((item, i) => {
         const cover = item.cover
           ? `<img class="hfeat-cover" src="${item.cover}" alt="${item.title}" loading="lazy"/>`
-          : `<div class="hfeat-cover-placeholder">${item.emoji || '📖'}</div>`;
-        const badge = i === slots.length - 1 ? '<span class="hfeat-badge">⭐ Featured</span>' : '';
-        return `<div class="hfeat-card${i === 2 ? ' hfeat-active' : ''}" data-idx="${i}" data-type="${item._type}" data-id="${item.id}">
+          : `<div class="hfeat-cover-placeholder">${item.emoji || 'Book'}</div>`;
+        const badge = i === frontIndex ? '<span class="hfeat-badge">Featured</span>' : '';
+        return `<div class="hfeat-card${i === frontIndex ? ' hfeat-active' : ''}" data-idx="${i}" data-type="${item._type}" data-id="${item.id}" style="z-index:${i === frontIndex ? 10 : Math.max(1, 3 - i)}">
           ${cover}
           <div class="hfeat-info">
             ${badge}
@@ -6757,10 +6745,9 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
             <div class="hfeat-author">${item.ageRange || item.category || ''}</div>
           </div>
         </div>`;
-      }).join('') + `<div class="hfeat-dots">${slots.map((_,i)=>`<span class="hfeat-dot${i===2?' active':''}" data-feat-dot="${i}"></span>`).join('')}</div>`;
+      }).join('') + `<div class="hfeat-dots">${slots.map((_,i)=>`<span class="hfeat-dot${i===frontIndex?' active':''}" data-feat-dot="${i}"></span>`).join('')}</div>`;
 
-      _featActive = 2;
-
+      _featActive = frontIndex;
       // Click on card → open product page
       wrap.querySelectorAll('.hfeat-card').forEach(card => {
         card.addEventListener('click', () => {
@@ -7098,7 +7085,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       document.getElementById('pws').style.display = unlocked ? 'none' : 'block';
       document.getElementById('amain').style.display = unlocked ? 'flex' : 'none';
       if (hdr) hdr.style.display = unlocked ? 'flex' : 'none';
-      if (unlocked) { renderManage(); renderAdminCatGrid('abcatGrid', []); buildFeaturedOptions(); }
+      if (unlocked) { renderManage(); renderAdminCatGrid('abcatGrid', []); renderFeaturedAdminSummary(); }
       show('aov');
       if (!unlocked) setTimeout(() => document.getElementById('pwi').focus(), 200);
     }
@@ -7135,7 +7122,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
         if (hdr) hdr.style.display = 'flex';
         document.getElementById('pwerr').style.display = 'none';
         renderManage();
-        buildFeaturedOptions();
+        renderFeaturedAdminSummary();
       } else {
         document.getElementById('pwerr').style.display = 'block';
         document.getElementById('pwi').value = '';
@@ -7157,6 +7144,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
         if (id === 'tim') populateIMForm();
         if (id === 'tadd') renderAdminCatGrid('abcatGrid', []);
         if (id === 'tusers') renderAdminUsers();
+        if (id === 'tfeat') renderFeaturedAdminSummary();
         if (id === 'treviews') loadAdminReviews('pending');
       } catch (e) { console.error('swTab error:', e); }
     }
@@ -7209,15 +7197,18 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       const cover = document.getElementById('abc').value.trim() || null;
       const samples = document.getElementById('abs').value.trim().split('\n').map(s => s.trim()).filter(s => s.startsWith('http')).slice(0, 3);
       const pdfUrl = document.getElementById('abpdf').value.trim();
+      const featured = document.getElementById('abfeat').checked;
+      const displayOrder = _displayOrderValue(document.getElementById('aborder').value);
       const er = document.getElementById('aber');
       er.style.display = 'none';
       if (!title || !price || !desc) { er.textContent = 'Please fill in Title, Price and Description.'; er.style.display = 'block'; return; }
       if (!categories.length) { er.textContent = 'Please select at least one category.'; er.style.display = 'block'; return; }
       const btn = document.getElementById('abbtn');
       btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Saving...';
-      books.push({ id: 'bk' + Date.now(), title, price, priceInr, age, amazon: amz, gumroad: gumroad || null, etsy: etsy || null, desc, features: feats, categories, audience, cover, samples, pdfData: pdfUrl || null });
-      const savedToCloud = await save(); renderBooks();
-      ['abt', 'abp', 'abpinr', 'aba', 'abz', 'abgumroad', 'abetsy', 'abd', 'abf', 'abc', 'abpdf'].forEach(i => document.getElementById(i).value = '');
+      books.push({ id: 'bk' + Date.now(), title, price, priceInr, age, amazon: amz, gumroad: gumroad || null, etsy: etsy || null, desc, features: feats, categories, audience, cover, samples, pdfData: pdfUrl || null, featured, displayOrder });
+      const savedToCloud = await save(); renderBooks(); renderHeroFeatStack(); renderFeaturedAdminSummary();
+      ['abt', 'abp', 'abpinr', 'aba', 'abz', 'abgumroad', 'abetsy', 'abd', 'abf', 'abc', 'abpdf', 'aborder'].forEach(i => document.getElementById(i).value = '');
+      document.getElementById('abfeat').checked = false;
       document.getElementById('abs').value = '';
       document.getElementById('abaud').value = 'kids';
       renderAdminCatGrid('abcatGrid', []);
@@ -7421,18 +7412,23 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       const pdfUrl = document.getElementById('dppdf').value.trim();
       const gumroad = document.getElementById('dpgumroad').value.trim();
       const etsy = document.getElementById('dpetsy').value.trim();
+      const featured = document.getElementById('dpfeat').checked;
+      const displayOrder = _displayOrderValue(document.getElementById('dporder').value);
       const er = document.getElementById('dper');
       er.style.display = 'none';
       if (!title || !price || !desc) { er.textContent = 'Please fill in Title, Price and Description.'; er.style.display = 'block'; return; }
       const btn = document.getElementById('dpabtn');
       btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Saving...';
-      digitalProducts.push({ id: 'dp' + Date.now(), title, category, audience, price, priceInr, ageRange, desc, features, cover, samples, pdfUrl: pdfUrl || null, gumroad: gumroad || null, etsy: etsy || null });
+      digitalProducts.push({ id: 'dp' + Date.now(), title, category, audience, price, priceInr, ageRange, desc, features, cover, samples, pdfUrl: pdfUrl || null, gumroad: gumroad || null, etsy: etsy || null, featured, displayOrder });
       await save();
       renderDPSection();
       renderDPManageList();
-      ['dpt','dpp','dppinr','dpag','dpd','dpf','dpcov','dpsamp','dppdf','dpgumroad','dpetsy'].forEach(i => { const el = document.getElementById(i); if (el) el.value = ''; });
+      renderHeroFeatStack();
+      renderFeaturedAdminSummary();
+      ['dpt','dpp','dppinr','dpag','dpd','dpf','dpcov','dpsamp','dppdf','dpgumroad','dpetsy','dporder'].forEach(i => { const el = document.getElementById(i); if (el) el.value = ''; });
       document.getElementById('dpaud').value = 'both';
       document.getElementById('dpc').value = 'study-planner';
+      document.getElementById('dpfeat').checked = false;
       btn.disabled = false; btn.innerHTML = 'Add Digital Product';
       flash('dpok');
     }
@@ -7464,6 +7460,8 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       document.getElementById('edppdf').value = (p.pdfUrl && p.pdfUrl.startsWith('http')) ? p.pdfUrl : '';
       document.getElementById('edpgumroad').value = p.gumroad || '';
       document.getElementById('edpetsy').value = p.etsy || '';
+      document.getElementById('edpfeat').checked = p.featured === true;
+      document.getElementById('edporder').value = _displayOrderValue(p.displayOrder) || '';
       document.getElementById('edper').style.display = 'none';
       show('editDPOv');
     }
@@ -7483,6 +7481,8 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       const pdfUrl = document.getElementById('edppdf').value.trim();
       const gumroad = document.getElementById('edpgumroad').value.trim();
       const etsy = document.getElementById('edpetsy').value.trim();
+      const featured = document.getElementById('edpfeat').checked;
+      const displayOrder = _displayOrderValue(document.getElementById('edporder').value);
       const er = document.getElementById('edper');
       er.style.display = 'none';
       if (!title || !price || !desc) { er.textContent = 'Please fill in Title, Price and Description.'; er.style.display = 'block'; return; }
@@ -7496,10 +7496,12 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
         ? samplesRaw.split('\n').map(s => s.trim()).filter(s => s.startsWith('http')).slice(0, 3)
         : (existing.samples || []);
       const newPdf = pdfUrl || existing.pdfUrl || null;
-      digitalProducts[idx] = { ...existing, title, category, audience, price, priceInr, ageRange, desc, features, cover: newCover, samples: newSamples, pdfUrl: newPdf, gumroad: gumroad || null, etsy: etsy || null };
+      digitalProducts[idx] = { ...existing, title, category, audience, price, priceInr, ageRange, desc, features, cover: newCover, samples: newSamples, pdfUrl: newPdf, gumroad: gumroad || null, etsy: etsy || null, featured, displayOrder };
       await save();
       renderDPSection();
       renderDPManageList();
+      renderHeroFeatStack();
+      renderFeaturedAdminSummary();
       btn.disabled = false; btn.innerHTML = 'Save Changes';
       flash('edpok');
       setTimeout(() => closeEditDP(), 1200);
@@ -7569,7 +7571,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
     async function delBook(id) {
       if (!confirm('Delete this book?')) return;
       books = books.filter(b => b.id !== id);
-      await save(); renderBooks(); renderManage();
+      await save(); renderBooks(); renderManage(); renderHeroFeatStack(); renderFeaturedAdminSummary();
     }
     async function delBlog(id) {
       if (!confirm('Delete this post?')) return;
@@ -7600,6 +7602,8 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       document.getElementById('ebc').value = (b.cover && b.cover.startsWith('http')) ? b.cover : '';
       document.getElementById('ebs').value = (b.samples || []).filter(s => s && s.startsWith('http')).join('\n');
       document.getElementById('ebpdf').value = (b.pdfData && b.pdfData.startsWith('http')) ? b.pdfData : '';
+      document.getElementById('ebfeat').checked = b.featured === true;
+      document.getElementById('eborder').value = _displayOrderValue(b.displayOrder) || '';
       document.getElementById('eber').style.display = 'none';
       show('editBookOv');
     }
@@ -7620,6 +7624,8 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       const coverUrl = document.getElementById('ebc').value.trim();
       const samplesRaw = document.getElementById('ebs').value.trim();
       const pdfUrl = document.getElementById('ebpdf').value.trim();
+      const featured = document.getElementById('ebfeat').checked;
+      const displayOrder = _displayOrderValue(document.getElementById('eborder').value);
       const er = document.getElementById('eber');
       er.style.display = 'none';
       if (!title || !price || !desc) { er.textContent = 'Please fill in Title, Price and Description.'; er.style.display = 'block'; return; }
@@ -7634,8 +7640,8 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
         ? samplesRaw.split('\n').map(s => s.trim()).filter(s => s.startsWith('http')).slice(0, 3)
         : (existing.samples || []);
       const newPdf = pdfUrl || existing.pdfData || null;
-      books[idx] = { ...existing, title, price, priceInr, age, amazon: amz, gumroad: gumroad || null, etsy: etsy || null, desc, features: feats, categories, audience, cover: newCover, samples: newSamples, pdfData: newPdf };
-      await save(); renderBooks(); renderManage();
+      books[idx] = { ...existing, title, price, priceInr, age, amazon: amz, gumroad: gumroad || null, etsy: etsy || null, desc, features: feats, categories, audience, cover: newCover, samples: newSamples, pdfData: newPdf, featured, displayOrder };
+      await save(); renderBooks(); renderManage(); renderHeroFeatStack(); renderFeaturedAdminSummary();
       btn.disabled = false; btn.innerHTML = 'Save Changes';
       flash('ebok');
       setTimeout(() => closeEditBook(), 1200);
@@ -8768,8 +8774,6 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       renderBlogs();
       renderDPSection();
       _populateBookSelector(); // populate product dropdown in review form
-      // Load featured product IDs and render hero stack
-      _featuredIds = (siteContent.featuredIds || []);
       renderHeroFeatStack();
       await checkInstamojoReturn(); // handle redirect back from Instamojo
     })();
