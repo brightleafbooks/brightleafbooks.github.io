@@ -5979,6 +5979,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
 
     let _db = null;
     let books = [], blogs = [], digitalProducts = [], unlocked = false;
+    let _cloudPw = null; // admin password as loaded from Firestore (synced across all browsers/devices)
 
     function _displayOrderValue(value) {
       const n = Number(value);
@@ -6132,6 +6133,44 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       return null;
     }
 
+    // Admin password lives in its own tiny Firestore doc so it can be changed
+    // instantly without touching the (larger, less frequently written) sitedata/main doc.
+    async function loadAdminPw() {
+      try {
+        const ok = await initFirebase();
+        if (!ok) return false;
+        const { doc, getDoc } = window._fbModules;
+        const ref = doc(_db, 'sitedata', 'auth');
+        const snap = await getDoc(ref);
+        if (snap.exists()) {
+          const d = snap.data();
+          if (d && typeof d.pw === 'string' && d.pw) {
+            _cloudPw = d.pw;
+            try { localStorage.setItem('wb_pw', d.pw); } catch (e) { }
+            return true;
+          }
+        }
+      } catch (e) {
+        console.error('loadAdminPw error:', e.message, e);
+      }
+      return false;
+    }
+
+    async function saveAdminPw(pw) {
+      try {
+        const ok = await initFirebase();
+        if (!ok) return false;
+        const { doc, setDoc } = window._fbModules;
+        const ref = doc(_db, 'sitedata', 'auth');
+        await setDoc(ref, { pw });
+        _cloudPw = pw;
+        return true;
+      } catch (e) {
+        console.error('saveAdminPw error:', e.message, e);
+        return false;
+      }
+    }
+
     async function fbSave() {
       try {
         const ok = await initFirebase();
@@ -6173,6 +6212,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
     // ── Main load: Firebase first, then localStorage, then seed data ───────────
     async function load() {
       const lsData = lsLoad(); // always load localStorage first (has full image data)
+      loadAdminPw(); // fire-and-forget: syncs admin password from Firestore in the background
 
       // 1. Try Firebase (has latest book/blog list)
       let fbData = null;
@@ -7095,25 +7135,32 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
     }
     function closeAdmin() { hide('aov'); }
 
-    function getPw() { try { return localStorage.getItem('wb_pw') || 'WhoseBooks2025'; } catch (e) { return 'WhoseBooks2025'; } }
+    function getPw() { if (_cloudPw) return _cloudPw; try { return localStorage.getItem('wb_pw') || 'WhoseBooks2025'; } catch (e) { return 'WhoseBooks2025'; } }
     function setPw(pw) { try { localStorage.setItem('wb_pw', pw); } catch (e) { } }
-    function changePw() {
+    async function changePw() {
       const cur = document.getElementById('pwcur').value.trim();
       const nw = document.getElementById('pwnew').value.trim();
       const con = document.getElementById('pwcon').value.trim();
       const er = document.getElementById('pwer'); er.style.display = 'none';
       document.getElementById('pwok').style.display = 'none';
       if (!cur) { er.textContent = 'Please enter your current password.'; er.style.display = 'block'; return; }
+      await loadAdminPw(); // make sure we're checking against the latest cloud password
       if (cur !== getPw()) { er.textContent = 'Current password is incorrect.'; er.style.display = 'block'; return; }
       if (nw.length < 6) { er.textContent = 'New password must be at least 6 characters.'; er.style.display = 'block'; return; }
       if (nw !== con) { er.textContent = 'New passwords do not match.'; er.style.display = 'block'; return; }
-      setPw(nw);
+      const cloudOk = await saveAdminPw(nw); // sync to Firestore first — this is what other browsers/devices read
+      setPw(nw); // local cache fallback
+      if (!cloudOk) {
+        er.textContent = 'Saved locally, but could not sync to the cloud — password may not carry over to other browsers/devices. Check your connection and try again.';
+        er.style.display = 'block';
+      }
       ['pwcur', 'pwnew', 'pwcon'].forEach(i => document.getElementById(i).value = '');
       document.getElementById('pwok').style.display = 'block';
       setTimeout(() => document.getElementById('pwok').style.display = 'none', 3000);
     }
 
-    function chkPw() {
+    async function chkPw() {
+      await loadAdminPw(); // refresh from cloud in case it was changed on another browser/device
       if (document.getElementById('pwi').value === getPw()) {
         unlocked = true;
         document.getElementById('pws').style.display = 'none';
