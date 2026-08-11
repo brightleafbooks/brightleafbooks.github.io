@@ -401,6 +401,43 @@
       animation: fu .6s .5s ease both
     }
 
+    .hero-free-btn {
+      position: absolute;
+      top: 16%;
+      right: 9%;
+      z-index: 5;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #fff;
+      color: var(--gd);
+      border: 2px solid var(--y);
+      border-radius: 999px;
+      padding: .7rem 1.3rem;
+      font-weight: 800;
+      font-size: .92rem;
+      font-family: inherit;
+      cursor: pointer;
+      box-shadow: 0 10px 28px rgba(0,0,0,.14);
+      animation: fu .6s .3s ease both, fsWander 11s ease-in-out infinite 1s;
+      transition: transform .2s, box-shadow .2s;
+    }
+
+    .hero-free-btn:hover {
+      animation-play-state: paused;
+      transform: translateY(-3px) scale(1.04);
+      box-shadow: 0 14px 34px rgba(0,0,0,.2);
+    }
+
+    @keyframes fsWander {
+      0%   { top: 14%; right: 10%; }
+      20%  { top: 8%;  right: 22%; }
+      40%  { top: 24%; right: 28%; }
+      60%  { top: 30%; right: 14%; }
+      80%  { top: 18%; right: 6%;  }
+      100% { top: 14%; right: 10%; }
+    }
+
     .hfeat-card {
       position: absolute;
       width: 190px;
@@ -3158,6 +3195,7 @@
       .sl { font-size: .75rem }
       .dd { display: none }
       .hfeat { width: 180px; height: 260px; margin: 0 auto }
+      .hero-free-btn { position: static; margin: .5rem auto 0; animation: none }
 
       /* ── ABOUT ── */
       .about { padding: 3rem 1.1rem; gap: 1.5rem }
@@ -4223,6 +4261,24 @@
     #pp.pp-visible { display: flex; }
     body.theme-teen #pp { background: var(--tcr); }
 
+    #fsPage {
+      position: fixed;
+      inset: 0;
+      z-index: 1200;
+      background: var(--cr);
+      overflow-y: auto;
+      display: none;
+      flex-direction: column;
+    }
+    #fsPage.pp-visible { display: flex; }
+    body.theme-teen #fsPage { background: var(--tcr); }
+    .fs-body {
+      max-width: 1020px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+    }
+
     /* make pp-body grow to fill available space so FAB always sticks to bottom */
     #pp .pp-body { flex: 1; }
 
@@ -4830,6 +4886,7 @@
     </div>
     <!-- Featured product stack — small corner accent -->
     <div class="hfeat" id="heroFeatStack" aria-label="Featured products"></div>
+    <button class="hero-free-btn" onclick="openFreeSamples()" aria-label="Get free sample downloads">🎁 Free Samples</button>
   </section>
 
   <!-- Trust badges -->
@@ -4974,6 +5031,22 @@
     </div>
     <div class="pp-body" id="ppBody"></div>
     <div class="pp-fab" id="ppFab"></div>
+  </div>
+
+  <!-- ── FREE SAMPLES PAGE (URL-routed full-screen view) ── -->
+  <div id="fsPage" role="main" aria-label="Free sample downloads page">
+    <div class="pp-topbar">
+      <button class="pp-back" onclick="closeFreeSamples()" aria-label="Back to store">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Back
+      </button>
+      <span class="pp-topbar-title">🎁 Free Sample Downloads</span>
+    </div>
+    <div class="fs-body">
+      <h1 style="font-family:'Fraunces',serif;color:var(--gd);font-size:1.8rem;margin:0 0 .4rem">🎁 Free Sample Downloads</h1>
+      <p style="color:var(--mu);font-size:.95rem;margin:0 0 1.6rem">Grab a few free sample pages to try before you buy — sign in (it's free) and download instantly.</p>
+      <div id="freeSamplesGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.1rem"></div>
+    </div>
   </div>
 
   <!-- Book modal -->
@@ -5192,6 +5265,7 @@
         <div class="atabs">
           <button class="atab act" onclick="swTab('tadd',this)">📚 Books</button>
           <button class="atab" onclick="swTab('tdp',this)">💜 Digital</button>
+          <button class="atab" onclick="swTab('tfree',this)">🎁 Free Samples</button>
           <button class="atab" onclick="swTab('tblg',this)">✏️ Blog</button>
           <button class="atab" onclick="swTab('tman',this)">⚙️ Manage</button>
           <button class="atab" onclick="swTab('tfeat',this);renderFeaturedAdminSummary()">Featured</button>
@@ -5305,6 +5379,26 @@
           <hr style="border:none;border-top:1.5px solid var(--gl);margin:2rem 0"/>
           <h3>Manage Digital Products</h3>
           <div id="dpmlist" style="display:flex;flex-direction:column;gap:.7rem"></div>
+        </div>
+        <!-- Free Samples -->
+        <div class="ac" id="tfree" style="display:none">
+          <h3>Add a Free Sample PDF</h3>
+          <div style="background:var(--gl);border-radius:12px;padding:.8rem 1rem;margin-bottom:1.2rem;font-size:.83rem;color:var(--gd);font-weight:700">
+            These appear on the public "Free Samples" page. Visitors must sign in before they can download.
+          </div>
+          <div class="af">
+            <div class="afg"><label for="fst">Title *</label><input id="fst" placeholder="e.g. Animal ABC Coloring — Free Sample" autocomplete="off" /></div>
+            <div class="afg"><label for="fsd">Description *</label><textarea id="fsd" placeholder="A short line about what's inside this free sample..." autocomplete="off"></textarea></div>
+            <div class="afg"><label>🖼️ Cover Image URL</label><input type="url" id="fsc" placeholder="https://res.cloudinary.com/..." autocomplete="off" /></div>
+            <div class="afg"><label>📄 PDF URL * (paste a hosted link, e.g. Google Drive, Dropbox)</label><input type="url" id="fsp" placeholder="https://drive.google.com/uc?export=download&id=..." autocomplete="off" /></div>
+            <div class="afg"><label for="fsorder">Display Order</label><input type="number" id="fsorder" placeholder="1" min="0" step="1" autocomplete="off"></div>
+            <button class="afbtn" id="fsbtn" onclick="addFreeSample()">Add Free Sample</button>
+            <div class="ok" id="fsok">✅ Free sample added!</div>
+            <div class="er" id="fser"></div>
+          </div>
+          <hr style="border:none;border-top:1.5px solid var(--gl);margin:2rem 0"/>
+          <h3>Manage Free Samples</h3>
+          <div id="fsmlist" style="display:flex;flex-direction:column;gap:.7rem"></div>
         </div>
         <!-- Write Blog -->
         <div class="ac" id="tblg" style="display:none">
@@ -5809,6 +5903,31 @@
     </div>
   </div>
 
+  <!-- EDIT FREE SAMPLE -->
+  <div class="ov" id="editFSOv" onclick="if(event.target===this)closeEditFS()">
+    <div class="abox">
+      <div class="atabs" style="border-radius:22px 22px 0 0">
+        <span style="padding:.9rem 1.4rem;font-family:'Fraunces',serif;font-size:1rem;font-weight:700;color:var(--gd)">✏️ Edit Free Sample</span>
+        <button class="axbtn" style="margin-left:auto" onclick="closeEditFS()">✕</button>
+      </div>
+      <div class="ac">
+        <div class="af">
+          <div class="afg"><label>Title *</label><input id="efst" placeholder="e.g. Animal ABC Coloring — Free Sample" autocomplete="off" /></div>
+          <div class="afg"><label>Description *</label><textarea id="efsd" placeholder="A short line about what's inside this free sample..." autocomplete="off"></textarea></div>
+          <div class="afg"><label>🖼️ Cover Image URL (leave blank to keep current)</label><input type="url" id="efsc" placeholder="https://res.cloudinary.com/..." autocomplete="off" /></div>
+          <div class="afg"><label>📄 PDF URL (leave blank to keep current)</label><input type="url" id="efsp" placeholder="https://drive.google.com/uc?export=download&id=..." autocomplete="off" /></div>
+          <div class="afg"><label>Display Order</label><input type="number" id="efsorder" placeholder="1" min="0" step="1" autocomplete="off"></div>
+          <div style="display:flex;gap:.65rem;flex-wrap:wrap;margin-top:.25rem">
+            <button class="afbtn" id="efsSaveBtn" onclick="saveEditFS()">Save Changes</button>
+            <button class="afbtn" style="background:#888" onclick="closeEditFS()">Cancel</button>
+          </div>
+          <div class="ok" id="efsok">✅ Free sample updated!</div>
+          <div class="er" id="efser"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- PAYMENT MODAL — Instamojo -->
   <div class="ov" id="payov" onclick="if(event.target===this)closePay()">
     <div class="paybox">
@@ -5979,7 +6098,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
     };
 
     let _db = null;
-    let books = [], blogs = [], digitalProducts = [], unlocked = false;
+    let books = [], blogs = [], digitalProducts = [], freeSamples = [], unlocked = false;
     let _cloudPw = null; // admin password as loaded from Firestore (synced across all browsers/devices)
 
     function _displayOrderValue(value) {
@@ -6055,7 +6174,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       return null;
     }
     function lsSave() {
-      try { normalizeFeaturedCatalog(); localStorage.setItem(LS_KEY, JSON.stringify({ books, blogs, digitalProducts, siteContent })); } catch (e) { }
+      try { normalizeFeaturedCatalog(); localStorage.setItem(LS_KEY, JSON.stringify({ books, blogs, digitalProducts, freeSamples, siteContent })); } catch (e) { }
     }
 
     // ── Firebase helpers ───────────────────────────────────────────────────────
@@ -6197,10 +6316,14 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
           const isSafe = v => v && typeof v === 'string' && (v.startsWith('http') || v.length < 512000);
           return { ...b, img: isSafe(b.img) ? b.img : null };
         });
+        const slimFreeSamples = freeSamples.map(f => {
+          const isSafe = v => v && typeof v === 'string' && (v.startsWith('http') || v.length < 512000);
+          return { ...f, cover: isSafe(f.cover) ? f.cover : null };
+        });
 
-        const payload = cleanForFirestore({ books: slimBooks, blogs: slimBlogs, digitalProducts, siteContent });
+        const payload = cleanForFirestore({ books: slimBooks, blogs: slimBlogs, digitalProducts, freeSamples: slimFreeSamples, siteContent });
         const payloadStr = JSON.stringify(payload);
-        console.log('Firebase PATCH payload size (bytes):', payloadStr.length, '— saving', slimBooks.length, 'books,', digitalProducts.length, 'products');
+        console.log('Firebase PATCH payload size (bytes):', payloadStr.length, '— saving', slimBooks.length, 'books,', digitalProducts.length, 'products,', slimFreeSamples.length, 'free samples');
         await setDoc(ref, payload);
         console.log('Firebase save SUCCESS — books saved:', slimBooks.length, '| digital products:', digitalProducts.length);
         return true;
@@ -6240,6 +6363,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
         }
         blogs = Array.isArray(fbData.blogs) ? fbData.blogs : (lsData && lsData.blogs ? lsData.blogs : []);
         digitalProducts = Array.isArray(fbData.digitalProducts) ? fbData.digitalProducts : (lsData && lsData.digitalProducts ? lsData.digitalProducts : []);
+        freeSamples = Array.isArray(fbData.freeSamples) ? fbData.freeSamples : (lsData && lsData.freeSamples ? lsData.freeSamples : []);
         siteContent = { ...DEFAULT_SITE, ...(fbData.siteContent || {}) };
         normalizeFeaturedCatalog();
         lsSave(); // sync merged data back to localStorage
@@ -6251,6 +6375,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
         books = Array.isArray(lsData.books) ? lsData.books : [];
         blogs = Array.isArray(lsData.blogs) ? lsData.blogs : [];
         digitalProducts = Array.isArray(lsData.digitalProducts) ? lsData.digitalProducts : [];
+        freeSamples = Array.isArray(lsData.freeSamples) ? lsData.freeSamples : [];
         siteContent = { ...DEFAULT_SITE, ...(lsData.siteContent || {}) };
         normalizeFeaturedCatalog();
         console.log('load: loaded from localStorage, books =', books.length, '— pushing to Firebase');
@@ -6261,6 +6386,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       console.warn('load: no data found in Firebase or localStorage — using seed data (NOT saving to Firebase)');
       books = SEED_BOOKS;
       blogs = SEED_BLOGS;
+      freeSamples = [];
       siteContent = { ...DEFAULT_SITE };
       lsSave(); // save seed data to localStorage ONLY — never overwrite Firebase with seeds
     }
@@ -7180,7 +7306,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
 
     function swTab(id, btn) {
       try {
-        ['tadd', 'tdp', 'tblg', 'tman', 'tfeat', 'tsite', 'tim', 'tpw', 'tusers', 'treviews'].forEach(t => {
+        ['tadd', 'tdp', 'tfree', 'tblg', 'tman', 'tfeat', 'tsite', 'tim', 'tpw', 'tusers', 'treviews'].forEach(t => {
           const el = document.getElementById(t);
           if (el) el.style.display = t === id ? 'block' : 'none';
         });
@@ -7188,6 +7314,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
         btn.classList.add('act');
         if (id === 'tman') renderManage();
         if (id === 'tdp') renderDPManageList();
+        if (id === 'tfree') renderFreeManageList();
         if (id === 'tsite') populateSiteForm();
         if (id === 'tim') populateIMForm();
         if (id === 'tadd') renderAdminCatGrid('abcatGrid', []);
@@ -7568,6 +7695,135 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
           </div>
         </div>`;
       }).join('') || '<p style="color:var(--mu);font-size:.83rem">No digital products yet.</p>';
+    }
+
+    // ── FREE SAMPLES (admin) ──────────────────────────────────────────────────
+    async function addFreeSample() {
+      const title = document.getElementById('fst').value.trim();
+      const desc = document.getElementById('fsd').value.trim();
+      const cover = document.getElementById('fsc').value.trim() || null;
+      const pdfUrl = document.getElementById('fsp').value.trim();
+      const displayOrder = _displayOrderValue(document.getElementById('fsorder').value);
+      const er = document.getElementById('fser');
+      er.style.display = 'none';
+      if (!title || !desc) { er.textContent = 'Please fill in Title and Description.'; er.style.display = 'block'; return; }
+      if (!pdfUrl || !pdfUrl.startsWith('http')) { er.textContent = 'Please add a valid PDF URL.'; er.style.display = 'block'; return; }
+      const btn = document.getElementById('fsbtn');
+      btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Saving...';
+      freeSamples.push({ id: 'fs' + Date.now(), title, desc, cover, pdfUrl, displayOrder });
+      await save();
+      renderFreeManageList();
+      ['fst', 'fsd', 'fsc', 'fsp', 'fsorder'].forEach(i => { const el = document.getElementById(i); if (el) el.value = ''; });
+      btn.disabled = false; btn.innerHTML = 'Add Free Sample';
+      flash('fsok');
+    }
+
+    async function delFreeSample(id) {
+      if (!confirm('Delete this free sample?')) return;
+      freeSamples = freeSamples.filter(f => f.id !== id);
+      await save();
+      renderFreeManageList();
+    }
+
+    function renderFreeManageList() {
+      const el = document.getElementById('fsmlist');
+      if (!el) return;
+      const sorted = [...freeSamples].sort((a, b) => _displayOrderValue(a.displayOrder) - _displayOrderValue(b.displayOrder));
+      el.innerHTML = sorted.map(f => `<div class="mi">
+          <div><div class="mit">${f.title}</div><div class="mis">${f.desc ? f.desc.slice(0, 60) : ''}</div></div>
+          <div class="mi-btns">
+            <button class="medit" onclick="openEditFS('${f.id}')">Edit</button>
+            <button class="mdel" onclick="delFreeSample('${f.id}')">Delete</button>
+          </div>
+        </div>`).join('') || '<p style="color:var(--mu);font-size:.83rem">No free samples yet.</p>';
+    }
+
+    let _editFSId = null;
+    function openEditFS(id) {
+      const f = freeSamples.find(x => x.id === id);
+      if (!f) return;
+      _editFSId = id;
+      document.getElementById('efst').value = f.title || '';
+      document.getElementById('efsd').value = f.desc || '';
+      document.getElementById('efsc').value = (f.cover && f.cover.startsWith('http')) ? f.cover : '';
+      document.getElementById('efsp').value = (f.pdfUrl && f.pdfUrl.startsWith('http')) ? f.pdfUrl : '';
+      document.getElementById('efsorder').value = _displayOrderValue(f.displayOrder) || '';
+      document.getElementById('efser').style.display = 'none';
+      show('editFSOv');
+    }
+    function closeEditFS() { hide('editFSOv'); _editFSId = null; }
+
+    async function saveEditFS() {
+      const title = document.getElementById('efst').value.trim();
+      const desc = document.getElementById('efsd').value.trim();
+      const coverUrl = document.getElementById('efsc').value.trim();
+      const pdfUrl = document.getElementById('efsp').value.trim();
+      const displayOrder = _displayOrderValue(document.getElementById('efsorder').value);
+      const er = document.getElementById('efser');
+      er.style.display = 'none';
+      if (!title || !desc) { er.textContent = 'Please fill in Title and Description.'; er.style.display = 'block'; return; }
+      const btn = document.getElementById('efsSaveBtn');
+      btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Saving...';
+      const idx = freeSamples.findIndex(x => x.id === _editFSId);
+      if (idx === -1) { btn.disabled = false; btn.innerHTML = 'Save Changes'; return; }
+      const existing = freeSamples[idx];
+      freeSamples[idx] = { ...existing, title, desc, cover: coverUrl || existing.cover || null, pdfUrl: pdfUrl || existing.pdfUrl, displayOrder };
+      await save();
+      renderFreeManageList();
+      btn.disabled = false; btn.innerHTML = 'Save Changes';
+      flash('efsok');
+      setTimeout(() => closeEditFS(), 1200);
+    }
+
+    // ── FREE SAMPLES (public page) ────────────────────────────────────────────
+    function openFreeSamples(pushState) {
+      renderFreeSamplesGrid();
+      if (pushState !== false) {
+        const newUrl = window.location.pathname + '?free=1';
+        history.pushState({ fsPage: true }, '', newUrl);
+      }
+      document.getElementById('fsPage').classList.add('pp-visible');
+      document.getElementById('fsPage').scrollTop = 0;
+      document.body.style.overflow = 'hidden';
+      document.title = 'Free Sample Downloads — WhoseBooks';
+    }
+    function closeFreeSamples() {
+      const el = document.getElementById('fsPage');
+      if (!el.classList.contains('pp-visible')) return;
+      el.classList.remove('pp-visible');
+      document.body.style.overflow = '';
+      document.title = 'WhoseBooks - Fun Learning for Kids';
+      const cleanUrl = window.location.pathname;
+      history.pushState({}, '', cleanUrl);
+    }
+
+    function renderFreeSamplesGrid() {
+      const el = document.getElementById('freeSamplesGrid');
+      if (!el) return;
+      if (!freeSamples.length) {
+        el.innerHTML = '<p style="color:var(--mu);font-size:.9rem;grid-column:1/-1">No free samples available just yet — check back soon!</p>';
+        return;
+      }
+      const sorted = [...freeSamples].sort((a, b) => _displayOrderValue(a.displayOrder) - _displayOrderValue(b.displayOrder));
+      el.innerHTML = sorted.map(f => {
+        const cover = f.cover
+          ? `<img src="${f.cover}" alt="${f.title}" style="width:100%;height:150px;object-fit:cover;border-radius:12px;display:block;background:var(--gl)"/>`
+          : `<div style="width:100%;height:150px;border-radius:12px;background:linear-gradient(135deg,var(--gl),#fff);display:flex;align-items:center;justify-content:center;font-size:2.4rem">🎁</div>`;
+        return `<div style="background:#fff;border-radius:16px;box-shadow:0 6px 22px rgba(0,0,0,.08);overflow:hidden;display:flex;flex-direction:column">
+            ${cover}
+            <div style="padding:.9rem 1rem 1rem;display:flex;flex-direction:column;gap:.5rem;flex:1">
+              <div style="font-weight:700;font-family:'Fraunces',serif;color:var(--gd);font-size:1.02rem">${f.title}</div>
+              <div style="color:var(--mu);font-size:.83rem;flex:1">${f.desc || ''}</div>
+              <button class="afbtn" style="margin-top:.3rem" onclick="requireAuthThen(()=>downloadFreeSample('${f.id}'))">📥 Download Free</button>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    function downloadFreeSample(id) {
+      const f = freeSamples.find(x => x.id === id);
+      if (!f || !f.pdfUrl) return;
+      window.open(f.pdfUrl, '_blank');
     }
 
     async function addBlog() {
@@ -8803,7 +9059,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
     });
 
     document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') { closeBM(); closeDPM(); closeBlog(); closeAdmin(); closeEditBook(); closeEditBlog(); closeEditDP(); closePay(); closeSuccess(); hide('failedov'); closeBooksDialog(); closeSearch(); closeAuth(); closeAuthGate(); }
+      if (e.key === 'Escape') { closeBM(); closeDPM(); closeBlog(); closeAdmin(); closeEditBook(); closeEditBlog(); closeEditDP(); closeEditFS(); closeFreeSamples(); closePay(); closeSuccess(); hide('failedov'); closeBooksDialog(); closeSearch(); closeAuth(); closeAuthGate(); }
       if (e.key === '/' && !['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) {
         e.preventDefault();
         document.getElementById('nsearchInput')?.focus();
@@ -9320,6 +9576,12 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
         document.body.style.overflow = '';
         document.title = 'WhoseBooks - Fun Learning for Kids';
       }
+      const fsPage = document.getElementById('fsPage');
+      if (fsPage.classList.contains('pp-visible')) {
+        fsPage.classList.remove('pp-visible');
+        document.body.style.overflow = '';
+        document.title = 'WhoseBooks - Fun Learning for Kids';
+      }
     });
 
     // ── DEEP LINK: open product page from ?book=ID or ?dp=ID on page load ────────
@@ -9327,6 +9589,10 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       const params = new URLSearchParams(window.location.search);
       const bookId = params.get('book');
       const dpId = params.get('dp');
+      const freeParam = params.get('free');
+      if (freeParam) {
+        setTimeout(() => openFreeSamples(false), 400);
+      }
       if (bookId || dpId) {
         const tryOpen = () => {
           if (bookId && books && books.length) {
