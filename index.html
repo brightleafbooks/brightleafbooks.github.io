@@ -176,6 +176,10 @@
     body.theme-teen .aico { border-color: rgba(108,63,197,.15) !important }
     body.theme-teen .acard:hover { border-color: var(--tg) }
     body.theme-teen .blsec { background: var(--tgl) }
+    body.theme-teen .faqsec { background: var(--tgd); }
+    body.theme-teen .faqitem { background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.12) }
+    body.theme-teen .faqq { color: rgba(255,255,255,.92) }
+    body.theme-teen .faqa { color: rgba(255,255,255,.65) }
     body.theme-teen .bt-green { background: var(--tgl); color: var(--tgd) }
     body.theme-teen footer { background: var(--tgd) }
     body.theme-teen .books-aud-banner { background: var(--tgl); color: var(--tgd) }
@@ -2450,6 +2454,123 @@
       animation: mIn .25s ease
     }
 
+    /* FAQ */
+    .faqsec {
+      padding: 5rem 2rem;
+      background: var(--cr)
+    }
+
+    .faqh {
+      max-width: 720px;
+      margin: 0 auto 2.4rem;
+      text-align: center
+    }
+
+    .faqh h2 {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(1.7rem, 3vw, 2.3rem);
+      font-weight: 700;
+      color: var(--tx);
+      margin: .6rem 0 .5rem
+    }
+
+    .faqh p {
+      color: var(--mu);
+      font-size: .95rem
+    }
+
+    .faqlist {
+      max-width: 760px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: .8rem
+    }
+
+    .faqitem {
+      background: #fff;
+      border: 2px solid rgba(61, 170, 92, .1);
+      border-radius: 16px;
+      padding: 0;
+      overflow: hidden
+    }
+
+    .faqitem[open] {
+      border-color: rgba(61, 170, 92, .25)
+    }
+
+    .faqq {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1.1rem 1.3rem;
+      cursor: pointer;
+      list-style: none;
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: .98rem;
+      color: var(--tx)
+    }
+
+    .faqq::-webkit-details-marker {
+      display: none
+    }
+
+    .faqicon {
+      flex: none;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--gl);
+      color: var(--gd);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .95rem;
+      font-weight: 700;
+      transition: transform .2s
+    }
+
+    .faqitem[open] .faqicon {
+      transform: rotate(45deg)
+    }
+
+    .faqa {
+      padding: 0 1.3rem 1.2rem;
+      color: var(--mu);
+      font-size: .9rem;
+      line-height: 1.65
+    }
+
+    .faqempty {
+      text-align: center;
+      color: var(--mu);
+      font-size: .9rem;
+      padding: 2rem;
+      font-style: italic
+    }
+
+    /* CONTACT INFO PANEL */
+    .ciwrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .6rem 1.6rem;
+      margin: 1.2rem 0 1.8rem
+    }
+
+    .cirow {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      font-size: .85rem;
+      color: var(--mu)
+    }
+
+    .ciicon {
+      font-size: 1rem
+    }
+
     /* CONTACT */
     .csec {
       padding: 5.5rem 2rem;
@@ -3260,9 +3381,15 @@
       .blbd { padding: 1rem }
       .blh { margin-bottom: 1.8rem }
 
+      /* ── FAQ ── */
+      .faqsec { padding: 3rem 1rem }
+      .faqq { padding: 1rem; font-size: .92rem }
+      .faqa { padding: 0 1rem 1.1rem }
+
       /* ── CONTACT ── */
       .csec { padding: 3rem 1rem }
       .cwrap { max-width: 100% }
+      .ciwrap { flex-direction: column; gap: .5rem }
       .cform input, .cform select, .cform textarea {
         font-size: 16px /* prevents iOS zoom on focus */
       }
@@ -4713,6 +4840,7 @@
     <button class="nav-books-btn" onclick="openBooksDialog();closeMobileMenu()">📚 Books</button>
     <a href="#about" onclick="closeMobileMenu()">About</a>
     <a href="#blog" onclick="closeMobileMenu()">Blog</a>
+    <a href="#faq" onclick="closeMobileMenu()">FAQs</a>
     <a href="#contact" onclick="closeMobileMenu()">Contact</a>
     <div class="mobile-menu-divider"></div>
     <div class="mobile-menu-aud-toggle">
@@ -5138,6 +5266,15 @@
     <div class="blmbox" id="blmbody"></div>
   </div>
 
+  <section class="faqsec" id="faq">
+    <div class="faqh">
+      <div class="stag">Questions?</div>
+      <h2>Frequently Asked <em>Questions</em></h2>
+      <p>Quick answers to the things people ask us most.</p>
+    </div>
+    <div class="faqlist" id="faqlist"></div>
+  </section>
+
   <section class="csec" id="contact">
     <div class="cwrap">
       <div class="stag">Say hello</div>
@@ -5145,6 +5282,22 @@
       <p id="contact-sub">Whether you're looking for a book recommendation, want to order in bulk for a school, or just
         want to say hi —
         drop us a message!</p>
+
+      <div class="ciwrap" id="ciwrap">
+        <div class="cirow" id="ciEmailRow">
+          <span class="ciicon">📧</span>
+          <span>hello@whosebooks.in</span>
+        </div>
+        <div class="cirow" id="ciPhoneRow" style="display:none">
+          <span class="ciicon">📞</span>
+          <span id="ciPhoneVal"></span>
+        </div>
+        <div class="cirow" id="ciAddrRow" style="display:none">
+          <span class="ciicon">📍</span>
+          <span id="ciAddrVal"></span>
+        </div>
+      </div>
+
       <form class="cform" id="contactForm" onsubmit="handleC(event)">
 
         <div class="fr">
@@ -5194,6 +5347,8 @@
         <div class="flogo" id="footer-logo">🍃 WhoseBooks</div>
         <p class="footer-tagline">Sparking little imaginations, one page at a time.</p>
         <p id="femail" style="margin-top:.4rem;font-size:.8rem"></p>
+        <p id="fphone" style="margin-top:.3rem;font-size:.8rem;display:none"></p>
+        <p id="faddress" style="margin-top:.3rem;font-size:.8rem;display:none;line-height:1.5"></p>
       </div>
       <div class="footer-links">
         <div class="footer-col">
@@ -5267,6 +5422,7 @@
           <button class="atab" onclick="swTab('tdp',this)">💜 Digital</button>
           <button class="atab" onclick="swTab('tfree',this)">🎁 Free Samples</button>
           <button class="atab" onclick="swTab('tblg',this)">✏️ Blog</button>
+          <button class="atab" onclick="swTab('tfaq',this)">❓ FAQs</button>
           <button class="atab" onclick="swTab('tman',this)">⚙️ Manage</button>
           <button class="atab" onclick="swTab('tfeat',this);renderFeaturedAdminSummary()">Featured</button>
           <button class="atab" onclick="swTab('tsite',this)">🌐 Site</button>
@@ -5429,6 +5585,27 @@
             <div class="ok" id="blok">✅ Blog post published!</div>
             <div class="er" id="bler"></div>
           </div>
+        </div>
+        <!-- FAQs -->
+        <div class="ac" id="tfaq" style="display:none">
+          <h3 id="faqFormTitle">Add an FAQ</h3>
+          <div style="background:var(--gl);border-radius:12px;padding:.8rem 1rem;margin-bottom:1.2rem;font-size:.83rem;color:var(--gd);font-weight:700">
+            These appear as an accordion on the public "FAQs" section, sorted by Display Order (lowest first).
+          </div>
+          <div class="af">
+            <div class="afg"><label for="fqq">Question *</label><input id="fqq" placeholder="e.g. Do you ship internationally?" autocomplete="off" /></div>
+            <div class="afg"><label for="fqa">Answer *</label><textarea id="fqa" style="min-height:100px" placeholder="Write the answer here..." autocomplete="off"></textarea></div>
+            <div class="afg"><label for="fqorder">Display Order</label><input type="number" id="fqorder" placeholder="1" min="0" step="1" autocomplete="off"></div>
+            <div style="display:flex;gap:.6rem">
+              <button class="afbtn" id="fqbtn" onclick="addOrSaveFaq()">Add FAQ</button>
+              <button class="afbtn" id="fqcancelbtn" onclick="cancelEditFaq()" style="display:none;background:var(--mu)">Cancel Edit</button>
+            </div>
+            <div class="ok" id="fqok">✅ FAQ saved!</div>
+            <div class="er" id="fqer"></div>
+          </div>
+          <hr style="border:none;border-top:1.5px solid var(--gl);margin:2rem 0"/>
+          <h3>Manage FAQs</h3>
+          <div id="fqmlist" style="display:flex;flex-direction:column;gap:.7rem"></div>
         </div>
         <!-- Manage -->
         <div class="ac" id="tman" style="display:none">
@@ -5605,6 +5782,21 @@
                 style="min-height:55px" autocomplete="off"></textarea></div>
             <div class="afg"><label for="sc-contact-sub">Contact Sub-text</label><textarea id="sc-contact-sub"
                 style="min-height:60px" autocomplete="off"></textarea></div>
+          </div>
+
+          <!-- Contact Info -->
+          <div
+            style="font-family:'Fraunces',serif;font-size:1rem;font-weight:700;color:var(--gd);margin:1.2rem 0 .8rem;border-bottom:2px solid var(--gl);padding-bottom:.4rem">
+            📞 Contact Info</div>
+          <div class="af">
+            <div class="afg"><label for="sc-contact-phone">Phone Number</label><input id="sc-contact-phone"
+                type="tel" placeholder="+91 98765 43210" autocomplete="off">
+              <div style="font-size:.75rem;color:#888;margin-top:.3rem">💡 Leave empty to hide it. Shown in the footer and Contact section.</div>
+            </div>
+            <div class="afg"><label for="sc-contact-address">Address</label><textarea id="sc-contact-address"
+                style="min-height:60px" placeholder="123 MG Road, Patna, Bihar 800001, India" autocomplete="off"></textarea>
+              <div style="font-size:.75rem;color:#888;margin-top:.3rem">💡 Leave empty to hide it. Shown in the footer and Contact section.</div>
+            </div>
           </div>
 
           <!-- Nav & Footer -->
@@ -6085,6 +6277,13 @@ Older kids enjoy more intricate pages with backgrounds, patterns, and multiple c
 Tip: Always check the paper quality — thicker paper prevents bleed-through and makes the coloring experience much better.`, img: null
       }
     ];
+    const SEED_FAQS = [
+      { id: 'fq1', q: 'What age group are your books designed for?', a: 'Most of our coloring and activity books are made for kids aged 3–8, with some titles for older kids. Each book\'s recommended age is listed on its product page.', order: 1 },
+      { id: 'fq2', q: 'Do you ship physical books, or is everything digital?', a: 'We offer both! You can buy printable/ebook versions instantly, or order printed physical copies that get shipped to your address.', order: 2 },
+      { id: 'fq3', q: 'How long does delivery take for physical books?', a: 'Physical orders typically arrive within 5–7 business days depending on your location. You\'ll get tracking details over email once it ships.', order: 3 },
+      { id: 'fq4', q: 'Can I order in bulk for a school or classroom?', a: 'Absolutely — we offer special pricing for bulk and school orders. Reach out to us via the Contact form below and we\'ll get back to you with a quote.', order: 4 },
+      { id: 'fq5', q: 'What if I\'m not happy with my purchase?', a: 'Your happiness matters to us! For digital products, reach out within 7 days for support. For physical books with printing defects or shipping damage, contact us and we\'ll arrange a replacement.', order: 5 }
+    ];
     // Password stored in localStorage, default: WhoseBooks2025
     // ── FIREBASE SETUP ────────────────────────────────────────────────────────
     const firebaseConfig = {
@@ -6098,7 +6297,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
     };
 
     let _db = null;
-    let books = [], blogs = [], digitalProducts = [], freeSamples = [], unlocked = false;
+    let books = [], blogs = [], digitalProducts = [], freeSamples = [], faqs = [], unlocked = false;
     let _cloudPw = null; // admin password as loaded from Firestore (synced across all browsers/devices)
 
     function _displayOrderValue(value) {
@@ -6151,6 +6350,8 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       blogSub: 'Stories and advice for parents raising curious, creative kids.',
       contactH2: 'Got a question? We\'d <em>love to hear</em> from you!',
       contactSub: 'Whether you\'re looking for a book recommendation, want to order in bulk for a school, or just want to say hi — drop us a message!',
+      contactPhone: '',
+      contactAddress: '',
       navLogo: '🍃 Whose <b>Books</b>',
       navCta: 'Shop Books →',
       footerLogo: '🍃 WhoseBooks',
@@ -6174,7 +6375,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       return null;
     }
     function lsSave() {
-      try { normalizeFeaturedCatalog(); localStorage.setItem(LS_KEY, JSON.stringify({ books, blogs, digitalProducts, freeSamples, siteContent })); } catch (e) { }
+      try { normalizeFeaturedCatalog(); localStorage.setItem(LS_KEY, JSON.stringify({ books, blogs, digitalProducts, freeSamples, faqs, siteContent })); } catch (e) { }
     }
 
     // ── Firebase helpers ───────────────────────────────────────────────────────
@@ -6321,7 +6522,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
           return { ...f, cover: isSafe(f.cover) ? f.cover : null };
         });
 
-        const payload = cleanForFirestore({ books: slimBooks, blogs: slimBlogs, digitalProducts, freeSamples: slimFreeSamples, siteContent });
+        const payload = cleanForFirestore({ books: slimBooks, blogs: slimBlogs, digitalProducts, freeSamples: slimFreeSamples, faqs, siteContent });
         const payloadStr = JSON.stringify(payload);
         console.log('Firebase PATCH payload size (bytes):', payloadStr.length, '— saving', slimBooks.length, 'books,', digitalProducts.length, 'products,', slimFreeSamples.length, 'free samples');
         await setDoc(ref, payload);
@@ -6364,6 +6565,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
         blogs = Array.isArray(fbData.blogs) ? fbData.blogs : (lsData && lsData.blogs ? lsData.blogs : []);
         digitalProducts = Array.isArray(fbData.digitalProducts) ? fbData.digitalProducts : (lsData && lsData.digitalProducts ? lsData.digitalProducts : []);
         freeSamples = Array.isArray(fbData.freeSamples) ? fbData.freeSamples : (lsData && lsData.freeSamples ? lsData.freeSamples : []);
+        faqs = Array.isArray(fbData.faqs) ? fbData.faqs : (lsData && lsData.faqs ? lsData.faqs : []);
         siteContent = { ...DEFAULT_SITE, ...(fbData.siteContent || {}) };
         normalizeFeaturedCatalog();
         lsSave(); // sync merged data back to localStorage
@@ -6376,6 +6578,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
         blogs = Array.isArray(lsData.blogs) ? lsData.blogs : [];
         digitalProducts = Array.isArray(lsData.digitalProducts) ? lsData.digitalProducts : [];
         freeSamples = Array.isArray(lsData.freeSamples) ? lsData.freeSamples : [];
+        faqs = Array.isArray(lsData.faqs) ? lsData.faqs : [];
         siteContent = { ...DEFAULT_SITE, ...(lsData.siteContent || {}) };
         normalizeFeaturedCatalog();
         console.log('load: loaded from localStorage, books =', books.length, '— pushing to Firebase');
@@ -6387,6 +6590,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       books = SEED_BOOKS;
       blogs = SEED_BLOGS;
       freeSamples = [];
+      faqs = SEED_FAQS;
       siteContent = { ...DEFAULT_SITE };
       lsSave(); // save seed data to localStorage ONLY — never overwrite Firebase with seeds
     }
@@ -6444,6 +6648,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       set('blog-sub', s.blogSub, 'text');
       set('contact-h2', s.contactH2, 'html');
       set('contact-sub', s.contactSub, 'text');
+      applyContactInfo();
       set('nav-logo', s.navLogo, 'html');
       set('nav-cta', s.navCta, 'text');
       set('footer-logo', s.footerLogo, 'text');
@@ -6462,6 +6667,39 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
         } else {
           annEl.style.display = 'none';
         }
+      }
+    }
+
+    // Show/hide + fill the phone & address lines (footer + contact info panel)
+    function applyContactInfo() {
+      const phone = (siteContent.contactPhone || '').trim();
+      const address = (siteContent.contactAddress || '').trim();
+
+      const fphone = document.getElementById('fphone');
+      if (fphone) {
+        if (phone) {
+          const telHref = 'tel:' + phone.replace(/[^\d+]/g, '');
+          fphone.innerHTML = '📞 <a href="' + telHref + '" style="color:inherit">' + phone + '</a>';
+          fphone.style.display = '';
+        } else fphone.style.display = 'none';
+      }
+      const faddress = document.getElementById('faddress');
+      if (faddress) {
+        if (address) { faddress.textContent = '📍 ' + address; faddress.style.display = ''; }
+        else faddress.style.display = 'none';
+      }
+
+      const ciPhoneRow = document.getElementById('ciPhoneRow');
+      const ciPhoneVal = document.getElementById('ciPhoneVal');
+      if (ciPhoneRow && ciPhoneVal) {
+        if (phone) { ciPhoneVal.textContent = phone; ciPhoneRow.style.display = ''; }
+        else ciPhoneRow.style.display = 'none';
+      }
+      const ciAddrRow = document.getElementById('ciAddrRow');
+      const ciAddrVal = document.getElementById('ciAddrVal');
+      if (ciAddrRow && ciAddrVal) {
+        if (address) { ciAddrVal.textContent = address; ciAddrRow.style.display = ''; }
+        else ciAddrRow.style.display = 'none';
       }
     }
 
@@ -6615,6 +6853,8 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       v('sc-blog-sub', s.blogSub);
       v('sc-contact-h2', s.contactH2);
       v('sc-contact-sub', s.contactSub);
+      v('sc-contact-phone', s.contactPhone);
+      v('sc-contact-address', s.contactAddress);
       v('sc-nav-logo', s.navLogo);
       v('sc-nav-cta', s.navCta);
       v('sc-footer-logo', s.footerLogo);
@@ -6648,6 +6888,8 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
         blogSub: g('sc-blog-sub'),
         contactH2: g('sc-contact-h2'),
         contactSub: g('sc-contact-sub'),
+        contactPhone: g('sc-contact-phone'),
+        contactAddress: g('sc-contact-address'),
         navLogo: g('sc-nav-logo'),
         navCta: g('sc-nav-cta'),
         footerLogo: g('sc-footer-logo'),
@@ -7306,7 +7548,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
 
     function swTab(id, btn) {
       try {
-        ['tadd', 'tdp', 'tfree', 'tblg', 'tman', 'tfeat', 'tsite', 'tim', 'tpw', 'tusers', 'treviews'].forEach(t => {
+        ['tadd', 'tdp', 'tfree', 'tblg', 'tfaq', 'tman', 'tfeat', 'tsite', 'tim', 'tpw', 'tusers', 'treviews'].forEach(t => {
           const el = document.getElementById(t);
           if (el) el.style.display = t === id ? 'block' : 'none';
         });
@@ -7315,6 +7557,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
         if (id === 'tman') renderManage();
         if (id === 'tdp') renderDPManageList();
         if (id === 'tfree') renderFreeManageList();
+        if (id === 'tfaq') renderFaqManageList();
         if (id === 'tsite') populateSiteForm();
         if (id === 'tim') populateIMForm();
         if (id === 'tadd') renderAdminCatGrid('abcatGrid', []);
@@ -7738,6 +7981,88 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
         </div>`).join('') || '<p style="color:var(--mu);font-size:.83rem">No free samples yet.</p>';
     }
 
+    // ── FAQs (admin CRUD + public render) ──────────────────────────────────
+    let _editFaqId = null;
+
+    async function addOrSaveFaq() {
+      const q = document.getElementById('fqq').value.trim();
+      const a = document.getElementById('fqa').value.trim();
+      const order = _displayOrderValue(document.getElementById('fqorder').value);
+      const er = document.getElementById('fqer');
+      er.style.display = 'none';
+      if (!q || !a) { er.textContent = 'Please fill in both the Question and Answer.'; er.style.display = 'block'; return; }
+      const btn = document.getElementById('fqbtn');
+      btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Saving...';
+      if (_editFaqId) {
+        const f = faqs.find(x => x.id === _editFaqId);
+        if (f) { f.q = q; f.a = a; f.order = order; }
+      } else {
+        faqs.push({ id: 'fq' + Date.now(), q, a, order });
+      }
+      await save();
+      renderFaqManageList();
+      renderFAQs();
+      cancelEditFaq();
+      btn.disabled = false;
+      flash('fqok');
+    }
+
+    function openEditFaq(id) {
+      const f = faqs.find(x => x.id === id);
+      if (!f) return;
+      _editFaqId = id;
+      document.getElementById('fqq').value = f.q || '';
+      document.getElementById('fqa').value = f.a || '';
+      document.getElementById('fqorder').value = _displayOrderValue(f.order) || '';
+      document.getElementById('faqFormTitle').textContent = 'Edit FAQ';
+      document.getElementById('fqbtn').textContent = 'Save Changes';
+      document.getElementById('fqcancelbtn').style.display = 'inline-block';
+      document.getElementById('fqer').style.display = 'none';
+      document.getElementById('tfaq').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function cancelEditFaq() {
+      _editFaqId = null;
+      ['fqq', 'fqa', 'fqorder'].forEach(i => { const el = document.getElementById(i); if (el) el.value = ''; });
+      document.getElementById('faqFormTitle').textContent = 'Add an FAQ';
+      document.getElementById('fqbtn').textContent = 'Add FAQ';
+      document.getElementById('fqcancelbtn').style.display = 'none';
+    }
+
+    async function delFaq(id) {
+      if (!confirm('Delete this FAQ?')) return;
+      faqs = faqs.filter(f => f.id !== id);
+      if (_editFaqId === id) cancelEditFaq();
+      await save();
+      renderFaqManageList();
+      renderFAQs();
+    }
+
+    function renderFaqManageList() {
+      const el = document.getElementById('fqmlist');
+      if (!el) return;
+      const sorted = [...faqs].sort((a, b) => _displayOrderValue(a.order) - _displayOrderValue(b.order));
+      el.innerHTML = sorted.map(f => `<div class="mi">
+          <div><div class="mit">${escHtml(f.q)}</div><div class="mis">${f.a ? escHtml(f.a).slice(0, 70) : ''}</div></div>
+          <div class="mi-btns">
+            <button class="medit" onclick="openEditFaq('${f.id}')">Edit</button>
+            <button class="mdel" onclick="delFaq('${f.id}')">Delete</button>
+          </div>
+        </div>`).join('') || '<p style="color:var(--mu);font-size:.83rem">No FAQs yet.</p>';
+    }
+
+    function renderFAQs() {
+      const el = document.getElementById('faqlist');
+      if (!el) return;
+      const sorted = [...faqs].sort((a, b) => _displayOrderValue(a.order) - _displayOrderValue(b.order));
+      if (!sorted.length) { el.innerHTML = '<p class="faqempty">FAQs coming soon!</p>'; return; }
+      el.innerHTML = sorted.map((f, i) => `<details class="faqitem"${i === 0 ? ' open' : ''}>
+          <summary class="faqq"><span>${escHtml(f.q)}</span><span class="faqicon">+</span></summary>
+          <div class="faqa">${escHtml(f.a).replace(/\n/g, '<br>')}</div>
+        </details>`).join('');
+    }
+
+
     let _editFSId = null;
     function openEditFS(id) {
       const f = freeSamples.find(x => x.id === id);
@@ -7809,39 +8134,15 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
         const cover = f.cover
           ? `<img src="${f.cover}" alt="${f.title}" style="width:100%;height:150px;object-fit:cover;border-radius:12px;display:block;background:var(--gl)"/>`
           : `<div style="width:100%;height:150px;border-radius:12px;background:linear-gradient(135deg,var(--gl),#fff);display:flex;align-items:center;justify-content:center;font-size:2.4rem">🎁</div>`;
-        return `<div id="fs-card-${f.id}" style="background:#fff;border-radius:16px;box-shadow:0 6px 22px rgba(0,0,0,.08);overflow:hidden;display:flex;flex-direction:column;transition:box-shadow .4s ease,transform .4s ease">
+        return `<div style="background:#fff;border-radius:16px;box-shadow:0 6px 22px rgba(0,0,0,.08);overflow:hidden;display:flex;flex-direction:column">
             ${cover}
             <div style="padding:.9rem 1rem 1rem;display:flex;flex-direction:column;gap:.5rem;flex:1">
               <div style="font-weight:700;font-family:'Fraunces',serif;color:var(--gd);font-size:1.02rem">${f.title}</div>
               <div style="color:var(--mu);font-size:.83rem;flex:1">${f.desc || ''}</div>
-              <div style="display:flex;gap:.5rem;margin-top:.3rem">
-                <button class="afbtn" style="flex:1" onclick="requireAuthThen(()=>downloadFreeSample('${f.id}'))">📥 Download Free</button>
-                <button class="bm-share-trigger" style="flex:0 0 auto;padding:.55rem .7rem" onclick="openSharePop('${f.id}','${(f.title||'').replace(/'/g,'\u2019')}','sample')" aria-label="Share this free sample" title="Share direct link">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-                </button>
-              </div>
+              <button class="afbtn" style="margin-top:.3rem" onclick="requireAuthThen(()=>downloadFreeSample('${f.id}'))">📥 Download Free</button>
             </div>
           </div>`;
       }).join('');
-    }
-
-    // Scroll to and briefly highlight a specific free-sample card (used by ?sample=ID deep links)
-    function highlightFreeSampleCard(id) {
-      const tryHighlight = (attemptsLeft) => {
-        const card = document.getElementById('fs-card-' + id);
-        if (!card) {
-          if (attemptsLeft > 0) setTimeout(() => tryHighlight(attemptsLeft - 1), 250);
-          return;
-        }
-        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        card.style.boxShadow = '0 0 0 3px var(--g), 0 10px 28px rgba(0,0,0,.16)';
-        card.style.transform = 'translateY(-2px)';
-        setTimeout(() => {
-          card.style.boxShadow = '0 6px 22px rgba(0,0,0,.08)';
-          card.style.transform = 'none';
-        }, 2200);
-      };
-      tryHighlight(12);
     }
 
     function downloadFreeSample(id) {
@@ -8058,6 +8359,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
     function show(id) { document.getElementById(id).classList.add('open'); document.body.style.overflow = 'hidden'; }
     function hide(id) { document.getElementById(id).classList.remove('open'); document.body.style.overflow = ''; }
     function flash(id) { const el = document.getElementById(id); el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 3000); }
+    function escHtml(str) { const d = document.createElement('div'); d.textContent = str == null ? '' : String(str); return d.innerHTML; }
 
     // ── INSTAMOJO PAYMENT ─────────────────────────────────────────────────────────
     //
@@ -9100,6 +9402,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       applySiteContent();
       renderBooks();
       renderBlogs();
+      renderFAQs();
       renderDPSection();
       _populateBookSelector(); // populate product dropdown in review form
       renderHeroFeatStack();
@@ -9135,8 +9438,11 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
 
     // Render email without @ in HTML to avoid bot-protection interference
     (function () {
+      var e = 'hello' + '@' + 'whosebooks.in';
       var el = document.getElementById('femail');
-      if (el) { var e = 'hello' + '@' + 'whosebooks.in'; el.innerHTML = '<a href="mailto:' + e + '" style="color:var(--y)">' + e + '</a>'; }
+      if (el) { el.innerHTML = '<a href="mailto:' + e + '" style="color:var(--y)">' + e + '</a>'; }
+      var ci = document.getElementById('ciEmailRow');
+      if (ci) { ci.innerHTML = '<span class="ciicon">📧</span><span><a href="mailto:' + e + '" style="color:inherit">' + e + '</a></span>'; }
     })();
     // ── BOOK MODAL: QUICK-RATE STARS ────────────────────────────────────────────
     let _bmStarSelected = {}; // { bookId: starValue }
@@ -9614,12 +9920,8 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       const bookId = params.get('book');
       const dpId = params.get('dp');
       const freeParam = params.get('free');
-      const sampleId = params.get('sample');
-      if (freeParam || sampleId) {
-        setTimeout(() => {
-          openFreeSamples(false);
-          if (sampleId) setTimeout(() => highlightFreeSampleCard(sampleId), 300);
-        }, 400);
+      if (freeParam) {
+        setTimeout(() => openFreeSamples(false), 400);
       }
       if (bookId || dpId) {
         const tryOpen = () => {
