@@ -2441,17 +2441,112 @@
       grid-column: 1/-1
     }
 
-    /* BLOG POST MODAL */
-    .blmbox {
+    /* BLOG POST — FULL PAGE (not a centered modal) */
+    #blov {
+      padding: 0;
+      background: #f4f7f5;
+      backdrop-filter: none;
+      display: none;
+      flex-direction: column
+    }
+
+    #blov.open { display: flex }
+
+    #blov > .abox {
+      border-radius: 0;
+      box-shadow: none;
+      max-width: 100%;
+      max-height: 100%;
+      height: 100%
+    }
+
+    .blog-page-wrap {
+      max-width: 700px
+    }
+
+    .blog-article-body {
+      font-size: .96rem;
+      color: var(--tx);
+      line-height: 1.85
+    }
+
+    .blog-article-body p { margin: 0 0 1rem }
+    .blog-article-body h1,
+    .blog-article-body h2,
+    .blog-article-body h3 {
+      font-family: 'Fraunces', serif;
+      color: var(--tx);
+      margin: 1.4rem 0 .7rem;
+      line-height: 1.3
+    }
+    .blog-article-body ul,
+    .blog-article-body ol { margin: 0 0 1rem 1.3rem }
+    .blog-article-body li { margin-bottom: .35rem }
+    .blog-article-body a { color: var(--gd); text-decoration: underline }
+    .blog-article-body img { max-width: 100%; border-radius: 10px }
+
+    /* RICH TEXT EDITOR (admin blog forms) */
+    .rte-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: .25rem;
       background: var(--cr);
-      border-radius: 26px;
-      max-width: 600px;
-      width: 100%;
-      max-height: 90vh;
+      border: 2px solid rgba(61, 170, 92, .18);
+      border-bottom: none;
+      border-radius: 9px 9px 0 0;
+      padding: .4rem
+    }
+
+    .rte-btn {
+      border: none;
+      background: none;
+      color: var(--tx);
+      font-family: 'Nunito', sans-serif;
+      font-size: .85rem;
+      font-weight: 700;
+      padding: .35rem .6rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background .15s, color .15s;
+      line-height: 1
+    }
+
+    .rte-btn:hover { background: var(--gl); color: var(--gd) }
+
+    .rte-sep {
+      width: 1px;
+      height: 1.3rem;
+      background: rgba(61, 170, 92, .2);
+      margin: 0 .2rem
+    }
+
+    .rte-content {
+      border: 2px solid rgba(61, 170, 92, .18);
+      border-top: none;
+      border-radius: 0 0 9px 9px;
+      padding: .7rem .85rem;
+      font-family: 'Nunito', sans-serif;
+      font-size: .88rem;
+      color: var(--tx);
+      background: var(--cr);
+      min-height: 150px;
+      max-height: 340px;
       overflow-y: auto;
-      padding: 2rem;
-      box-shadow: 0 28px 70px rgba(0, 0, 0, .4);
-      animation: mIn .25s ease
+      outline: none;
+      line-height: 1.6
+    }
+
+    .rte-content:focus { border-color: var(--g) }
+
+    .rte-content p { margin: 0 0 .8rem }
+    .rte-content ul,
+    .rte-content ol { margin: 0 0 .8rem 1.2rem }
+
+    .rte-content:empty:before {
+      content: attr(data-placeholder);
+      color: var(--mu);
+      pointer-events: none
     }
 
     /* FAQ */
@@ -5000,8 +5095,8 @@
     <div class="dd" id="dd4" style="bottom:20%;right:8%;animation-delay:.4s" aria-hidden="true">🌸</div>
     <div class="hero-content" id="heroContent">
       <div class="hbadge" id="hero-badge">✨ Books that spark little imaginations</div>
-      <h1 id="hero-h1">Where every page is an<br><em>adventure</em> waiting to be<br><span class="hl">colored in.</span></h1>
-      <p class="hsub" id="hero-sub">WhoseBooks creates magical coloring books for kids aged 3–6. Fun, educational, and bursting with creativity!</p>
+      <h1 id="hero-h1">Your one-stop shop<br><em>of</em> Ebooks, Digital Planners<br><span class="hl">for Kids & Teens.</span></h1>
+      <p class="hsub" id="hero-sub">Buy Ebooks for kids and teens, and digital planners for a fun and educational experience.</p>
       <div class="hbtns">
         <a href="#books" class="bp" id="hero-btn1">Browse Our Books</a>
         <a href="#about" class="bo" id="hero-btn2">Our Story</a>
@@ -5261,9 +5356,17 @@
     <div class="blgrid" id="blgrid"></div>
   </section>
 
-  <!-- Blog modal -->
-  <div class="ov" id="blov" onclick="if(event.target===this)closeBlog()">
-    <div class="blmbox" id="blmbody"></div>
+  <!-- Blog article page (full page, not a popup) -->
+  <div class="ov" id="blov">
+    <div class="abox">
+      <div class="admin-page-header">
+        <span class="admin-brand">📖 WhoseBooks Blog</span>
+        <button class="admin-close-btn" onclick="closeBlog()">← Back to site</button>
+      </div>
+      <div class="ac">
+        <div class="blog-page-wrap" id="blmbody" style="margin:0 auto"></div>
+      </div>
+    </div>
   </div>
 
   <section class="faqsec" id="faq">
@@ -5575,9 +5678,25 @@
             </div>
             <div class="afg"><label for="bls">Short Summary *</label><input id="bls"
                 placeholder="One-line teaser shown on the blog card..." / autocomplete="off"></div>
-            <div class="afg"><label for="blb">Full Content *</label><textarea id="blb" style="min-height:150px"
-                placeholder="Write your full blog post here. Use blank lines between paragraphs."
-                autocomplete="off"></textarea></div>
+            <div class="afg"><label>Full Content *</label>
+              <div class="rte-toolbar">
+                <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('blb','bold')" title="Bold"><b>B</b></button>
+                <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('blb','italic')" title="Italic"><i>I</i></button>
+                <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('blb','underline')" title="Underline"><u>U</u></button>
+                <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('blb','strikeThrough')" title="Strikethrough"><s>S</s></button>
+                <span class="rte-sep"></span>
+                <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('blb','formatBlock','H2')" title="Heading">H2</button>
+                <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('blb','formatBlock','P')" title="Paragraph">¶</button>
+                <span class="rte-sep"></span>
+                <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('blb','insertUnorderedList')" title="Bullet List">• List</button>
+                <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('blb','insertOrderedList')" title="Numbered List">1. List</button>
+                <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteLink('blb')" title="Insert Link">🔗 Link</button>
+                <span class="rte-sep"></span>
+                <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('blb','removeFormat')" title="Clear Formatting">Clear</button>
+              </div>
+              <div class="rte-content" id="blb" contenteditable="true"
+                data-placeholder="Write your full blog post here. Select text and use the toolbar above to format it."></div>
+            </div>
             <div class="afg"><label>Cover Image — Upload File</label><input type="file" id="bli" accept="image/*"
                 style="border:none;padding:.25rem 0;background:none" / autocomplete="off"></div>
             <div class="afg"><label>🖼️ Or paste Cover Image URL (Google Drive, Cloudinary, etc.)</label><input type="url" id="blurl" placeholder="https://drive.google.com/uc?export=view&id=..." autocomplete="off"></div>
@@ -6014,8 +6133,25 @@
           </div>
           <div class="afg"><label for="els">Short Summary *</label><input id="els" placeholder="One-line teaser..." /
               autocomplete="off"></div>
-          <div class="afg"><label for="elb">Full Content *</label><textarea id="elb" style="min-height:150px"
-              placeholder="Write your full blog post here..." autocomplete="off"></textarea></div>
+          <div class="afg"><label>Full Content *</label>
+            <div class="rte-toolbar">
+              <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('elb','bold')" title="Bold"><b>B</b></button>
+              <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('elb','italic')" title="Italic"><i>I</i></button>
+              <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('elb','underline')" title="Underline"><u>U</u></button>
+              <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('elb','strikeThrough')" title="Strikethrough"><s>S</s></button>
+              <span class="rte-sep"></span>
+              <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('elb','formatBlock','H2')" title="Heading">H2</button>
+              <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('elb','formatBlock','P')" title="Paragraph">¶</button>
+              <span class="rte-sep"></span>
+              <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('elb','insertUnorderedList')" title="Bullet List">• List</button>
+              <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('elb','insertOrderedList')" title="Numbered List">1. List</button>
+              <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteLink('elb')" title="Insert Link">🔗 Link</button>
+              <span class="rte-sep"></span>
+              <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('elb','removeFormat')" title="Clear Formatting">Clear</button>
+            </div>
+            <div class="rte-content" id="elb" contenteditable="true"
+              data-placeholder="Write your full blog post here. Select text and use the toolbar above to format it."></div>
+          </div>
           <div class="afg"><label>Cover Image — Upload File (leave blank to keep current)</label><input type="file" id="eli"
               accept="image/*" style="border:none;padding:.25rem 0;background:none" / autocomplete="off"></div>
           <div class="afg"><label>🖼️ Or paste Cover Image URL (leave blank to keep current)</label><input type="url" id="elurl" placeholder="https://drive.google.com/uc?export=view&id=..." autocomplete="off"></div>
@@ -7461,19 +7597,41 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
     </div>`).join('');
     }
 
-    function openBlog(id) {
+    let _openBlogId = null;
+    function openBlog(id, pushState = true) {
       const b = blogs.find(x => x.id === id);
       if (!b) return;
+      _openBlogId = id;
       document.getElementById('blmbody').innerHTML = `
-    <button class="mclose" onclick="closeBlog()" style="float:right;background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--mu)">✕</button>
     <span class="bltag ${b.cat}" style="display:inline-block;margin-bottom:.7rem">${b.catLabel}</span>
-    <h2 style="font-family:'Fraunces',serif;font-size:1.45rem;font-weight:700;margin-bottom:.45rem;line-height:1.25;clear:both">${b.title}</h2>
-    <div style="font-size:.78rem;color:var(--mu);margin-bottom:1.3rem">📅 ${b.date} · ${b.time}</div>
-    ${b.img ? `<img src="${b.img}" style="width:100%;border-radius:12px;margin-bottom:1.1rem;object-fit:cover;max-height:200px"/>` : `<div style="width:100%;height:100px;border-radius:12px;margin-bottom:1.1rem;display:flex;align-items:center;justify-content:center;font-size:2.8rem;background:${BG[b.cat] || '#eee'}">${b.emoji || '📝'}</div>`}
-    <div style="font-size:.9rem;color:var(--mu);line-height:1.9;white-space:pre-line">${b.content}</div>`;
+    <h1 style="font-family:'Fraunces',serif;font-size:clamp(1.5rem,3vw,2.1rem);font-weight:700;margin-bottom:.5rem;line-height:1.25">${b.title}</h1>
+    <div style="font-size:.8rem;color:var(--mu);margin-bottom:1.4rem">📅 ${b.date} · ${b.time}</div>
+    ${b.img ? `<img src="${b.img}" style="width:100%;border-radius:14px;margin-bottom:1.4rem;object-fit:cover;max-height:360px"/>` : `<div style="width:100%;height:140px;border-radius:14px;margin-bottom:1.4rem;display:flex;align-items:center;justify-content:center;font-size:3.2rem;background:${BG[b.cat] || '#eee'}">${b.emoji || '📝'}</div>`}
+    <div class="blog-article-body" style="white-space:pre-line">${b.content}</div>`;
       show('blov');
+      window.scrollTo(0, 0);
+      if (pushState) {
+        try { history.pushState({ blogId: id }, '', '#post-' + id); } catch (e) { }
+      }
     }
-    function closeBlog() { hide('blov'); }
+    function closeBlog(fromPop) {
+      if (!document.getElementById('blov').classList.contains('open')) return;
+      hide('blov');
+      _openBlogId = null;
+      if (!fromPop) {
+        try {
+          if (location.hash.indexOf('post-') === 1) history.pushState(null, '', location.pathname + location.search + '#blog');
+        } catch (e) { }
+      }
+    }
+    // Deep-link support: opening a #post-<id> URL directly, or sharing/bookmarking it,
+    // opens the article as its own page instead of the popup it used to be.
+    function _checkBlogHash() {
+      const m = location.hash.match(/^#post-(.+)$/);
+      if (m && blogs.find(x => x.id === m[1])) openBlog(m[1], false);
+      else if (_openBlogId) closeBlog(true);
+    }
+    window.addEventListener('popstate', _checkBlogHash);
 
     // ── ADMIN ─────────────────────────────────────────────────────────────────────
     // ── SECRET ADMIN TRIGGER (5 clicks on footer copyright) ─────────────────
@@ -8157,12 +8315,12 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       const [cat, catLabel] = catRaw.split('|');
       const time = document.getElementById('blr').value.trim() || '3 min read';
       const summary = document.getElementById('bls').value.trim();
-      const content = document.getElementById('blb').value.trim();
+      const content = rteGet('blb');
       const imgF = document.getElementById('bli').files[0];
       const imgUrl = document.getElementById('blurl').value.trim();
       const er = document.getElementById('bler');
       er.style.display = 'none';
-      if (!title || !summary || !content) { er.textContent = 'Please fill in Title, Summary and Content.'; er.style.display = 'block'; return; }
+      if (!title || !summary || rteIsEmpty('blb')) { er.textContent = 'Please fill in Title, Summary and Content.'; er.style.display = 'block'; return; }
       const btn = document.getElementById('blbtn');
       btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Publishing...';
       let img = null;
@@ -8172,7 +8330,8 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       const date = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
       blogs.unshift({ id: 'bl' + Date.now(), title, cat, catLabel, time, summary, content, date, img, emoji: emap[cat] || '📝' });
       await save(); renderBlogs();
-      ['blt', 'blr', 'bls', 'blb', 'blurl'].forEach(i => document.getElementById(i).value = '');
+      ['blt', 'blr', 'bls', 'blurl'].forEach(i => document.getElementById(i).value = '');
+      rteSet('blb', '');
       document.getElementById('bli').value = '';
       btn.disabled = false; btn.innerHTML = 'Publish Blog Post';
       flash('blok');
@@ -8288,7 +8447,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       for (let o of catSel.options) { if (o.value === catVal) { o.selected = true; break; } }
       document.getElementById('elr').value = b.time || '';
       document.getElementById('els').value = b.summary || '';
-      document.getElementById('elb').value = b.content || '';
+      rteSet('elb', b.content || '');
       document.getElementById('eli').value = '';
       document.getElementById('elok').style.display = 'none';
       document.getElementById('eler').style.display = 'none';
@@ -8302,12 +8461,12 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       const [cat, catLabel] = catRaw.split('|');
       const time = document.getElementById('elr').value.trim() || '3 min read';
       const summary = document.getElementById('els').value.trim();
-      const content = document.getElementById('elb').value.trim();
+      const content = rteGet('elb');
       const imgF = document.getElementById('eli').files[0];
       const imgUrl = (document.getElementById('elurl') || {}).value ? document.getElementById('elurl').value.trim() : '';
       const er = document.getElementById('eler');
       er.style.display = 'none';
-      if (!title || !summary || !content) { er.textContent = 'Please fill in Title, Summary and Content.'; er.style.display = 'block'; return; }
+      if (!title || !summary || rteIsEmpty('elb')) { er.textContent = 'Please fill in Title, Summary and Content.'; er.style.display = 'block'; return; }
       const btn = document.getElementById('elSaveBtn');
       btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Saving...';
       const idx = blogs.findIndex(x => x.id === _editBlogId);
@@ -8358,6 +8517,26 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
     // ── HELPERS ───────────────────────────────────────────────────────────────────
     function show(id) { document.getElementById(id).classList.add('open'); document.body.style.overflow = 'hidden'; }
     function hide(id) { document.getElementById(id).classList.remove('open'); document.body.style.overflow = ''; }
+
+    // ── RICH TEXT EDITOR HELPERS (used by the Write/Edit Blog admin forms) ──────
+    function rteCmd(id, cmd, val) {
+      const el = document.getElementById(id);
+      el.focus();
+      document.execCommand(cmd, false, val || null);
+    }
+    function rteLink(id) {
+      const el = document.getElementById(id);
+      el.focus();
+      const url = prompt('Enter the link URL (e.g. https://example.com):');
+      if (!url) return;
+      document.execCommand('createLink', false, url);
+    }
+    function rteGet(id) { return document.getElementById(id).innerHTML.trim(); }
+    function rteSet(id, html) { document.getElementById(id).innerHTML = html || ''; }
+    function rteIsEmpty(id) {
+      const el = document.getElementById(id);
+      return !el.textContent.trim() && !el.querySelector('img');
+    }
     function flash(id) { const el = document.getElementById(id); el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 3000); }
     function escHtml(str) { const d = document.createElement('div'); d.textContent = str == null ? '' : String(str); return d.innerHTML; }
 
@@ -9402,6 +9581,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       applySiteContent();
       renderBooks();
       renderBlogs();
+      _checkBlogHash(); // open a shared/bookmarked #post-<id> link straight to that article page
       renderFAQs();
       renderDPSection();
       _populateBookSelector(); // populate product dropdown in review form
