@@ -5566,8 +5566,25 @@
               <div class="afg"><label>Gumroad Link</label><input type="url" id="abgumroad" placeholder="https://gumroad.com/l/..." autocomplete="off"></div>
               <div class="afg"><label>Etsy Link</label><input type="url" id="abetsy" placeholder="https://www.etsy.com/listing/..." autocomplete="off"></div>
             </div>
-            <div class="afg"><label for="abd">Description *</label><textarea id="abd"
-                placeholder="Write a detailed description of this book..." autocomplete="off"></textarea></div>
+            <div class="afg"><label>Description *</label>
+              <div class="rte-toolbar">
+                <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('abd','bold')" title="Bold"><b>B</b></button>
+                <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('abd','italic')" title="Italic"><i>I</i></button>
+                <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('abd','underline')" title="Underline"><u>U</u></button>
+                <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('abd','strikeThrough')" title="Strikethrough"><s>S</s></button>
+                <span class="rte-sep"></span>
+                <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('abd','formatBlock','H2')" title="Heading">H2</button>
+                <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('abd','formatBlock','P')" title="Paragraph">¶</button>
+                <span class="rte-sep"></span>
+                <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('abd','insertUnorderedList')" title="Bullet List">• List</button>
+                <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('abd','insertOrderedList')" title="Numbered List">1. List</button>
+                <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteLink('abd')" title="Insert Link">🔗 Link</button>
+                <span class="rte-sep"></span>
+                <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('abd','removeFormat')" title="Clear Formatting">Clear</button>
+              </div>
+              <div class="rte-content" id="abd" contenteditable="true"
+                data-placeholder="Write a detailed description of this book..."></div>
+            </div>
             <div class="afg"><label for="abf">What's Inside (one item per line)</label><textarea id="abf"
                 style="min-height:75px"
                 placeholder="Cute animals — Rabbit, Lion&#10;Bold outlines for little hands&#10;Single-sided pages"
@@ -5618,7 +5635,25 @@
               <div class="afg"><label for="dppinr">Price (INR ₹) for Checkout</label><input id="dppinr" placeholder="99" autocomplete="off" /></div>
             </div>
             <div class="afg"><label for="dpag">Age Range Label</label><input id="dpag" placeholder="Ages 8–14" autocomplete="off" /></div>
-            <div class="afg"><label for="dpd">Description *</label><textarea id="dpd" placeholder="Describe what's inside, how it helps, and why kids/teens will love it..." autocomplete="off"></textarea></div>
+            <div class="afg"><label>Description *</label>
+              <div class="rte-toolbar">
+                <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('dpd','bold')" title="Bold"><b>B</b></button>
+                <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('dpd','italic')" title="Italic"><i>I</i></button>
+                <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('dpd','underline')" title="Underline"><u>U</u></button>
+                <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('dpd','strikeThrough')" title="Strikethrough"><s>S</s></button>
+                <span class="rte-sep"></span>
+                <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('dpd','formatBlock','H2')" title="Heading">H2</button>
+                <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('dpd','formatBlock','P')" title="Paragraph">¶</button>
+                <span class="rte-sep"></span>
+                <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('dpd','insertUnorderedList')" title="Bullet List">• List</button>
+                <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('dpd','insertOrderedList')" title="Numbered List">1. List</button>
+                <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteLink('dpd')" title="Insert Link">🔗 Link</button>
+                <span class="rte-sep"></span>
+                <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('dpd','removeFormat')" title="Clear Formatting">Clear</button>
+              </div>
+              <div class="rte-content" id="dpd" contenteditable="true"
+                data-placeholder="Describe what's inside, how it helps, and why kids/teens will love it..."></div>
+            </div>
             <div class="afg"><label for="dpf">What's Inside (one item per line)</label><textarea id="dpf" style="min-height:75px" placeholder="Weekly goal tracker&#10;Monthly reflection page&#10;Daily habit checkboxes" autocomplete="off"></textarea></div>
             <div class="afg"><label>🖼️ Cover Image URL</label><input type="url" id="dpcov" placeholder="https://res.cloudinary.com/..." autocomplete="off" /></div>
             <div class="afg"><label>🖼️ Sample Page URLs (up to 3, one per line)</label><textarea id="dpsamp" style="min-height:72px" placeholder="https://res.cloudinary.com/sample1.jpg&#10;https://res.cloudinary.com/sample2.jpg" autocomplete="off"></textarea></div>
@@ -5713,7 +5748,25 @@
           </div>
           <div class="af">
             <div class="afg"><label for="fqq">Question *</label><input id="fqq" placeholder="e.g. Do you ship internationally?" autocomplete="off" /></div>
-            <div class="afg"><label for="fqa">Answer *</label><textarea id="fqa" style="min-height:100px" placeholder="Write the answer here..." autocomplete="off"></textarea></div>
+            <div class="afg"><label>Answer *</label>
+              <div class="rte-toolbar">
+                <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('fqa','bold')" title="Bold"><b>B</b></button>
+                <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('fqa','italic')" title="Italic"><i>I</i></button>
+                <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('fqa','underline')" title="Underline"><u>U</u></button>
+                <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('fqa','strikeThrough')" title="Strikethrough"><s>S</s></button>
+                <span class="rte-sep"></span>
+                <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('fqa','formatBlock','H2')" title="Heading">H2</button>
+                <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('fqa','formatBlock','P')" title="Paragraph">¶</button>
+                <span class="rte-sep"></span>
+                <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('fqa','insertUnorderedList')" title="Bullet List">• List</button>
+                <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('fqa','insertOrderedList')" title="Numbered List">1. List</button>
+                <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteLink('fqa')" title="Insert Link">🔗 Link</button>
+                <span class="rte-sep"></span>
+                <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('fqa','removeFormat')" title="Clear Formatting">Clear</button>
+              </div>
+              <div class="rte-content" id="fqa" contenteditable="true"
+                data-placeholder="Write the answer here..."></div>
+            </div>
             <div class="afg"><label for="fqorder">Display Order</label><input type="number" id="fqorder" placeholder="1" min="0" step="1" autocomplete="off"></div>
             <div style="display:flex;gap:.6rem">
               <button class="afbtn" id="fqbtn" onclick="addOrSaveFaq()">Add FAQ</button>
@@ -6085,8 +6138,25 @@
             <div class="afg"><label>Gumroad Link</label><input type="url" id="ebgumroad" placeholder="https://gumroad.com/l/..." autocomplete="off"></div>
             <div class="afg"><label>Etsy Link</label><input type="url" id="ebetsy" placeholder="https://www.etsy.com/listing/..." autocomplete="off"></div>
           </div>
-          <div class="afg"><label for="ebd">Description *</label><textarea id="ebd"
-              placeholder="Write a detailed description..." autocomplete="off"></textarea></div>
+          <div class="afg"><label>Description *</label>
+            <div class="rte-toolbar">
+              <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('ebd','bold')" title="Bold"><b>B</b></button>
+              <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('ebd','italic')" title="Italic"><i>I</i></button>
+              <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('ebd','underline')" title="Underline"><u>U</u></button>
+              <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('ebd','strikeThrough')" title="Strikethrough"><s>S</s></button>
+              <span class="rte-sep"></span>
+              <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('ebd','formatBlock','H2')" title="Heading">H2</button>
+              <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('ebd','formatBlock','P')" title="Paragraph">¶</button>
+              <span class="rte-sep"></span>
+              <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('ebd','insertUnorderedList')" title="Bullet List">• List</button>
+              <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('ebd','insertOrderedList')" title="Numbered List">1. List</button>
+              <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteLink('ebd')" title="Insert Link">🔗 Link</button>
+              <span class="rte-sep"></span>
+              <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('ebd','removeFormat')" title="Clear Formatting">Clear</button>
+            </div>
+            <div class="rte-content" id="ebd" contenteditable="true"
+              data-placeholder="Write a detailed description..."></div>
+          </div>
           <div class="afg"><label for="ebf">What's Inside (one item per line)</label><textarea id="ebf"
               style="min-height:75px" placeholder="Feature 1&#10;Feature 2" autocomplete="off"></textarea></div>
           <div class="afg"><label>🖼️ Cover Image URL (leave blank to keep current)</label><input type="url" id="ebc" placeholder="https://res.cloudinary.com/..." autocomplete="off"></div>
@@ -6207,7 +6277,25 @@
             <div class="afg"><label>Price (INR ₹) for Checkout</label><input id="edppinr" placeholder="99" autocomplete="off" /></div>
           </div>
           <div class="afg"><label>Age Range Label</label><input id="edpag" placeholder="Ages 8–14" autocomplete="off" /></div>
-          <div class="afg"><label>Description *</label><textarea id="edpd" placeholder="Describe what's inside..." autocomplete="off"></textarea></div>
+          <div class="afg"><label>Description *</label>
+            <div class="rte-toolbar">
+              <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('edpd','bold')" title="Bold"><b>B</b></button>
+              <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('edpd','italic')" title="Italic"><i>I</i></button>
+              <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('edpd','underline')" title="Underline"><u>U</u></button>
+              <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('edpd','strikeThrough')" title="Strikethrough"><s>S</s></button>
+              <span class="rte-sep"></span>
+              <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('edpd','formatBlock','H2')" title="Heading">H2</button>
+              <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('edpd','formatBlock','P')" title="Paragraph">¶</button>
+              <span class="rte-sep"></span>
+              <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('edpd','insertUnorderedList')" title="Bullet List">• List</button>
+              <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('edpd','insertOrderedList')" title="Numbered List">1. List</button>
+              <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteLink('edpd')" title="Insert Link">🔗 Link</button>
+              <span class="rte-sep"></span>
+              <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="rteCmd('edpd','removeFormat')" title="Clear Formatting">Clear</button>
+            </div>
+            <div class="rte-content" id="edpd" contenteditable="true"
+              data-placeholder="Describe what's inside..."></div>
+          </div>
           <div class="afg"><label>What's Inside (one item per line)</label><textarea id="edpf" style="min-height:75px" placeholder="Weekly goal tracker&#10;Monthly reflection page" autocomplete="off"></textarea></div>
           <div class="afg"><label>🖼️ Cover Image URL (leave blank to keep current)</label><input type="url" id="edpcov" placeholder="https://res.cloudinary.com/..." autocomplete="off" /></div>
           <div class="afg"><label>🖼️ Sample Page URLs (up to 3, one per line — leave blank to keep current)</label><textarea id="edpsamp" style="min-height:72px" placeholder="https://res.cloudinary.com/sample1.jpg&#10;https://res.cloudinary.com/sample2.jpg" autocomplete="off"></textarea></div>
@@ -7766,7 +7854,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       const amz = document.getElementById('abz').value.trim();
       const gumroad = document.getElementById('abgumroad').value.trim();
       const etsy = document.getElementById('abetsy').value.trim();
-      const desc = document.getElementById('abd').value.trim();
+      const desc = rteGet('abd');
       const feats = document.getElementById('abf').value.trim().split('\n').map(s => s.trim()).filter(Boolean);
       const categories = getCheckedCats('abcatGrid');
       const audience = document.getElementById('abaud').value || 'kids';
@@ -7777,13 +7865,14 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       const displayOrder = _displayOrderValue(document.getElementById('aborder').value);
       const er = document.getElementById('aber');
       er.style.display = 'none';
-      if (!title || !price || !desc) { er.textContent = 'Please fill in Title, Price and Description.'; er.style.display = 'block'; return; }
+      if (!title || !price || rteIsEmpty('abd')) { er.textContent = 'Please fill in Title, Price and Description.'; er.style.display = 'block'; return; }
       if (!categories.length) { er.textContent = 'Please select at least one category.'; er.style.display = 'block'; return; }
       const btn = document.getElementById('abbtn');
       btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Saving...';
       books.push({ id: 'bk' + Date.now(), title, price, priceInr, age, amazon: amz, gumroad: gumroad || null, etsy: etsy || null, desc, features: feats, categories, audience, cover, samples, pdfData: pdfUrl || null, featured, displayOrder });
       const savedToCloud = await save(); renderBooks(); renderHeroFeatStack(); renderFeaturedAdminSummary();
-      ['abt', 'abp', 'abpinr', 'aba', 'abz', 'abgumroad', 'abetsy', 'abd', 'abf', 'abc', 'abpdf', 'aborder'].forEach(i => document.getElementById(i).value = '');
+      ['abt', 'abp', 'abpinr', 'aba', 'abz', 'abgumroad', 'abetsy', 'abf', 'abc', 'abpdf', 'aborder'].forEach(i => document.getElementById(i).value = '');
+      rteSet('abd', '');
       document.getElementById('abfeat').checked = false;
       document.getElementById('abs').value = '';
       document.getElementById('abaud').value = 'kids';
@@ -7981,7 +8070,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       const price = document.getElementById('dpp').value.trim();
       const priceInr = document.getElementById('dppinr').value.trim();
       const ageRange = document.getElementById('dpag').value.trim();
-      const desc = document.getElementById('dpd').value.trim();
+      const desc = rteGet('dpd');
       const features = document.getElementById('dpf').value.trim().split('\n').map(s => s.trim()).filter(Boolean);
       const cover = document.getElementById('dpcov').value.trim() || null;
       const samples = document.getElementById('dpsamp').value.trim().split('\n').map(s => s.trim()).filter(s => s.startsWith('http')).slice(0, 3);
@@ -7992,7 +8081,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       const displayOrder = _displayOrderValue(document.getElementById('dporder').value);
       const er = document.getElementById('dper');
       er.style.display = 'none';
-      if (!title || !price || !desc) { er.textContent = 'Please fill in Title, Price and Description.'; er.style.display = 'block'; return; }
+      if (!title || !price || rteIsEmpty('dpd')) { er.textContent = 'Please fill in Title, Price and Description.'; er.style.display = 'block'; return; }
       const btn = document.getElementById('dpabtn');
       btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Saving...';
       digitalProducts.push({ id: 'dp' + Date.now(), title, category, audience, price, priceInr, ageRange, desc, features, cover, samples, pdfUrl: pdfUrl || null, gumroad: gumroad || null, etsy: etsy || null, featured, displayOrder });
@@ -8001,7 +8090,8 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       renderDPManageList();
       renderHeroFeatStack();
       renderFeaturedAdminSummary();
-      ['dpt','dpp','dppinr','dpag','dpd','dpf','dpcov','dpsamp','dppdf','dpgumroad','dpetsy','dporder'].forEach(i => { const el = document.getElementById(i); if (el) el.value = ''; });
+      ['dpt','dpp','dppinr','dpag','dpf','dpcov','dpsamp','dppdf','dpgumroad','dpetsy','dporder'].forEach(i => { const el = document.getElementById(i); if (el) el.value = ''; });
+      rteSet('dpd', '');
       document.getElementById('dpaud').value = 'both';
       document.getElementById('dpc').value = 'study-planner';
       document.getElementById('dpfeat').checked = false;
@@ -8029,7 +8119,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       document.getElementById('edpp').value = p.price || '';
       document.getElementById('edppinr').value = p.priceInr || '';
       document.getElementById('edpag').value = p.ageRange || '';
-      document.getElementById('edpd').value = p.desc || '';
+      rteSet('edpd', p.desc || '');
       document.getElementById('edpf').value = (p.features || []).join('\n');
       document.getElementById('edpcov').value = (p.cover && p.cover.startsWith('http')) ? p.cover : '';
       document.getElementById('edpsamp').value = (p.samples || []).filter(s => s && s.startsWith('http')).join('\n');
@@ -8050,7 +8140,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       const price = document.getElementById('edpp').value.trim();
       const priceInr = document.getElementById('edppinr').value.trim();
       const ageRange = document.getElementById('edpag').value.trim();
-      const desc = document.getElementById('edpd').value.trim();
+      const desc = rteGet('edpd');
       const features = document.getElementById('edpf').value.trim().split('\n').map(s => s.trim()).filter(Boolean);
       const coverUrl = document.getElementById('edpcov').value.trim();
       const samplesRaw = document.getElementById('edpsamp').value.trim();
@@ -8061,7 +8151,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       const displayOrder = _displayOrderValue(document.getElementById('edporder').value);
       const er = document.getElementById('edper');
       er.style.display = 'none';
-      if (!title || !price || !desc) { er.textContent = 'Please fill in Title, Price and Description.'; er.style.display = 'block'; return; }
+      if (!title || !price || rteIsEmpty('edpd')) { er.textContent = 'Please fill in Title, Price and Description.'; er.style.display = 'block'; return; }
       const btn = document.getElementById('edpSaveBtn');
       btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Saving...';
       const idx = digitalProducts.findIndex(x => x.id === _editDPId);
@@ -8144,11 +8234,11 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
 
     async function addOrSaveFaq() {
       const q = document.getElementById('fqq').value.trim();
-      const a = document.getElementById('fqa').value.trim();
+      const a = rteGet('fqa');
       const order = _displayOrderValue(document.getElementById('fqorder').value);
       const er = document.getElementById('fqer');
       er.style.display = 'none';
-      if (!q || !a) { er.textContent = 'Please fill in both the Question and Answer.'; er.style.display = 'block'; return; }
+      if (!q || rteIsEmpty('fqa')) { er.textContent = 'Please fill in both the Question and Answer.'; er.style.display = 'block'; return; }
       const btn = document.getElementById('fqbtn');
       btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Saving...';
       if (_editFaqId) {
@@ -8170,7 +8260,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       if (!f) return;
       _editFaqId = id;
       document.getElementById('fqq').value = f.q || '';
-      document.getElementById('fqa').value = f.a || '';
+      rteSet('fqa', f.a || '');
       document.getElementById('fqorder').value = _displayOrderValue(f.order) || '';
       document.getElementById('faqFormTitle').textContent = 'Edit FAQ';
       document.getElementById('fqbtn').textContent = 'Save Changes';
@@ -8181,7 +8271,8 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
 
     function cancelEditFaq() {
       _editFaqId = null;
-      ['fqq', 'fqa', 'fqorder'].forEach(i => { const el = document.getElementById(i); if (el) el.value = ''; });
+      ['fqq', 'fqorder'].forEach(i => { const el = document.getElementById(i); if (el) el.value = ''; });
+      rteSet('fqa', '');
       document.getElementById('faqFormTitle').textContent = 'Add an FAQ';
       document.getElementById('fqbtn').textContent = 'Add FAQ';
       document.getElementById('fqcancelbtn').style.display = 'none';
@@ -8201,7 +8292,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       if (!el) return;
       const sorted = [...faqs].sort((a, b) => _displayOrderValue(a.order) - _displayOrderValue(b.order));
       el.innerHTML = sorted.map(f => `<div class="mi">
-          <div><div class="mit">${escHtml(f.q)}</div><div class="mis">${f.a ? escHtml(f.a).slice(0, 70) : ''}</div></div>
+          <div><div class="mit">${escHtml(f.q)}</div><div class="mis">${f.a ? escHtml(stripHtml(f.a)).slice(0, 70) : ''}</div></div>
           <div class="mi-btns">
             <button class="medit" onclick="openEditFaq('${f.id}')">Edit</button>
             <button class="mdel" onclick="delFaq('${f.id}')">Delete</button>
@@ -8216,7 +8307,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       if (!sorted.length) { el.innerHTML = '<p class="faqempty">FAQs coming soon!</p>'; return; }
       el.innerHTML = sorted.map((f, i) => `<details class="faqitem"${i === 0 ? ' open' : ''}>
           <summary class="faqq"><span>${escHtml(f.q)}</span><span class="faqicon">+</span></summary>
-          <div class="faqa">${escHtml(f.a).replace(/\n/g, '<br>')}</div>
+          <div class="faqa">${f.a || ''}</div>
         </details>`).join('');
     }
 
@@ -8380,7 +8471,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       document.getElementById('ebz').value = b.amazon || '';
       document.getElementById('ebgumroad').value = b.gumroad || '';
       document.getElementById('ebetsy').value = b.etsy || '';
-      document.getElementById('ebd').value = b.desc || '';
+      rteSet('ebd', b.desc || '');
       document.getElementById('ebf').value = (b.features || []).join('\n');
       // Populate category checkboxes — support both old .category and new .categories
       const selCats = Array.isArray(b.categories) && b.categories.length ? b.categories
@@ -8405,7 +8496,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       const amz = document.getElementById('ebz').value.trim();
       const gumroad = document.getElementById('ebgumroad').value.trim();
       const etsy = document.getElementById('ebetsy').value.trim();
-      const desc = document.getElementById('ebd').value.trim();
+      const desc = rteGet('ebd');
       const feats = document.getElementById('ebf').value.trim().split('\n').map(s => s.trim()).filter(Boolean);
       const categories = getCheckedCats('ebcatGrid');
       const audience = document.getElementById('ebaud').value || 'kids';
@@ -8416,7 +8507,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
       const displayOrder = _displayOrderValue(document.getElementById('eborder').value);
       const er = document.getElementById('eber');
       er.style.display = 'none';
-      if (!title || !price || !desc) { er.textContent = 'Please fill in Title, Price and Description.'; er.style.display = 'block'; return; }
+      if (!title || !price || rteIsEmpty('ebd')) { er.textContent = 'Please fill in Title, Price and Description.'; er.style.display = 'block'; return; }
       if (!categories.length) { er.textContent = 'Please select at least one category.'; er.style.display = 'block'; return; }
       const btn = document.getElementById('ebSaveBtn');
       btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Saving...';
@@ -8539,6 +8630,7 @@ Tip: Always check the paper quality — thicker paper prevents bleed-through and
     }
     function flash(id) { const el = document.getElementById(id); el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 3000); }
     function escHtml(str) { const d = document.createElement('div'); d.textContent = str == null ? '' : String(str); return d.innerHTML; }
+    function stripHtml(html) { const d = document.createElement('div'); d.innerHTML = html == null ? '' : String(html); return (d.textContent || '').trim(); }
 
     // ── INSTAMOJO PAYMENT ─────────────────────────────────────────────────────────
     //
